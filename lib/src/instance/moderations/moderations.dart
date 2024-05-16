@@ -1,14 +1,12 @@
-import 'package:dart_openai/src/core/builder/base_api_url.dart';
-import 'package:dart_openai/src/core/constants/strings.dart';
-import 'package:dart_openai/src/core/models/moderation/moderation.dart';
-import 'package:dart_openai/src/core/networking/client.dart';
-
-import '../../core/base/moderations/base.dart';
+import 'package:flutter_openai/src/core/builder/base_api_url.dart';
+import 'package:flutter_openai/src/core/client/openai_client.dart';
+import 'package:flutter_openai/src/core/constants/strings.dart';
+import 'package:flutter_openai/src/core/models/moderation/moderation.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
+import '../../core/base/moderations/base.dart';
 import '../../core/utils/logger.dart';
-
-import 'package:http/http.dart' as http;
 
 /// {@template openai_moderation}
 /// The class that handles all the requests related to the moderation in the OpenAI API.

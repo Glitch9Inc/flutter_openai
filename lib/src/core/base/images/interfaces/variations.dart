@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../../../../../dart_openai.dart';
+import '../../../../../flutter_openai.dart';
 
 abstract class VariationInterface {
   Future<OpenAIImageModel> variation({

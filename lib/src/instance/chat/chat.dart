@@ -1,13 +1,13 @@
-import 'package:dart_openai/src/core/builder/base_api_url.dart';
-import 'package:dart_openai/src/core/networking/client.dart';
+import 'package:flutter_openai/src/core/builder/base_api_url.dart';
+import 'package:flutter_openai/src/core/client/openai_client.dart';
+import 'package:flutter_openai/src/core/sub_models/message.dart';
+import 'package:http/http.dart' as http;
 
 import '../../core/base/chat/chat.dart';
 import '../../core/constants/strings.dart';
-import '../../core/models/chat/chat.dart';
+import '../../core/models/chat/chat_completion.dart';
 import '../../core/models/tool/tool.dart';
 import '../../core/utils/logger.dart';
-
-import 'package:http/http.dart' as http;
 
 /// {@template openai_chat}
 /// This class is responsible for handling all chat requests, such as creating a chat completion for the message(s).
@@ -26,7 +26,7 @@ interface class OpenAIChat implements OpenAIChatBase {
   /// [model] is the ID of the model to use.
   ///
   ///
-  /// [messages] is the list of messages to complete from, note you need to set each message as a [OpenAIChatCompletionChoiceMessageModel] object.
+  /// [messages] is the list of messages to complete from, note you need to set each message as a [Message] object.
   ///
   ///
   /// What sampling [temperature] to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
@@ -55,7 +55,7 @@ interface class OpenAIChat implements OpenAIChatBase {
   ///
   /// [user] is a unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
   ///
-  /// Returns a [OpenAIChatCompletionModel] object.
+  /// Returns a [ChatCompletion] object.
   ///
   /// Example:
   /// ```dart
@@ -66,9 +66,9 @@ interface class OpenAIChat implements OpenAIChatBase {
   /// ]);
   /// ```
   @override
-  Future<OpenAIChatCompletionModel> create({
+  Future<ChatCompletion> create({
     required String model,
-    required List<OpenAIChatCompletionChoiceMessageModel> messages,
+    required List<Message> messages,
     List<OpenAIToolModel>? tools,
     toolChoice,
     double? temperature,
@@ -91,8 +91,7 @@ interface class OpenAIChat implements OpenAIChatBase {
       body: {
         "model": model,
         "messages": messages.map((message) => message.toMap()).toList(),
-        if (tools != null)
-          "tools": tools.map((tool) => tool.toMap()).toList(growable: false),
+        if (tools != null) "tools": tools.map((tool) => tool.toMap()).toList(growable: false),
         if (toolChoice != null) "tool_choice": toolChoice,
         if (temperature != null) "temperature": temperature,
         if (topP != null) "top_p": topP,
@@ -109,7 +108,7 @@ interface class OpenAIChat implements OpenAIChatBase {
         if (topLogprobs != null) "top_logprobs": topLogprobs,
       },
       onSuccess: (Map<String, dynamic> response) {
-        return OpenAIChatCompletionModel.fromMap(response);
+        return ChatCompletion.fromMap(response);
       },
       client: client,
     );
@@ -120,7 +119,7 @@ interface class OpenAIChat implements OpenAIChatBase {
   /// [model] is the ID of the model to use.
   ///
   ///
-  /// [messages] is the list of messages to complete from, note you need to set each message as a [OpenAIChatCompletionChoiceMessageModel] object.
+  /// [messages] is the list of messages to complete from, note you need to set each message as a [Message] object.
   ///
   ///
   /// What sampling [temperature] to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
@@ -163,9 +162,9 @@ interface class OpenAIChat implements OpenAIChatBase {
   /// ```
 
   @override
-  Stream<OpenAIStreamChatCompletionModel> createStream({
+  Stream<ChatCompletionChunk> createStream({
     required String model,
-    required List<OpenAIChatCompletionChoiceMessageModel> messages,
+    required List<Message> messages,
     List<OpenAIToolModel>? tools,
     toolChoice,
     double? temperature,
@@ -181,14 +180,13 @@ interface class OpenAIChat implements OpenAIChatBase {
     String? user,
     http.Client? client,
   }) {
-    return OpenAINetworkingClient.postStream<OpenAIStreamChatCompletionModel>(
+    return OpenAINetworkingClient.postStream<ChatCompletionChunk>(
       to: BaseApiUrlBuilder.build(endpoint),
       body: {
         "model": model,
         "stream": true,
         "messages": messages.map((message) => message.toMap()).toList(),
-        if (tools != null)
-          "tools": tools.map((tool) => tool.toMap()).toList(growable: false),
+        if (tools != null) "tools": tools.map((tool) => tool.toMap()).toList(growable: false),
         if (toolChoice != null) "tool_choice": toolChoice,
         if (temperature != null) "temperature": temperature,
         if (topP != null) "top_p": topP,
@@ -203,16 +201,16 @@ interface class OpenAIChat implements OpenAIChatBase {
         if (responseFormat != null) "response_format": responseFormat,
       },
       onSuccess: (Map<String, dynamic> response) {
-        return OpenAIStreamChatCompletionModel.fromMap(response);
+        return ChatCompletionChunk.fromMap(response);
       },
       client: client,
     );
   }
 
   @override
-  Stream<OpenAIStreamChatCompletionModel> createRemoteFunctionStream({
+  Stream<ChatCompletionChunk> createRemoteFunctionStream({
     required String model,
-    required List<OpenAIChatCompletionChoiceMessageModel> messages,
+    required List<Message> messages,
     List<OpenAIToolModel>? tools,
     toolChoice,
     double? temperature,
@@ -228,14 +226,13 @@ interface class OpenAIChat implements OpenAIChatBase {
     Map<String, String>? responseFormat,
     int? seed,
   }) {
-    return OpenAINetworkingClient.postStream<OpenAIStreamChatCompletionModel>(
+    return OpenAINetworkingClient.postStream<ChatCompletionChunk>(
       to: BaseApiUrlBuilder.build(endpoint),
       body: {
         "model": model,
         "stream": true,
         "messages": messages.map((message) => message.toMap()).toList(),
-        if (tools != null)
-          "tools": tools.map((tool) => tool.toMap()).toList(growable: false),
+        if (tools != null) "tools": tools.map((tool) => tool.toMap()).toList(growable: false),
         if (toolChoice != null) "tool_choice": toolChoice,
         if (temperature != null) "temperature": temperature,
         if (topP != null) "top_p": topP,
@@ -250,7 +247,7 @@ interface class OpenAIChat implements OpenAIChatBase {
         if (responseFormat != null) "response_format": responseFormat,
       },
       onSuccess: (Map<String, dynamic> response) {
-        return OpenAIStreamChatCompletionModel.fromMap(response);
+        return ChatCompletionChunk.fromMap(response);
       },
       client: client,
     );

@@ -1,15 +1,14 @@
-import 'package:dart_openai/src/core/builder/base_api_url.dart';
-import 'package:dart_openai/src/core/models/file/file.dart';
-import 'package:dart_openai/src/core/networking/client.dart';
-import 'package:meta/meta.dart';
-
 import 'dart:io';
+
+import 'package:flutter_openai/src/core/builder/base_api_url.dart';
+import 'package:flutter_openai/src/core/client/openai_client.dart';
+import 'package:flutter_openai/src/core/models/file/file.dart';
+import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
 
 import '../../core/base/files/base.dart';
 import '../../core/constants/strings.dart';
 import '../../core/utils/logger.dart';
-
-import 'package:http/http.dart' as http;
 
 /// {@template openai_files}
 /// This class is responsible for handling all files requests, such as uploading a file to be used across various endpoints/features.

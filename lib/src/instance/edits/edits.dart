@@ -1,13 +1,12 @@
-import 'package:dart_openai/src/core/models/edit/edit.dart';
+import 'package:flutter_openai/src/core/models/edit/edit.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import '../../core/base/edits/edits.dart';
 import '../../core/builder/base_api_url.dart';
+import '../../core/client/openai_client.dart';
 import '../../core/constants/strings.dart';
-import '../../core/networking/client.dart';
 import '../../core/utils/logger.dart';
-
-import 'package:http/http.dart' as http;
 
 /// {@template openai_edits}
 /// The class that handles all the requests related to the edits in the OpenAI API.

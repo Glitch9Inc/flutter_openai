@@ -4,7 +4,6 @@
 class OpenAIUnexpectedException implements Exception {
   /// The message to be displayed when the exception is thrown.
   final String message;
-
   final String? rawResponseBody;
 
   /// {@macro unexpected_response_exception}

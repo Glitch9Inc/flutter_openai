@@ -1,14 +1,13 @@
+import 'package:flutter_openai/src/instance/edits/edits.dart';
+import 'package:flutter_openai/src/instance/moderations/moderations.dart';
 import 'package:meta/meta.dart';
-import 'package:dart_openai/src/instance/edits/edits.dart';
-import 'package:dart_openai/src/instance/moderations/moderations.dart';
-import '../core/base/openai_client/base.dart';
+
 import '../core/builder/headers.dart';
 import '../core/constants/config.dart';
 import '../core/exceptions/api_key_not_set.dart';
 import '../core/utils/logger.dart';
 import 'audio/audio.dart';
 import 'chat/chat.dart';
-import 'completion/completion.dart';
 import 'embedding/embedding.dart';
 import 'files/files.dart';
 import 'fine_tunes/fine_tunes.dart';
@@ -21,7 +20,7 @@ import 'model/model.dart';
 /// final openai = OpenAI.instance;
 /// ```
 @immutable
-final class OpenAI extends OpenAIClientBase {
+final class OpenAI {
   /// The singleton instance of [OpenAI].
   static final OpenAI _instance = OpenAI._();
 
@@ -51,9 +50,6 @@ final class OpenAI extends OpenAIClientBase {
   /// The [OpenAIModel] instance, used to access the model endpoints.
   /// Please, refer to the Models page from the official OpenAI documentation website in order to know what models are available and what's the use case of every model.
   OpenAIModel get model => OpenAIModel();
-
-  /// The [OpenAICompletion] instance, used to access the completion endpoints.
-  OpenAICompletion get completion => OpenAICompletion();
 
   /// The [OpenAIEdits] instance, used to access the edits endpoints.
   OpenAIEdits get edit => OpenAIEdits();

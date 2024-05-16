@@ -1,13 +1,12 @@
-import 'package:dart_openai/src/core/builder/base_api_url.dart';
-import 'package:dart_openai/src/core/models/embedding/embedding.dart';
+import 'package:flutter_openai/src/core/builder/base_api_url.dart';
+import 'package:flutter_openai/src/core/models/embedding/embedding.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import '../../core/base/embeddings/base.dart';
+import '../../core/client/openai_client.dart';
 import '../../core/constants/strings.dart';
-import '../../core/networking/client.dart';
 import '../../core/utils/logger.dart';
-
-import 'package:http/http.dart' as http;
 
 /// {@template openai_embedding}
 /// Get a vector representation of a given input that can be easily consumed by machine learning models and algorithms.
@@ -44,7 +43,7 @@ interface class OpenAIEmbedding implements OpenAIEmbeddingBase {
   /// );
   ///```
   @override
-  Future<OpenAIEmbeddingsModel> create({
+  Future<Embedding> create({
     required String model,
     required input,
     String? user,
@@ -55,9 +54,9 @@ interface class OpenAIEmbedding implements OpenAIEmbeddingBase {
       "The input field should be a String, or a List<String>",
     );
 
-    return await OpenAINetworkingClient.post<OpenAIEmbeddingsModel>(
+    return await OpenAINetworkingClient.post<Embedding>(
       onSuccess: (Map<String, dynamic> response) {
-        return OpenAIEmbeddingsModel.fromMap(response);
+        return Embedding.fromMap(response);
       },
       to: BaseApiUrlBuilder.build(endpoint),
       body: {

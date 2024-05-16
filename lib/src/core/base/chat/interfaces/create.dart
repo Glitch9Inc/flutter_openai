@@ -1,12 +1,13 @@
 import 'package:http/http.dart' as http;
 
-import '../../../models/chat/chat.dart';
+import '../../../models/chat/chat_completion.dart';
 import '../../../models/tool/tool.dart';
+import '../../../sub_models/export.dart';
 
 abstract class CreateInterface {
-  Future<OpenAIChatCompletionModel> create({
+  Future<ChatCompletion> create({
     required String model,
-    required List<OpenAIChatCompletionChoiceMessageModel> messages,
+    required List<Message> messages,
     List<OpenAIToolModel>? tools,
     toolChoice,
     double? temperature,
@@ -23,9 +24,9 @@ abstract class CreateInterface {
     int? seed,
   });
 
-  Stream<OpenAIStreamChatCompletionModel> createStream({
+  Stream<ChatCompletionChunk> createStream({
     required String model,
-    required List<OpenAIChatCompletionChoiceMessageModel> messages,
+    required List<Message> messages,
     List<OpenAIToolModel>? tools,
     toolChoice,
     double? temperature,
@@ -42,9 +43,9 @@ abstract class CreateInterface {
     int? seed,
   });
 
-  Stream<OpenAIStreamChatCompletionModel> createRemoteFunctionStream({
+  Stream<ChatCompletionChunk> createRemoteFunctionStream({
     required String model,
-    required List<OpenAIChatCompletionChoiceMessageModel> messages,
+    required List<Message> messages,
     List<OpenAIToolModel>? tools,
     toolChoice,
     double? temperature,

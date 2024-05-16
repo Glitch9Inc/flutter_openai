@@ -1,12 +1,12 @@
-import 'package:dart_openai/src/core/base/model/base.dart';
-import 'package:dart_openai/src/core/models/model/model.dart';
-import 'package:dart_openai/src/core/utils/logger.dart';
-import '../../core/builder/base_api_url.dart';
-import '../../core/constants/strings.dart';
-import '../../core/networking/client.dart';
+import 'package:flutter_openai/src/core/base/model/base.dart';
+import 'package:flutter_openai/src/core/models/model/model_object.dart';
+import 'package:flutter_openai/src/core/utils/logger.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-import 'package:http/http.dart' as http;
+import '../../core/builder/base_api_url.dart';
+import '../../core/client/openai_client.dart';
+import '../../core/constants/strings.dart';
 
 /// {@template openai_model}
 /// The class that handles all the requests related to the models in the OpenAI API.
@@ -22,7 +22,7 @@ interface class OpenAIModel implements OpenAIModelBase {
     OpenAILogger.logEndpoint(endpoint);
   }
 
-  /// Lists all the models available in the OpenAI API and returns a list of [OpenAIModelModel] objects.
+  /// Lists all the models available in the OpenAI API and returns a list of [ModelObject] objects.
   /// Refer to [Models](https://platform.openai.com/docs/models/models) for more information about the available models.
   ///
   /// Example:
@@ -31,23 +31,23 @@ interface class OpenAIModel implements OpenAIModelBase {
   ///  print(models.first.id);
   /// ```
   @override
-  Future<List<OpenAIModelModel>> list({
+  Future<List<ModelObject>> list({
     http.Client? client,
   }) async {
-    return await OpenAINetworkingClient.get<List<OpenAIModelModel>>(
+    return await OpenAINetworkingClient.get<List<ModelObject>>(
       from: BaseApiUrlBuilder.build(
         endpoint,
       ),
       onSuccess: (Map<String, dynamic> response) {
         final List data = response['data'];
 
-        return data.map((model) => OpenAIModelModel.fromMap(model)).toList();
+        return data.map((model) => ModelObject.fromMap(model)).toList();
       },
       client: client,
     );
   }
 
-  /// Retrieves a model by it's id and returns a [OpenAIModelModel] object, if the model is not found, it will throw a [RequestFailedException].
+  /// Retrieves a model by it's id and returns a [ModelObject] object, if the model is not found, it will throw a [RequestFailedException].
   ///
   /// [id] is the id of the model to use for this request.
   ///
@@ -57,14 +57,14 @@ interface class OpenAIModel implements OpenAIModelBase {
   /// print(model.id)
   /// ```
   @override
-  Future<OpenAIModelModel> retrieve(
+  Future<ModelObject> retrieve(
     String id, {
     http.Client? client,
   }) async {
-    return await OpenAINetworkingClient.get<OpenAIModelModel>(
+    return await OpenAINetworkingClient.get<ModelObject>(
       from: BaseApiUrlBuilder.build(endpoint, id),
       onSuccess: (Map<String, dynamic> response) {
-        return OpenAIModelModel.fromMap(response);
+        return ModelObject.fromMap(response);
       },
       client: client,
     );

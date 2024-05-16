@@ -1,9 +1,8 @@
-import 'package:dart_openai/src/core/models/model/model.dart';
-
+import 'package:flutter_openai/src/core/models/model/model_object.dart';
 import 'package:http/http.dart' as http;
 
 abstract class RetrieveInterface {
-  Future<OpenAIModelModel> retrieve(
+  Future<ModelObject> retrieve(
     String modelId, {
     http.Client? client,
   });

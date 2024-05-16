@@ -1,17 +1,15 @@
 import 'dart:io';
 
-import 'package:dart_openai/src/core/builder/base_api_url.dart';
-import 'package:dart_openai/src/core/models/image/image/image.dart';
-import 'package:dart_openai/src/core/networking/client.dart';
+import 'package:flutter_openai/src/core/builder/base_api_url.dart';
+import 'package:flutter_openai/src/core/client/openai_client.dart';
+import 'package:flutter_openai/src/core/models/image/image.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import '../../core/base/images/base.dart';
 import '../../core/constants/strings.dart';
-
 import '../../core/enum.dart';
 import '../../core/utils/logger.dart';
-
-import 'package:http/http.dart' as http;
 
 /// {@template openai_images}
 /// The class that handles all the requests related to the images in the OpenAI API.

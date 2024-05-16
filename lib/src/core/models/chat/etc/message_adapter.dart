@@ -1,10 +1,9 @@
-import '../chat.dart';
+import 'package:flutter_openai/src/core/sub_models/message.dart';
 
 /// This is a mixin class that contains  helper function(s) to adapt old text-based content to the new implementation of the content that accepts a list of content types like images.
-mixin class OpenAIMessageDynamicContentFromFieldAdapter {
+mixin class MessageDynamicContentAdapter {
   /// This is a helper function to adapt old text-based content to the new implementation of the content that accepts a list of content types like images..
-  static List<OpenAIChatCompletionChoiceMessageContentItemModel>
-      dynamicContentFromField(
+  static List<ContentItem> dynamicContentFromField(
     fieldData,
   ) {
     if (fieldData is String) {
@@ -18,17 +17,15 @@ mixin class OpenAIMessageDynamicContentFromFieldAdapter {
     }
   }
 
-  static List<OpenAIChatCompletionChoiceMessageContentItemModel>
-      _singleItemListFrom(String directTextContent) {
+  static List<ContentItem> _singleItemListFrom(String directTextContent) {
     return [
-      OpenAIChatCompletionChoiceMessageContentItemModel.text(
+      ContentItem.text(
         directTextContent,
       ),
     ];
   }
 
-  static List<OpenAIChatCompletionChoiceMessageContentItemModel>
-      _listOfContentItemsFrom(List listOfContentsItems) {
+  static List<ContentItem> _listOfContentItemsFrom(List listOfContentsItems) {
     return (listOfContentsItems).map(
       (item) {
         if (item is! Map) {
@@ -36,7 +33,7 @@ mixin class OpenAIMessageDynamicContentFromFieldAdapter {
         } else {
           final asMap = item as Map<String, dynamic>;
 
-          return OpenAIChatCompletionChoiceMessageContentItemModel.fromMap(
+          return ContentItem.fromMap(
             asMap,
           );
         }

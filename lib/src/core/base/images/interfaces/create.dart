@@ -1,7 +1,7 @@
-import '../../../enum.dart';
-import '../../../models/image/image/image.dart';
-
 import 'package:http/http.dart' as http;
+
+import '../../../enum.dart';
+import '../../../models/image/image.dart';
 
 abstract class CreateInterface {
   Future<OpenAIImageModel> create({

@@ -1,4 +1,4 @@
-import 'package:dart_openai/src/core/base/entity/interfaces/enpoint.dart';
+import 'package:flutter_openai/src/core/base/entity/interfaces/enpoint.dart';
 
 import 'interfaces.dart';
 

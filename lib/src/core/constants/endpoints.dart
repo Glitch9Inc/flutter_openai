@@ -2,8 +2,8 @@
 /// The class holding all endpoints for the API that are used.
 /// {@endtemplate}
 class OpenAIApisEndpoints {
-  /// none.
-  final completion = "/completions";
+  /// legacy
+  //final completion = "/completions";
 
   /// none.
   final audio = "/audio";
