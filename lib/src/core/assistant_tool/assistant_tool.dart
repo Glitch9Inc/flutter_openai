@@ -88,7 +88,7 @@ class AssistantTool<TToolResponse> {
     if (toolOptions!.maxCharacters != -1)
       sb.write(" Limit your response to ${toolOptions!.maxCharacters} characters.");
 
-    FunctionModel function = _createFunction();
+    FunctionObject function = _createFunction();
 
     AssistantRequest req = AssistantRequest.builder()
         .setName(toolOptions!.assistantName)
@@ -100,8 +100,8 @@ class AssistantTool<TToolResponse> {
     return await OpenAiClient.defaultInstance.createAssistant(req);
   }
 
-  FunctionModel _createFunction() {
-    FunctionModel func = FunctionModel(toolOptions!.functionName);
+  FunctionObject _createFunction() {
+    FunctionObject func = FunctionObject(toolOptions!.functionName);
     func.description = toolOptions!.description;
     FuncParams parameters = ToolUtils.createFuncParams<TToolResponse>();
     func.parameters = parameters;

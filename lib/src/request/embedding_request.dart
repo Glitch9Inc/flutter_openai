@@ -64,6 +64,7 @@ interface class EmbeddingRequest implements EmbeddingInterface {
         if (input != null) "input": input,
         if (user != null) "user": user,
       },
+      client: client,
     );
   }
 }

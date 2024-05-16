@@ -1,4 +1,5 @@
 import 'package:flutter_openai/src/core/models/model/model_object.dart';
+import 'package:flutter_openai/src/core/query/query_cursor.dart';
 import 'package:flutter_openai/src/core/utils/logger.dart';
 import 'package:flutter_openai/src/request/interfaces/model_interface.dart';
 import 'package:http/http.dart' as http;
@@ -32,6 +33,9 @@ interface class ModelRequest implements ModelInterface {
   /// ```
   @override
   Future<List<ModelObject>> list({
+    int limit = DEFAULT_QUERY_LIMIT,
+    QueryOrder order = QueryOrder.descending,
+    QueryCursor? cursor,
     http.Client? client,
   }) async {
     return await OpenAIClient.get<List<ModelObject>>(

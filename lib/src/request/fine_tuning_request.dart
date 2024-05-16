@@ -1,6 +1,7 @@
 import 'package:flutter_openai/flutter_openai.dart';
 import 'package:flutter_openai/src/core/builder/base_api_url.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
+import 'package:flutter_openai/src/core/query/query_cursor.dart';
 import 'package:flutter_openai/src/request/model_request.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
@@ -118,6 +119,9 @@ interface class FineTuningRequest implements FineTuningInterface {
   /// ```
   @override
   Future<List<OpenAIFineTuneModel>> list({
+    int limit = DEFAULT_QUERY_LIMIT,
+    QueryOrder order = QueryOrder.descending,
+    QueryCursor? cursor,
     http.Client? client,
   }) async {
     return await OpenAIClient.get<List<OpenAIFineTuneModel>>(

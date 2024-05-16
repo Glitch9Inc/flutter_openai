@@ -4,7 +4,7 @@ import 'package:flutter_openai/flutter_openai.dart';
 import 'package:flutter_openai/src/request/interfaces/shared_interfaces.dart';
 
 abstract class ImageInterface implements EndpointInterface {
-  Future<OpenAIImageModel> create({
+  Future<ImageObject> create({
     required String prompt,
     int? n,
     ImageSize? size,
@@ -12,7 +12,7 @@ abstract class ImageInterface implements EndpointInterface {
     String? user,
   });
 
-  Future<OpenAIImageModel> edit({
+  Future<ImageObject> edit({
     required File image,
     File? mask,
     required String prompt,
@@ -22,7 +22,7 @@ abstract class ImageInterface implements EndpointInterface {
     String? user,
   });
 
-  Future<OpenAIImageModel> variation({
+  Future<ImageObject> variation({
     required File image,
     int? n,
     ImageSize? size,

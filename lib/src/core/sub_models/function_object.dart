@@ -1,4 +1,4 @@
-class FunctionModel {
+class FunctionObject {
   /// The name of the function.
   final String? name;
   final String? description;
@@ -19,22 +19,22 @@ class FunctionModel {
   int get hashCode => name.hashCode ^ arguments.hashCode;
 
   /// {@macro openai_chat_completion_response_function_model}
-  FunctionModel({
+  FunctionObject({
     this.name,
     this.arguments,
     this.description,
     this.parameters,
   });
 
-  /// This method used to convert a [Map<String, dynamic>] object to a [FunctionModel] object.
-  factory FunctionModel.fromMap(Map<String, dynamic> map) {
-    return FunctionModel(
+  /// This method used to convert a [Map<String, dynamic>] object to a [FunctionObject] object.
+  factory FunctionObject.fromMap(Map<String, dynamic> map) {
+    return FunctionObject(
       name: map['name'],
       arguments: map['arguments'],
     );
   }
 
-  /// This method used to convert the [FunctionModel] to a [Map<String, dynamic>] object.
+  /// This method used to convert the [FunctionObject] to a [Map<String, dynamic>] object.
   Map<String, dynamic> toMap() {
     return {
       "name": name,
@@ -46,7 +46,7 @@ class FunctionModel {
   String toString() => 'FunctionModel(name: $name, arguments: $arguments)';
 
   @override
-  bool operator ==(covariant FunctionModel other) {
+  bool operator ==(covariant FunctionObject other) {
     if (identical(this, other)) return true;
 
     return other.name == name && other.arguments == arguments;

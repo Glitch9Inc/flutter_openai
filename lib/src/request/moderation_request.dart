@@ -56,6 +56,7 @@ interface class ModerationRequest implements ModerationInterface {
         if (model != null) "model": model,
       },
       to: BaseApiUrlBuilder.build(endpoint),
+      client: client,
     );
   }
 }

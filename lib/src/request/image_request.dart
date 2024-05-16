@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter_openai/src/core/builder/base_api_url.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
-import 'package:flutter_openai/src/core/models/image/image.dart';
+import 'package:flutter_openai/src/core/models/image/image_object.dart';
+import 'package:flutter_openai/src/request/interfaces/image_interface.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-import '../core/base/images/base.dart';
 import '../core/constants/strings.dart';
 import '../core/enum.dart';
 import '../core/utils/logger.dart';
@@ -71,7 +71,7 @@ interface class ImageRequest implements ImageInterface {
   /// );
   ///```
   @override
-  Future<OpenAIImageModel> create({
+  Future<ImageObject> create({
     String? model,
     required String prompt,
     int? n,
@@ -86,7 +86,7 @@ interface class ImageRequest implements ImageInterface {
 
     return await OpenAIClient.post(
       to: BaseApiUrlBuilder.build(endpoint + generations),
-      onSuccess: (json) => OpenAIImageModel.fromMap(json),
+      onSuccess: (json) => ImageObject.fromMap(json),
       body: {
         if (model != null) "model": model,
         "prompt": prompt,
@@ -144,7 +144,7 @@ interface class ImageRequest implements ImageInterface {
   /// );
   ///```
   @override
-  Future<OpenAIImageModel> edit({
+  Future<ImageObject> edit({
     String? model,
     required File image,
     File? mask,
@@ -156,7 +156,7 @@ interface class ImageRequest implements ImageInterface {
   }) async {
     final String edit = "/edits";
 
-    return await OpenAIClient.imageEditForm<OpenAIImageModel>(
+    return await OpenAIClient.imageEditForm<ImageObject>(
       image: image,
       mask: mask,
       body: {
@@ -168,7 +168,7 @@ interface class ImageRequest implements ImageInterface {
         if (user != null) "user": user,
       },
       onSuccess: (Map<String, dynamic> response) {
-        return OpenAIImageModel.fromMap(response);
+        return ImageObject.fromMap(response);
       },
       to: BaseApiUrlBuilder.build(endpoint + edit),
     );
@@ -210,7 +210,7 @@ interface class ImageRequest implements ImageInterface {
   /// );
   /// ```
   @override
-  Future<OpenAIImageModel> variation({
+  Future<ImageObject> variation({
     String? model,
     required File image,
     int? n,
@@ -220,7 +220,7 @@ interface class ImageRequest implements ImageInterface {
   }) async {
     final String variations = "/variations";
 
-    return await OpenAIClient.imageVariationForm<OpenAIImageModel>(
+    return await OpenAIClient.imageVariationForm<ImageObject>(
       image: image,
       body: {
         if (model != null) "model": model,
@@ -230,7 +230,7 @@ interface class ImageRequest implements ImageInterface {
         if (user != null) "user": user,
       },
       onSuccess: (Map<String, dynamic> response) {
-        return OpenAIImageModel.fromMap(response);
+        return ImageObject.fromMap(response);
       },
       to: BaseApiUrlBuilder.build(endpoint + variations),
     );

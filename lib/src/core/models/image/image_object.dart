@@ -6,7 +6,7 @@ import 'image_data.dart';
 export 'image_data.dart';
 
 @immutable
-final class OpenAIImageModel {
+final class ImageObject {
   /// The time the image was [created].
   final DateTime created;
 
@@ -20,14 +20,14 @@ final class OpenAIImageModel {
   int get hashCode => created.hashCode ^ data.hashCode;
 
   /// This class is used to represent an OpenAI image.
-  const OpenAIImageModel({
+  const ImageObject({
     required this.created,
     required this.data,
   });
 
-  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIImageModel] object.
-  factory OpenAIImageModel.fromMap(Map<String, dynamic> json) {
-    return OpenAIImageModel(
+  /// This method is used to convert a [Map<String, dynamic>] object to a [ImageObject] object.
+  factory ImageObject.fromMap(Map<String, dynamic> json) {
+    return ImageObject(
       created: DateTime.fromMillisecondsSinceEpoch(json['created'] * 1000),
       data: (json['data'] as List).map((e) => ImageData.fromMap(e)).toList(),
     );
@@ -37,7 +37,7 @@ final class OpenAIImageModel {
   String toString() => 'OpenAIImageModel(created: $created, data: $data)';
 
   @override
-  bool operator ==(covariant OpenAIImageModel other) {
+  bool operator ==(covariant ImageObject other) {
     if (identical(this, other)) return true;
     final listEquals = const DeepCollectionEquality().equals;
 

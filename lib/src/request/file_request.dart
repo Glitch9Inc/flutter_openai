@@ -4,7 +4,6 @@ import 'package:flutter_openai/src/core/builder/base_api_url.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/models/file/file_object.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
-import 'package:flutter_openai/src/request/interfaces/shared_interfaces.dart';
 import 'package:flutter_openai/src/request/utils/request_utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
@@ -39,13 +38,15 @@ interface class FileRequest implements FileInterface {
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,
     QueryCursor? cursor,
+    http.Client? client,
   }) async {
     return await RequestUtils.list<FileObject>(
-      endpoint: endpoint,
-      create: (Map<String, dynamic> map) => FileObject.fromMap(map),
+      endpoint,
+      (Map<String, dynamic> map) => FileObject.fromMap(map),
       limit: limit,
       order: order,
       cursor: cursor,
+      client: client,
     );
   }
 
@@ -62,13 +63,11 @@ interface class FileRequest implements FileInterface {
     String fileId, {
     http.Client? client,
   }) async {
-    final String fileIdEndpoint = "/$fileId";
-
-    return await OpenAIClient.get(
-      from: BaseApiUrlBuilder.build(endpoint + fileIdEndpoint),
-      onSuccess: (Map<String, dynamic> response) {
-        return FileObject.fromMap(response);
-      },
+    return await RequestUtils.retrieve<FileObject>(
+      endpoint,
+      (e) => FileObject.fromMap(e),
+      fileId,
+      client: client,
     );
   }
 
@@ -90,6 +89,7 @@ interface class FileRequest implements FileInterface {
     return await OpenAIClient.get(
       from: BaseApiUrlBuilder.build(endpoint + fileIdEndpoint),
       returnRawResponse: true,
+      client: client,
     );
   }
 
@@ -139,15 +139,6 @@ interface class FileRequest implements FileInterface {
     String fileId, {
     http.Client? client,
   }) async {
-    final String fileIdEndpoint = "/$fileId";
-
-    return await OpenAIClient.delete(
-      from: BaseApiUrlBuilder.build(endpoint + fileIdEndpoint),
-      onSuccess: (Map<String, dynamic> response) {
-        final bool isDeleted = response["deleted"] as bool;
-
-        return isDeleted;
-      },
-    );
+    return await RequestUtils.delete(endpoint, fileId, client: client);
   }
 }

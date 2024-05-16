@@ -13,7 +13,7 @@ class ToolCall {
   final String? type;
 
   /// The function of the tool call.
-  final FunctionModel function;
+  final FunctionObject function;
 
   /// Weither the tool call have an id.
   bool get haveId => id != null;
@@ -36,7 +36,7 @@ class ToolCall {
     return ToolCall(
       id: map['id'],
       type: map['type'],
-      function: FunctionModel.fromMap(map['function']),
+      function: FunctionObject.fromMap(map['function']),
     );
   }
 
@@ -65,7 +65,7 @@ class ToolCall {
 /// {@template openai_chat_completion_response_stream_tool_call_model}
 /// This represents the stream tool call of the [OpenAIChatCompletionChoiceMessageModel] model of the OpenAI API, which is used and get returned while using the [OpenAIChat] methods.
 /// {@endtemplate}
-class OpenAIStreamResponseToolCall extends ToolCall {
+class StreamToolCall extends ToolCall {
   /// The index of the tool call.
 //! please fill an issue if it happen that the index is not an int in some cases.
   final int index;
@@ -74,24 +74,24 @@ class OpenAIStreamResponseToolCall extends ToolCall {
   int get hashCode => super.hashCode ^ index.hashCode;
 
   /// {@macro openai_chat_completion_response_stream_tool_call_model}
-  OpenAIStreamResponseToolCall({
+  StreamToolCall({
     required super.id,
     required super.type,
     required super.function,
     required this.index,
   });
 
-  /// This is used  to convert a [Map<String, dynamic>] object to a [OpenAIStreamResponseToolCall] object.
-  factory OpenAIStreamResponseToolCall.fromMap(Map<String, dynamic> map) {
-    return OpenAIStreamResponseToolCall(
+  /// This is used  to convert a [Map<String, dynamic>] object to a [StreamToolCall] object.
+  factory StreamToolCall.fromMap(Map<String, dynamic> map) {
+    return StreamToolCall(
       id: map['id'],
       type: map['type'],
-      function: FunctionModel.fromMap(map['function']),
+      function: FunctionObject.fromMap(map['function']),
       index: map['index'],
     );
   }
 
-  /// This method used to convert the [OpenAIStreamResponseToolCall] to a [Map<String, dynamic>] object.
+  /// This method used to convert the [StreamToolCall] to a [Map<String, dynamic>] object.
   Map<String, dynamic> toMap() {
     return {
       "id": id,
@@ -102,7 +102,7 @@ class OpenAIStreamResponseToolCall extends ToolCall {
   }
 
   @override
-  bool operator ==(covariant OpenAIStreamResponseToolCall other) {
+  bool operator ==(covariant StreamToolCall other) {
     if (identical(this, other)) return true;
 
     return other.index == index;
