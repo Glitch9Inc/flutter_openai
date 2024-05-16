@@ -1,0 +1,185 @@
+import 'package:flutter_openai/src/request/moderation_request.dart';
+import 'package:meta/meta.dart';
+
+import 'src/core/builder/headers.dart';
+import 'src/core/constants/config.dart';
+import 'src/core/exceptions/api_key_not_set.dart';
+import 'src/core/utils/logger.dart';
+import 'src/request/audio_request.dart';
+import 'src/request/chat_completion_request.dart';
+import 'src/request/embedding_request.dart';
+import 'src/request/file_request.dart';
+import 'src/request/fine_tuning_request.dart';
+import 'src/request/image_request.dart';
+import 'src/request/model_request.dart';
+
+/// The main class of the package. It is a singleton class, so you can only have one instance of it.
+/// You can also access the instance by calling the [OpenAI.instance] getter.
+/// ```dart
+/// final openai = OpenAI.instance;
+/// ```
+@immutable
+final class OpenAI {
+  /// The singleton instance of [OpenAI].
+  static final OpenAI _instance = OpenAI._();
+
+  /// The API key used to authenticate the requests.
+  static String? _internalApiKey;
+
+  /// The singleton instance of [OpenAI], make sure to set your OpenAI API key via the [OpenAI.apiKey] setter before accessing the [OpenAI.instance], otherwise it will throw an [Exception].
+  /// A [MissingApiKeyException] will be thrown, if the API key is not set.
+  static OpenAI get instance {
+    if (_internalApiKey == null) {
+      throw MissingApiKeyException("""
+      You must set the api key before accessing the instance of this class.
+      Example:
+      OpenAI.apiKey = "Your API Key";
+      """);
+    }
+
+    return _instance;
+  }
+
+  /// {@macro openai_config_requests_timeOut}
+  static Duration get requestsTimeOut => OpenAIConfig.requestsTimeOut;
+
+  // /// {@macro openai_config_is_web}
+  // static bool get isWeb => OpenAIConfig.isWeb;
+
+  /// The [ModelRequest] instance, used to access the model endpoints.
+  /// Please, refer to the Models page from the official OpenAI documentation website in order to know what models are available and what's the use case of every model.
+  ModelRequest get model => ModelRequest();
+
+  /// The [ImageRequest] instance, used to access the images endpoints.
+  ImageRequest get image => ImageRequest();
+
+  /// The [EmbeddingRequest] instance, used to access the embeddings endpoints.
+  EmbeddingRequest get embedding => EmbeddingRequest();
+
+  /// The [FileRequest] instance, used to access the files endpoints.
+  FileRequest get file => FileRequest();
+
+  /// The [FineTuningRequest] instance, used to access the fine-tunes endpoints.
+  FineTuningRequest get fineTuning => FineTuningRequest();
+
+  /// The [ModerationRequest] instance, used to access the moderation endpoints.
+  ModerationRequest get moderation => ModerationRequest();
+
+  /// The [ChatCompletionRequest] instance, used to access the chat endpoints.
+  ChatCompletionRequest get chatCompletion => ChatCompletionRequest();
+
+  /// The [AudioRequest] instance, used to access the audio endpoints.
+  AudioRequest get audio => AudioRequest();
+
+  /// The organization id, if set, it will be used in all the requests to the OpenAI API.
+  static String? get organization => HeadersBuilder.organization;
+
+  /// The base API url, by default it is set to the OpenAI API url.
+  /// You can change it by calling the [OpenAI.baseUrl] setter.
+  static String get baseUrl => OpenAIConfig.baseUrl;
+
+  /// {@macro openai_config_requests_timeOut}
+  static set requestsTimeOut(Duration requestsTimeOut) {
+    OpenAIConfig.requestsTimeOut = requestsTimeOut;
+    OpenAILogger.requestsTimeoutChanged(requestsTimeOut);
+  }
+
+  // /// The HTTP client that will be used to make the requests to the OpenAI API.
+  // /// you can set yout own client, or just set to [null] to use the default client.
+  // ///
+  // /// Example:
+  // /// ```dart
+  // /// final theClientUsedByThePackageAtAnyMoment = OpenAI.httpClient;
+  // /// ```
+  // static http.Client get httpClient => OpenAINetworkingClient.httpClient;
+
+  /// This is used to initialize the [OpenAI] instance, by providing the API key.
+  /// All the requests will be authenticated using this API key.
+  /// ```dart
+  /// OpenAI.apiKey = "YOUR_API_KEY";
+  /// ```
+  static set apiKey(String apiKey) {
+    HeadersBuilder.apiKey = apiKey;
+    _internalApiKey = apiKey;
+  }
+
+  /// This is used to set the base url of the OpenAI API, by default it is set to [OpenAIConfig.baseUrl].
+  static set baseUrl(String baseUrl) {
+    OpenAIConfig.baseUrl = baseUrl;
+  }
+
+  /// If you have multiple organizations, you can set it's id with this.
+  /// once this is set, it will be used in all the requests to the OpenAI API.
+  ///
+  /// Example:
+  ///
+  /// ```dart
+  /// OpenAI.organization = "YOUR_ORGANIZATION_ID";
+  /// ```
+  static set organization(String? organizationId) {
+    HeadersBuilder.organization = organizationId;
+  }
+
+  /// This controls whether to log steps inside the process of making a request, this helps debugging and pointing where something went wrong.
+  /// This uses  [dart:developer] internally, so it will show anyway only while debugging code.
+  ///
+  /// By default it is set to [true].
+  ///
+  /// Example:
+  /// ```dart
+  /// OpenAI.instance.showLogs = false;
+  /// ```
+  static set showLogs(bool newValue) {
+    OpenAILogger.isActive = newValue;
+  }
+
+  /// This controls whether to log responses bodies or not.
+  /// This uses  [dart:developer] internally, so it will show anyway only while debugging code.
+  ///
+  /// By default it is set to [false].
+  ///
+  /// Example:
+  /// ```dart
+  /// OpenAI.showResponsesLogs = true;
+  /// ```
+  static set showResponsesLogs(bool showResponsesLogs) {
+    OpenAILogger.showResponsesLogs = showResponsesLogs;
+  }
+
+  // /// Wether the package is running on the web or not, example of this is the use of Flutter web.
+  // ///
+  // /// By default it is set to [false].
+  // ///
+  // /// ```dart
+  // /// OpenAI.isWeb = kIsWeb;
+  // /// ```
+  // ///
+  // static set isWeb(bool newValue) {
+  //   OpenAIConfig.isWeb = newValue;
+  // }
+
+  // /// Sets the given [client] as the new client that will be used in the requests made by the package.
+  // ///
+  // /// Example:
+  // /// ```dart
+  // /// OpenAI.httpClient = http.Client(); /// assuming that you imported the http package
+  // /// ```
+  // static set httpClient(http.Client client) {
+  //   OpenAINetworkingClient.httpClient = client;
+  // }
+
+  /// The constructor of [OpenAI]. It is private, so you can only access the instance by calling the [OpenAI.instance] getter.
+  OpenAI._();
+
+  /// Adds the given [headers] to all future requests made using the package.
+  ///
+  /// Example:
+  /// ```dart
+  /// OpenAI.includeHeaders({
+  ///  "X-My-Header": "My Header Value",
+  /// });
+  /// ```
+  static void includeHeaders(Map<String, dynamic> headers) {
+    HeadersBuilder.includeHeaders(headers);
+  }
+}

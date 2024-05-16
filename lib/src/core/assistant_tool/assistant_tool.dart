@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_openai/flutter_openai.dart';
 import 'package:flutter_openai/src/core/assistant_tool/assistant_tool_options.dart';
-import 'package:flutter_openai/src/core/assistant_tool/openai_object_base.dart';
 import 'package:flutter_openai/src/core/assistant_tool/run_options.dart';
 import 'package:flutter_openai/src/core/client/gpt_model.dart';
+import 'package:flutter_openai/src/core/models/openai_object_base.dart';
 
 import '../sub_models/export.dart';
 
@@ -15,7 +15,7 @@ class AssistantTool<TToolResponse> {
   int minTokens = -1;
   AssistantToolOptions? toolOptions;
   RunOptions? runOptions;
-  AssistantModel? assistant;
+  AssistantObject? assistant;
   OpenAIObjectBase? thread;
   DateTime? _lastRequestTime;
   String? _toolName;
@@ -72,8 +72,8 @@ class AssistantTool<TToolResponse> {
     return await client!.createThread();
   }
 
-  Future<AssistantModel?> _getAssistantAsync() async {
-    AssistantModel? assistant;
+  Future<AssistantObject?> _getAssistantAsync() async {
+    AssistantObject? assistant;
     if (_assistantId != null) {
       assistant = await client!.retrieveAssistant(_assistantId!);
       if (assistant != null) return assistant;
@@ -82,7 +82,7 @@ class AssistantTool<TToolResponse> {
     return await _createAssistantAsync();
   }
 
-  Future<AssistantModel?> _createAssistantAsync() async {
+  Future<AssistantObject?> _createAssistantAsync() async {
     StringBuffer sb = StringBuffer();
     sb.write(toolOptions!.instruction);
     if (toolOptions!.maxCharacters != -1)

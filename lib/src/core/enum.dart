@@ -1,21 +1,15 @@
-enum OpenAIImageSize {
-  size256,
-  size512,
-  size1024,
-  size1792Horizontal,
-  size1792Vertical
-}
+enum ImageSize { size256, size512, size1024, size1792Horizontal, size1792Vertical }
 
-enum OpenAIImageStyle { vivid, natural }
+enum ImageStyle { vivid, natural }
 
-enum OpenAIImageQuality { hd }
+enum ImageQuality { hd }
 
-enum OpenAIImageResponseFormat { url, b64Json }
+enum ImageResponseFormat { url, b64Json }
 
-enum OpenAIAudioTimestampGranularity { word, segment }
+enum AudioTimestampGranularity { word, segment }
 
-enum OpenAIAudioResponseFormat { json, text, srt, verbose_json, vtt }
+enum AudioResponseFormat { json, text, srt, verbose_json, vtt }
 
-enum OpenAIAudioSpeechResponseFormat { mp3, opus, aac, flac }
+enum SpeechResponseFormat { mp3, opus, aac, flac }
 
-enum OpenAIChatMessageRole { system, user, assistant, function, tool }
+enum ChatRole { system, user, assistant, function, tool }

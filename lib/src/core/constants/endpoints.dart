@@ -4,33 +4,18 @@
 class OpenAIApisEndpoints {
   /// legacy
   //final completion = "/completions";
+  //final edits = "/edits";
 
-  /// none.
   final audio = "/audio";
-
-  /// none.
   final chat = "/chat/completions";
-
-  /// none.
-  final edits = "/edits";
-
-  /// none.
   final embeddings = "/embeddings";
-
-  /// none.
   final files = "/files";
-
-  /// none.
-  final fineTunes = "/fine-tunes";
-
-  /// none.
+  final fineTuning = "/fine_tuning";
   final images = "/images";
-
-  /// none.
   final models = "/models";
-
-  /// none.
   final moderation = "/moderations";
+  final assistant = "/assistants";
+  final thread = "/threads";
 
   /// {@macro openai_endpoints}
   static const OpenAIApisEndpoints _instance = OpenAIApisEndpoints._();

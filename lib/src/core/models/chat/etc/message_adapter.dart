@@ -3,7 +3,7 @@ import 'package:flutter_openai/src/core/sub_models/message.dart';
 /// This is a mixin class that contains  helper function(s) to adapt old text-based content to the new implementation of the content that accepts a list of content types like images.
 mixin class MessageDynamicContentAdapter {
   /// This is a helper function to adapt old text-based content to the new implementation of the content that accepts a list of content types like images..
-  static List<ContentItem> dynamicContentFromField(
+  static List<MessageContent> dynamicContentFromField(
     fieldData,
   ) {
     if (fieldData is String) {
@@ -17,15 +17,15 @@ mixin class MessageDynamicContentAdapter {
     }
   }
 
-  static List<ContentItem> _singleItemListFrom(String directTextContent) {
+  static List<MessageContent> _singleItemListFrom(String directTextContent) {
     return [
-      ContentItem.text(
+      MessageContent.text(
         directTextContent,
       ),
     ];
   }
 
-  static List<ContentItem> _listOfContentItemsFrom(List listOfContentsItems) {
+  static List<MessageContent> _listOfContentItemsFrom(List listOfContentsItems) {
     return (listOfContentsItems).map(
       (item) {
         if (item is! Map) {
@@ -33,7 +33,7 @@ mixin class MessageDynamicContentAdapter {
         } else {
           final asMap = item as Map<String, dynamic>;
 
-          return ContentItem.fromMap(
+          return MessageContent.fromMap(
             asMap,
           );
         }

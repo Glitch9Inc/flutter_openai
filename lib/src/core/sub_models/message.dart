@@ -1,10 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import '../enum.dart';
 import '../models/chat/etc/message_adapter.dart';
-import '../models/chat/sub_models/content_item.dart';
+import '../models/chat/sub_models/message_content.dart';
 import 'tool_call.dart';
 
-export '../models/chat/sub_models/content_item.dart';
+export '../models/chat/sub_models/message_content.dart';
 export 'tool_call.dart';
 
 /// {@template openai_chat_completion_choice_message_model}
@@ -12,10 +12,10 @@ export 'tool_call.dart';
 /// {@endtemplate}
 final class Message {
   /// The [role] of the message.
-  final OpenAIChatMessageRole role;
+  final ChatRole role;
 
   /// The [content] of the message.
-  final List<ContentItem>? content;
+  final List<MessageContent>? content;
 
   /// The function that the model is requesting to call.
   final List<ToolCall>? toolCalls;
@@ -48,7 +48,7 @@ final class Message {
   ) {
     return Message(
       name: json['name'],
-      role: OpenAIChatMessageRole.values.firstWhere((role) => role.name == json['role']),
+      role: ChatRole.values.firstWhere((role) => role.name == json['role']),
       content: json['content'] != null
           ? MessageDynamicContentAdapter.dynamicContentFromField(
               json['content'],
@@ -65,7 +65,7 @@ final class Message {
     return {
       "role": role.name,
       "content": content?.map((contentItem) => contentItem.toMap()).toList(),
-      if (toolCalls != null && role == OpenAIChatMessageRole.assistant)
+      if (toolCalls != null && role == ChatRole.assistant)
         "tool_calls": toolCalls!.map((toolCall) => toolCall.toMap()).toList(),
       if (name != null) "name": name,
     };

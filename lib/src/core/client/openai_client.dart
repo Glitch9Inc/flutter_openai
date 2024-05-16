@@ -82,10 +82,11 @@ const openAIChatStreamLineSplitter = const LineSplitter();
 
 @protected
 @immutable
-abstract class OpenAINetworkingClient {
+abstract class OpenAIClient {
   static Future<T> get<T>({
     required String from,
     bool returnRawResponse = false,
+    Map<String, dynamic>? body,
     T Function(Map<String, dynamic>)? onSuccess,
     http.Client? client,
   }) async {
@@ -93,6 +94,8 @@ abstract class OpenAINetworkingClient {
 
     final uri = Uri.parse(from);
     final headers = HeadersBuilder.build();
+
+    // TODO: Add body to the request
 
     final response = client == null
         ? await http.get(uri, headers: headers).timeout(OpenAIConfig.requestsTimeOut)
