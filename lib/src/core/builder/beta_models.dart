@@ -7,6 +7,8 @@ abstract class BetaModels {
   static const List<Type> betaModels = [
     Assistant,
     Thread,
+    Run,
+    RunStep,
   ];
 
   static bool isBetaModel<T>() {
