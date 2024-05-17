@@ -13,7 +13,7 @@ class ToolCall {
   final String? type;
 
   /// The function of the tool call.
-  final FunctionObject function;
+  final FunctionTool function;
 
   /// Weither the tool call have an id.
   bool get haveId => id != null;
@@ -36,7 +36,7 @@ class ToolCall {
     return ToolCall(
       id: map['id'],
       type: map['type'],
-      function: FunctionObject.fromMap(map['function']),
+      function: FunctionTool.fromMap(map['function']),
     );
   }
 
@@ -86,7 +86,7 @@ class StreamToolCall extends ToolCall {
     return StreamToolCall(
       id: map['id'],
       type: map['type'],
-      function: FunctionObject.fromMap(map['function']),
+      function: FunctionTool.fromMap(map['function']),
       index: map['index'],
     );
   }

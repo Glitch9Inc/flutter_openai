@@ -13,7 +13,7 @@ abstract class ToolBase {
     if (map['type'] == 'file_search') return FileSearch.fromMap(map);
     if (map['type'] == 'code_interpreter') return CodeInterpreter.fromMap(map);
 
-    return FunctionObject.fromMap(map);
+    return FunctionTool.fromMap(map);
   }
 
   Map<String, dynamic> toMap();

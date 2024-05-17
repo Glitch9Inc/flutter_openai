@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/assistant_tool/assistant_options.dart';
-import 'package:flutter_openai/src/assistant_tool/run_options.dart';
 import 'package:flutter_openai/src/core/utils/openai_logger.dart';
+
+export 'package:flutter_openai/src/assistant_tool/assistant_options.dart';
+export 'package:flutter_openai/src/assistant_tool/run_options.dart';
 
 abstract class AssistantTool<TToolResponse> {
   static const int INITIAL_DELAY_MILLIS = 1000;
@@ -77,7 +78,20 @@ abstract class AssistantTool<TToolResponse> {
     }
   }
 
+  /// Callback for when the assistant tool is initialized
   Future<void> onInitialize();
+
+  /// Validate the tokens
+  bool validateTokens(int minTokens);
+
+  /// Remove line breaks from the text
+  String removeLineBreaks(String text) => text.replaceAll(RegExp(r'\n|\r'), '');
+
+  /// Parse the result of the run
+  TToolResponse createResponse(Map<String, dynamic>? runResultJson);
+
+  /// Callback for when the tokens are used
+  void onTokensUsed(Usage usage);
 
   Future<List<TToolResponse>?> request(
     String promptText, {
@@ -93,7 +107,7 @@ abstract class AssistantTool<TToolResponse> {
     print("[$_toolName|Request] Requesting with input: $promptText");
 
     // Validate tokens (Assuming method exists)
-    if (!_validateTokens(minTokenRequirement)) return null;
+    if (!validateTokens(minTokenRequirement)) return null;
 
     // Check if request is too soon
     if (DateTime.now().difference(_lastRequestTime) <
@@ -104,7 +118,7 @@ abstract class AssistantTool<TToolResponse> {
     }
 
     _lastRequestTime = DateTime.now();
-    promptText = _removeLineBreaks(promptText);
+    promptText = removeLineBreaks(promptText);
 
     if (thread == null) {
       print("Thread is not initialized.");
@@ -192,18 +206,6 @@ abstract class AssistantTool<TToolResponse> {
     );
   }
 
-  /// Validate the tokens
-  bool _validateTokens(int minTokens);
-
-  /// Remove line breaks from the text
-  String _removeLineBreaks(String text) => text.replaceAll(RegExp(r'\n|\r'), '');
-
-  /// Parse the result of the run
-  TToolResponse _createResponse(Map<String, dynamic>? runResultJson);
-
-  /// Callback for when the tokens are used
-  void _onTokensUsed(Usage usage);
-
   /// Wait for the run status to change
   Future<Run?> _waitForRunStatusChange(RunStatus statusToWaitFor) async {
     DateTime endTime = DateTime.now().add(Duration(seconds: operationTimeoutSec));
@@ -236,7 +238,7 @@ abstract class AssistantTool<TToolResponse> {
     List<String?> funcArgs =
         resultToolCalls.map((toolCall) => toolCall.function.arguments).toList();
 
-    return funcArgs.map((arg) => _createResponse(_parseResult(arg))).toList();
+    return funcArgs.map((arg) => createResponse(_parseResult(arg))).toList();
   }
 
   Map<String, dynamic>? _parseResult(String? runResultJson) {
@@ -262,7 +264,7 @@ abstract class AssistantTool<TToolResponse> {
       currentRun = await _waitForRunStatusChange(RunStatus.completed);
       if (currentRun == null) return;
       if (currentRun!.usage != null) {
-        _onTokensUsed(currentRun!.usage!);
+        onTokensUsed(currentRun!.usage!);
       }
 
       print("Run completed successfully.");

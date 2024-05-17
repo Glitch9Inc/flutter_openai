@@ -9,7 +9,7 @@ export 'function_property.dart';
 /// {@template openai_function}
 /// This class is used to represent an OpenAI function.
 /// {@endtemplate}
-class FunctionObject extends ToolBase {
+class FunctionTool extends ToolBase {
   /// The name of the function to be called. Must be a-z, A-Z, 0-9, or contain
   /// underscores and dashes, with a maximum length of 64.
   final String name;
@@ -35,7 +35,7 @@ class FunctionObject extends ToolBase {
       name.hashCode ^ description.hashCode ^ parametersSchema.hashCode ^ arguments.hashCode;
 
   /// {@macro openai_function}
-  FunctionObject({
+  FunctionTool({
     required this.name,
     this.parametersSchema,
     this.description,
@@ -44,12 +44,12 @@ class FunctionObject extends ToolBase {
 
   /// {@macro openai_function}
   /// This a factory constructor that allows you to create a new function with valid parameters schema.
-  factory FunctionObject.withParameters({
+  factory FunctionTool.withParameters({
     required String name,
     String? description,
     required Iterable<FunctionProperty> parameters,
   }) {
-    return FunctionObject(
+    return FunctionTool(
       name: name,
       description: description,
       parametersSchema: FunctionProperty.object(
@@ -59,9 +59,9 @@ class FunctionObject extends ToolBase {
     );
   }
 
-  /// This method is used to convert a [Map<String, dynamic>] object to a [FunctionObject] object.
-  factory FunctionObject.fromMap(Map<String, dynamic> map) {
-    return FunctionObject(
+  /// This method is used to convert a [Map<String, dynamic>] object to a [FunctionTool] object.
+  factory FunctionTool.fromMap(Map<String, dynamic> map) {
+    return FunctionTool(
       name: map['name'],
       description: map['description'],
       parametersSchema: map.containsKey('parameters')
@@ -71,7 +71,7 @@ class FunctionObject extends ToolBase {
     );
   }
 
-  /// This method is used to convert a [FunctionObject] object to a [Map<String, dynamic>] object.
+  /// This method is used to convert a [FunctionTool] object to a [Map<String, dynamic>] object.
   @override
   Map<String, dynamic> toMap() {
     return {
@@ -87,7 +87,7 @@ class FunctionObject extends ToolBase {
       'OpenAIFunction(name: $name, description: $description, parametersSchema: $parametersSchema, arguments: $arguments)';
 
   @override
-  bool operator ==(covariant FunctionObject other) {
+  bool operator ==(covariant FunctionTool other) {
     if (identical(this, other)) return true;
     final mapEquals = const DeepCollectionEquality().equals;
 

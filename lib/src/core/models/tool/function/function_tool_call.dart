@@ -11,7 +11,7 @@ class FunctionToolCall {
   final String type;
 
   /// The function of the tool.
-  final FunctionObject function;
+  final FunctionTool function;
 
   @override
   int get hashCode => type.hashCode ^ function.hashCode;
@@ -26,7 +26,7 @@ class FunctionToolCall {
   factory FunctionToolCall.fromMap(Map<String, dynamic> map) {
     return FunctionToolCall(
       type: map['type'],
-      function: FunctionObject.fromMap(map['function']),
+      function: FunctionTool.fromMap(map['function']),
     );
   }
 
