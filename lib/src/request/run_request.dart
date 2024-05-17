@@ -1,15 +1,10 @@
+import 'package:flutter_openai/flutter_openai.dart';
 import 'package:flutter_openai/src/core/builder/base_api_url.dart';
-import 'package:flutter_openai/src/core/client/gpt_model.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/constants/strings.dart';
-import 'package:flutter_openai/src/core/models/assistant/response_format.dart';
-import 'package:flutter_openai/src/core/models/message/message.dart';
-import 'package:flutter_openai/src/core/models/run/run.dart';
-import 'package:flutter_openai/src/core/models/thread/thread.dart';
 import 'package:flutter_openai/src/core/models/tool/tool_choice.dart';
-import 'package:flutter_openai/src/core/models/tool/tool_output.dart';
-import 'package:flutter_openai/src/core/models/tool/tool_resources.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
+import 'package:flutter_openai/src/core/utils/openai_converter.dart';
 import 'package:flutter_openai/src/request/interfaces/run_interface.dart';
 import 'package:flutter_openai/src/request/utils/request_utils.dart';
 import 'package:http/src/client.dart';
@@ -26,7 +21,7 @@ interface class RunRequest implements RunInterface {
     String? instruction,
     String? additionalInstruction,
     List<Message>? additionalMessages,
-    List<ToolResources>? tools,
+    List<ToolBase>? tools,
     Map<String, String>? metadata,
     bool? stream,
     double? temperature,
@@ -43,7 +38,7 @@ interface class RunRequest implements RunInterface {
       to: BaseApiUrlBuilder.build(formattedEndpoint),
       body: {
         "assistant_id": assistantId,
-        if (model != null) "model": getName(model),
+        if (model != null) "model": OpenAIConverter.fromGPTModel(model),
         if (instruction != null) "instruction": instruction,
         if (additionalInstruction != null) "additional_instruction": additionalInstruction,
         if (additionalMessages != null)
@@ -69,7 +64,7 @@ interface class RunRequest implements RunInterface {
     Thread? thread,
     GPTModel? model,
     String? instruction,
-    List<ToolResources>? tools,
+    List<ToolBase>? tools,
     ToolResources? toolResources,
     Map<String, String>? metadata,
     bool? stream,
@@ -88,7 +83,7 @@ interface class RunRequest implements RunInterface {
       body: {
         "assistant_id": assistantId,
         if (thread != null) "thread": thread.toMap(),
-        if (model != null) "model": getName(model),
+        if (model != null) "model": OpenAIConverter.fromGPTModel(model),
         if (instruction != null) "instruction": instruction,
         if (tools != null) "tools": tools.map((p0) => p0.toMap()).toList(),
         if (toolResources != null) "tool_resources": toolResources.toMap(),

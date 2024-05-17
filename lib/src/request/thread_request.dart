@@ -3,7 +3,7 @@ import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/constants/strings.dart';
 import 'package:flutter_openai/src/core/models/message/message.dart';
 import 'package:flutter_openai/src/core/models/thread/thread.dart';
-import 'package:flutter_openai/src/core/models/tool/tool_resources.dart';
+import 'package:flutter_openai/src/core/models/tool/tool_base.dart';
 import 'package:flutter_openai/src/request/interfaces/thread_interface.dart';
 import 'package:flutter_openai/src/request/utils/request_utils.dart';
 import 'package:http/src/client.dart';
@@ -15,7 +15,7 @@ interface class ThreadRequest implements ThreadInterface {
   @override
   Future<Thread> create({
     List<Message>? messages,
-    ToolResources? toolResources,
+    ToolBase? toolResources,
     Map<String, String>? metadata,
     Client? client,
   }) {
@@ -34,7 +34,7 @@ interface class ThreadRequest implements ThreadInterface {
   @override
   Future<Thread> modify(
     String threadId, {
-    ToolResources? toolResources,
+    ToolBase? toolResources,
     Map<String, String>? metadata,
     Client? client,
   }) {

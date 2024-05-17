@@ -1,5 +1,5 @@
 import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/core/utils/convert_utils.dart';
+import 'package:flutter_openai/src/core/utils/openai_converter.dart';
 
 class StepDetails {
   final MessageCreationDetails? messageCreation;
@@ -101,7 +101,7 @@ class ToolCallDetails {
   factory ToolCallDetails.fromMap(Map<String, dynamic> map) {
     return ToolCallDetails(
       type: map['type'],
-      toolCalls: ConvertUtils.fromList(
+      toolCalls: OpenAIConverter.fromList(
         map['tool_calls'],
         (toolCall) => ToolCall.fromMap(toolCall),
       )!,

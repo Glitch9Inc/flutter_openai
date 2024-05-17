@@ -9,7 +9,7 @@ import 'package:meta/meta.dart';
 
 import '../core/constants/strings.dart';
 import '../core/enum.dart';
-import '../core/utils/logger.dart';
+import '../core/utils/openai_logger.dart';
 
 /// {@template openai_images}
 /// The class that handles all the requests related to the images in the OpenAI API.

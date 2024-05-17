@@ -1,6 +1,5 @@
-import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/core/models/tool/code_interpreter/code_interpreter.dart';
-import 'package:flutter_openai/src/core/models/tool/file_search/file_search.dart';
+import 'package:flutter_openai/src/core/models/tool/code_interpreter/code_interpreter_resources.dart';
+import 'package:flutter_openai/src/core/models/tool/file_search/file_search_resources.dart';
 
 ///A set of resources that are used by the assistant's tools.
 ///The resources are specific to the type of tool.
@@ -9,11 +8,9 @@ import 'package:flutter_openai/src/core/models/tool/file_search/file_search.dart
 abstract class ToolResources {
   const ToolResources();
   factory ToolResources.fromMap(Map<String, dynamic> map) {
-    //if (map['type'] == 'function')
-    if (map['type'] == 'file_search') return FileSearch.fromMap(map);
-    if (map['type'] == 'code_interpreter') return CodeInterpreter.fromMap(map);
-
-    return FunctionObject.fromMap(map);
+    if (map['type'] == 'file_search') return FileSearchResources.fromMap(map);
+    if (map['type'] == 'code_interpreter') return CodeInterpreterResources.fromMap(map);
+    throw Exception('Invalid tool type');
   }
 
   Map<String, dynamic> toMap();

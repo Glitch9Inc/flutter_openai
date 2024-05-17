@@ -26,7 +26,7 @@ abstract class MessageInterface
 
   Future<Message> modify(
     String threadId, {
-    ToolResources? toolResources,
+    ToolBase? toolResources,
     Map<String, String>? metadata,
     http.Client? client,
   });

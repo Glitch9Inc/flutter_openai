@@ -1,12 +1,13 @@
 import 'package:flutter_openai/src/core/builder/base_api_url.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
+import 'package:flutter_openai/src/core/utils/openai_converter.dart';
 import 'package:flutter_openai/src/request/utils/request_utils.dart';
 import 'package:http/http.dart' as http;
 
 import '../../flutter_openai.dart';
 import '../core/constants/strings.dart';
-import '../core/utils/logger.dart';
+import '../core/utils/openai_logger.dart';
 import 'interfaces/assistant_interface.dart';
 
 interface class AssistantRequest implements AssistantInterface {
@@ -23,7 +24,7 @@ interface class AssistantRequest implements AssistantInterface {
     String? name,
     String? description,
     String? instruction,
-    List<ToolResources>? tools,
+    List<ToolBase>? tools,
     ToolResources? toolResources,
     Map<String, String>? metadata,
     double? temperature,
@@ -34,7 +35,7 @@ interface class AssistantRequest implements AssistantInterface {
     return OpenAIClient.post<Assistant>(
       to: BaseApiUrlBuilder.build(endpoint),
       body: {
-        "model": getName(model),
+        "model": OpenAIConverter.fromGPTModel(model),
         if (name != null) "name": name,
         if (description != null) "description": description,
         if (instruction != null) "instruction": instruction,
@@ -72,7 +73,7 @@ interface class AssistantRequest implements AssistantInterface {
     return OpenAIClient.post<Assistant>(
       to: BaseApiUrlBuilder.build(formattedEndpoint),
       body: {
-        if (model != null) "model": getName(model),
+        if (model != null) "model": OpenAIConverter.fromGPTModel(model),
         if (name != null) "name": name,
         if (description != null) "description": description,
         if (instruction != null) "instruction": instruction,

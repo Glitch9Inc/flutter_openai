@@ -10,7 +10,7 @@ abstract class AssistantInterface
     String? name,
     String? description,
     String? instruction,
-    List<ToolResources>? tools,
+    List<ToolBase>? tools,
     ToolResources? toolResources,
     Map<String, String>? metadata,
     double? temperature,

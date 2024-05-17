@@ -1,4 +1,4 @@
-import 'package:flutter_openai/src/core/utils/logger.dart';
+import 'package:flutter_openai/src/core/utils/openai_logger.dart';
 import 'package:meta/meta.dart';
 
 import '../constants/strings.dart';

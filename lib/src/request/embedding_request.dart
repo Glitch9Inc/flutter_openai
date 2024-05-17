@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 
 import '../core/client/openai_client.dart';
 import '../core/constants/strings.dart';
-import '../core/utils/logger.dart';
+import '../core/utils/openai_logger.dart';
 import 'interfaces/embedding_interface.dart';
 
 /// {@template openai_embedding}

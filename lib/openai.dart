@@ -9,7 +9,7 @@ import 'package:meta/meta.dart';
 import 'src/core/builder/headers.dart';
 import 'src/core/constants/config.dart';
 import 'src/core/exceptions/api_key_not_set.dart';
-import 'src/core/utils/logger.dart';
+import 'src/core/utils/openai_logger.dart';
 import 'src/request/audio_request.dart';
 import 'src/request/chat_completion_request.dart';
 import 'src/request/embedding_request.dart';

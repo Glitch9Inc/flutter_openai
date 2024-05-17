@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/core/utils/convert_utils.dart';
+import 'package:flutter_openai/src/core/utils/openai_converter.dart';
 
 import 'run_error.dart';
 import 'step_details.dart';
@@ -97,18 +97,18 @@ class RunStep {
     return RunStep(
       id: map['id'],
       object: map['object'],
-      createdAt: ConvertUtils.fromUnix(map['created_at']),
+      createdAt: OpenAIConverter.fromUnix(map['created_at']),
       assistantId: map['assistant_id'],
       threadId: map['thread_id'],
       runId: map['run_id'],
       type: map['type'],
-      status: ConvertUtils.fromString(map['status']),
+      status: OpenAIConverter.fromString(map['status']),
       stepDetails: StepDetails.fromMap(map['step_details']),
       lastError: RunError.fromMap(map['last_error']),
-      expiredAt: ConvertUtils.fromUnix(map['expired_at']),
-      cancelledAt: ConvertUtils.fromUnix(map['cancelled_at']),
-      failedAt: ConvertUtils.fromUnix(map['failed_at']),
-      completedAt: ConvertUtils.fromUnix(map['completed_at']),
+      expiredAt: OpenAIConverter.fromUnix(map['expired_at']),
+      cancelledAt: OpenAIConverter.fromUnix(map['cancelled_at']),
+      failedAt: OpenAIConverter.fromUnix(map['failed_at']),
+      completedAt: OpenAIConverter.fromUnix(map['completed_at']),
       metadata: Map<String, dynamic>.from(map['metadata']),
       usage: Usage.fromMap(Map<String, dynamic>.from(map['usage'])),
     );

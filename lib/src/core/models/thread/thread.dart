@@ -1,11 +1,11 @@
 import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/core/utils/convert_utils.dart';
+import 'package:flutter_openai/src/core/utils/openai_converter.dart';
 
 class Thread {
   final String id;
   final String object;
   final DateTime createdAt;
-  final ToolResources? toolResources;
+  final ToolBase? toolResources;
   final Map<String, String> metadata;
 
   const Thread({
@@ -20,7 +20,7 @@ class Thread {
     return Thread(
       id: map['id'],
       object: map['object'],
-      createdAt: ConvertUtils.fromUnix(map['created_at']),
+      createdAt: OpenAIConverter.fromUnix(map['created_at']),
       toolResources: map['tool_resources'],
       metadata: map['metadata'],
     );

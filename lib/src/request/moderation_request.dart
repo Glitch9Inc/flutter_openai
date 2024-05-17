@@ -5,7 +5,7 @@ import 'package:flutter_openai/src/core/models/moderation/moderation_object.dart
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-import '../core/utils/logger.dart';
+import '../core/utils/openai_logger.dart';
 import 'interfaces/moderation_interface.dart';
 
 /// {@template openai_moderation}

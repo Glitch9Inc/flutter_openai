@@ -5,14 +5,14 @@ abstract class ThreadInterface implements EndpointInterface, RetrieveInterface, 
   // create and modify
   Future<Thread> create({
     List<Message>? messages,
-    ToolResources? toolResources,
+    ToolBase? toolResources,
     Map<String, String>? metadata,
     http.Client? client,
   });
 
   Future<Thread> modify(
     String threadId, {
-    ToolResources? toolResources,
+    ToolBase? toolResources,
     Map<String, String>? metadata,
     http.Client? client,
   });

@@ -1,5 +1,5 @@
 import 'package:flutter_openai/src/core/constants/strings.dart';
-import 'package:flutter_openai/src/core/utils/logger.dart';
+import 'package:flutter_openai/src/core/utils/openai_logger.dart';
 import 'package:meta/meta.dart';
 
 /// {@template openai_config}

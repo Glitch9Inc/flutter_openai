@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../core/constants/strings.dart';
 import '../core/models/chat/chat_completion.dart';
 import '../core/models/tool/function_tool_call.dart';
-import '../core/utils/logger.dart';
+import '../core/utils/openai_logger.dart';
 import 'interfaces/chat_completion_interface.dart';
 
 /// {@template openai_chat}

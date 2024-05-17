@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import '../core/constants/strings.dart';
-import '../core/utils/logger.dart';
+import '../core/utils/openai_logger.dart';
 import 'interfaces/fine_tuning_interface.dart';
 
 /// {@template openai_finetunes}

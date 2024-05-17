@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter_openai/src/core/models/message/incomplete_details.dart';
-import 'package:flutter_openai/src/core/utils/convert_utils.dart';
+import 'package:flutter_openai/src/core/utils/openai_converter.dart';
 
 import '../../enum.dart';
 import '../chat/sub_models/message_content.dart';
@@ -93,11 +93,12 @@ final class Message {
     return Message(
       id: json['id'],
       object: json['object'],
-      createdAt: ConvertUtils.fromUnix(json['created_at']),
+      createdAt: OpenAIConverter.fromUnix(json['created_at']),
       name: json['name'],
       role: ChatRole.values.firstWhere((role) => role.name == json['role']),
-      content: ConvertUtils.fromDynamic(json['content']),
-      toolCalls: ConvertUtils.fromList<ToolCall>(json['tool_calls'], (p0) => ToolCall.fromMap(p0)),
+      content: OpenAIConverter.fromDynamic(json['content']),
+      toolCalls:
+          OpenAIConverter.fromList<ToolCall>(json['tool_calls'], (p0) => ToolCall.fromMap(p0)),
     );
   }
 

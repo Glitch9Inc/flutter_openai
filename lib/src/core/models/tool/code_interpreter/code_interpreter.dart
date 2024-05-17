@@ -1,13 +1,13 @@
 import 'package:flutter_openai/flutter_openai.dart';
 
-class CodeInterpreter extends ToolResources {
-  final List<String>? fileIds;
-  CodeInterpreter({this.fileIds});
+class CodeInterpreter extends ToolBase {
+  final String type;
+  CodeInterpreter({required this.type});
   factory CodeInterpreter.fromMap(Map<String, dynamic> map) {
-    return CodeInterpreter(fileIds: map['file_ids']);
+    return CodeInterpreter(type: map['type']);
   }
   @override
   Map<String, dynamic> toMap() {
-    return {'file_ids': fileIds};
+    return {'type': type};
   }
 }

@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import '../core/constants/strings.dart';
-import '../core/utils/logger.dart';
+import '../core/utils/openai_logger.dart';
 import 'interfaces/file_interface.dart';
 
 /// {@template openai_files}

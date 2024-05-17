@@ -14,6 +14,7 @@ export 'run/run_step.dart';
 export 'thread/thread.dart';
 export 'tool/function/function_object.dart';
 export 'tool/function_tool_call.dart';
+export 'tool/tool_base.dart';
 export 'tool/tool_call.dart';
 export 'tool/tool_output.dart';
 export 'tool/tool_resources.dart';

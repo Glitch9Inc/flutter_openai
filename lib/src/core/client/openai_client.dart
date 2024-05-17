@@ -6,7 +6,7 @@ import 'package:flutter_openai/flutter_openai.dart';
 import "package:flutter_openai/src/core/builder/headers.dart";
 import "package:flutter_openai/src/core/constants/config.dart";
 import "package:flutter_openai/src/core/utils/extensions.dart";
-import "package:flutter_openai/src/core/utils/logger.dart";
+import "package:flutter_openai/src/core/utils/openai_logger.dart";
 import "package:http/http.dart" as http;
 import "package:meta/meta.dart";
 

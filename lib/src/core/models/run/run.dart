@@ -3,7 +3,7 @@ import 'package:flutter_openai/flutter_openai.dart';
 import 'package:flutter_openai/src/core/models/message/incomplete_details.dart';
 import 'package:flutter_openai/src/core/models/run/truncation_strategy.dart';
 import 'package:flutter_openai/src/core/models/tool/tool_choice.dart';
-import 'package:flutter_openai/src/core/utils/convert_utils.dart';
+import 'package:flutter_openai/src/core/utils/openai_converter.dart';
 
 import 'required_action.dart';
 import 'run_error.dart';
@@ -60,7 +60,7 @@ class Run {
   final String instructions;
 
   /// The list of tools that the assistant used for this run.
-  final List<ToolResources> tools;
+  final List<ToolBase> tools;
 
   /// Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format.
   final Map<String, dynamic> metadata;
@@ -128,21 +128,21 @@ class Run {
     return Run(
       id: map['id'],
       object: map['object'],
-      createdAt: ConvertUtils.fromUnix(map['created_at']),
+      createdAt: OpenAIConverter.fromUnix(map['created_at']),
       threadId: map['thread_id'],
       assistantId: map['assistant_id'],
-      status: ConvertUtils.fromString(map['status']),
+      status: OpenAIConverter.fromString(map['status']),
       requiredAction: RequiredAction.fromMap(map['required_action']),
       lastError: RunError.fromMap(map['last_error']),
-      expiresAt: ConvertUtils.fromUnix(map['expires_at']),
-      startedAt: ConvertUtils.fromUnix(map['started_at']),
-      cancelledAt: ConvertUtils.fromUnix(map['cancelled_at']),
-      failedAt: ConvertUtils.fromUnix(map['failed_at']),
-      completedAt: ConvertUtils.fromUnix(map['completed_at']),
+      expiresAt: OpenAIConverter.fromUnix(map['expires_at']),
+      startedAt: OpenAIConverter.fromUnix(map['started_at']),
+      cancelledAt: OpenAIConverter.fromUnix(map['cancelled_at']),
+      failedAt: OpenAIConverter.fromUnix(map['failed_at']),
+      completedAt: OpenAIConverter.fromUnix(map['completed_at']),
       incompleteDetails: IncompleteDetails.fromMap(map['incomplete_details']),
       model: map['model'],
       instructions: map['instructions'],
-      tools: List<ToolResources>.from(map['tools']),
+      tools: List<ToolBase>.from(map['tools']),
       metadata: Map<String, dynamic>.from(map['metadata']),
       usage: Usage.fromMap(map['usage']),
       temperature: map['temperature'],

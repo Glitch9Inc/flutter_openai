@@ -1,10 +1,30 @@
 import 'package:flutter_openai/flutter_openai.dart';
 import 'package:meta/meta.dart';
 
+const apiEnumMap = {
+  GPTModel.GPT3_5Turbo1106: "gpt-3.5-turbo-1106",
+  GPTModel.GPT3_5Turbo0125: "gpt-3.5-turbo-0125",
+  GPTModel.GPT4_0613: "gpt-4-0613",
+  GPTModel.GPT4: "gpt-4",
+  GPTModel.GPT4_1106VisionPreview: "gpt-4-1106-vision-preview",
+  GPTModel.GPT4VisionPreview: "gpt-4-vision-preview",
+  GPTModel.GPT4_1106Preview: "gpt-4-1106-preview",
+  GPTModel.GPT4TurboPreview: "gpt-4-turbo-preview",
+  GPTModel.GPT4_0125Preview: "gpt-4-0125-preview",
+  GPTModel.GPT4Turbo: "gpt-4-turbo",
+  GPTModel.GPT4Turbo20240409: "gpt-4-turbo-2024-04-09",
+  GPTModel.GPT4o: "gpt-4o",
+  GPTModel.GPT4o20240513: "gpt-4o-2024-05-13",
+};
+
 @protected
 @immutable
 @internal
-abstract class ConvertUtils {
+abstract class OpenAIConverter {
+  static String fromGPTModel(GPTModel model) {
+    return apiEnumMap[model] ?? "unknown";
+  }
+
   static DateTime fromUnix(int unixTimestamp) {
     return DateTime.fromMillisecondsSinceEpoch(unixTimestamp * 1000);
   }

@@ -1,6 +1,6 @@
 import 'package:flutter_openai/src/core/models/model/model_object.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
-import 'package:flutter_openai/src/core/utils/logger.dart';
+import 'package:flutter_openai/src/core/utils/openai_logger.dart';
 import 'package:flutter_openai/src/request/interfaces/model_interface.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';

@@ -3,7 +3,7 @@ import 'package:flutter_openai/src/core/constants/strings.dart';
 import 'package:flutter_openai/src/core/enum.dart';
 import 'package:flutter_openai/src/core/models/message/attachment.dart';
 import 'package:flutter_openai/src/core/models/message/message.dart';
-import 'package:flutter_openai/src/core/models/tool/tool_resources.dart';
+import 'package:flutter_openai/src/core/models/tool/tool_base.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
 import 'package:flutter_openai/src/request/interfaces/message_interface.dart';
 import 'package:flutter_openai/src/request/utils/request_utils.dart';
@@ -84,7 +84,7 @@ interface class MessageRequest extends MessageInterface {
   @override
   Future<Message> modify(
     String threadId, {
-    ToolResources? toolResources,
+    ToolBase? toolResources,
     Map<String, String>? metadata,
     Client? client,
   }) {
