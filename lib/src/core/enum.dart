@@ -13,3 +13,5 @@ enum AudioResponseFormat { json, text, srt, verbose_json, vtt }
 enum SpeechResponseFormat { mp3, opus, aac, flac }
 
 enum ChatRole { system, user, assistant, function, tool }
+
+enum MessageStatus { in_progress, incomplete, completed }

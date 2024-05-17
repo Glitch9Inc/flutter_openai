@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_openai/flutter_openai.dart';
 import 'package:meta/meta.dart';
 
-export '../../sub_models/usage.dart';
+export '../usage/usage.dart';
 export 'stream/chat_completion_chunk.dart';
 export 'sub_models/chat_choices.dart';
 

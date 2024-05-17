@@ -37,4 +37,8 @@ abstract class OpenAIStrings {
 
   /// {@macro openai_endpoints}
   static final endpoints = OpenAIApisEndpoints.instance;
+
+  static final betaHeader = 'OpenAI-Beta';
+
+  static final betaHeaderValue = 'Assistants=v1';
 }

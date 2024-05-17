@@ -86,9 +86,7 @@ abstract final class OpenAILogger {
 
   /// simple check for api key validity
   static isValidApiKey(String key) {
-    return key.isNotEmpty &&
-        key.startsWith("sk-") &&
-        key.length > _kValidApiKeyLength;
+    return key.isNotEmpty && key.startsWith("sk-") && key.length > _kValidApiKeyLength;
   }
 
   /// Logs that an baseUrl key is being set, if the logger is active.
@@ -140,9 +138,7 @@ abstract final class OpenAILogger {
   static void logIncludedHeaders(
     Map<String, dynamic> additionalHeadersToRequests,
   ) {
-    for (int index = 0;
-        index < additionalHeadersToRequests.entries.length;
-        index++) {
+    for (int index = 0; index < additionalHeadersToRequests.entries.length; index++) {
       final entry = additionalHeadersToRequests.entries.elementAt(index);
       log("header ${entry.key}:${entry.value} will be added to all requets");
     }
@@ -188,5 +184,9 @@ abstract final class OpenAILogger {
 
   static void logIsWeb(bool isWeb) {
     return log("isWeb set to $isWeb");
+  }
+
+  static void errorCreatingObject(String objectName) {
+    return log("error creating object $objectName");
   }
 }

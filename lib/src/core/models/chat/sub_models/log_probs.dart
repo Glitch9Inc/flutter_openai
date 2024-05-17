@@ -2,11 +2,10 @@
 import 'log_probs_content.dart';
 
 class LogProbs {
+  final List<LogProbsContent> content;
   LogProbs({
     required this.content,
   });
-
-  final List<LogProbsContent> content;
 
   factory LogProbs.fromMap(
     Map<String, dynamic> json,

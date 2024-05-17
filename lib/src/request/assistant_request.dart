@@ -18,40 +18,88 @@ interface class AssistantRequest implements AssistantInterface {
   }
 
   @override
-  Future<AssistantObject> create(
-    String name,
-    List<ToolCall> toolCalls, {
+  Future<Assistant> create(
+    GPTModel model, {
+    String? name,
     String? description,
     String? instruction,
-    List<String>? fileIds,
+    List<ToolResources>? tools,
+    ToolResources? toolResources,
+    Map<String, String>? metadata,
+    double? temperature,
+    double? topP,
+    String? responseFormat,
     http.Client? client,
-  }) async {
-    return await OpenAIClient.post(
+  }) {
+    return OpenAIClient.post<Assistant>(
       to: BaseApiUrlBuilder.build(endpoint),
       body: {
-        "name": name,
-        "tool_calls": toolCalls.map((toolCall) => toolCall.toMap()).toList(growable: false),
+        "model": getName(model),
+        if (name != null) "name": name,
         if (description != null) "description": description,
         if (instruction != null) "instruction": instruction,
-        if (fileIds != null) "file_ids": fileIds,
+        if (tools != null) "tools": tools.map((item) => item.toMap()).toList(),
+        if (toolResources != null) "tool_resources": toolResources.toMap(),
+        if (metadata != null) "metadata": metadata,
+        if (temperature != null) "temperature": temperature,
+        if (topP != null) "top_p": topP,
+        if (responseFormat != null) "response_format": responseFormat,
       },
       onSuccess: (Map<String, dynamic> response) {
-        return AssistantObject.fromMap(response);
+        return Assistant.fromMap(response);
       },
       client: client,
     );
   }
 
   @override
-  Future<List<AssistantObject>> list({
+  Future<Assistant> modify(
+    String assistantId, {
+    GPTModel? model,
+    String? name,
+    String? description,
+    String? instruction,
+    List? tools,
+    ToolResources? toolResources,
+    Map<String, String>? metadata,
+    double? temperature,
+    double? topP,
+    String? responseFormat,
+    http.Client? client,
+  }) {
+    String formattedEndpoint = "$endpoint/$assistantId";
+
+    return OpenAIClient.post<Assistant>(
+      to: BaseApiUrlBuilder.build(formattedEndpoint),
+      body: {
+        if (model != null) "model": getName(model),
+        if (name != null) "name": name,
+        if (description != null) "description": description,
+        if (instruction != null) "instruction": instruction,
+        if (tools != null) "tools": tools.map((item) => item.toMap()).toList(),
+        if (toolResources != null) "tool_resources": toolResources.toMap(),
+        if (metadata != null) "metadata": metadata,
+        if (temperature != null) "temperature": temperature,
+        if (topP != null) "top_p": topP,
+        if (responseFormat != null) "response_format": responseFormat,
+      },
+      onSuccess: (Map<String, dynamic> response) {
+        return Assistant.fromMap(response);
+      },
+      client: client,
+    );
+  }
+
+  @override
+  Future<List<Assistant>> list({
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,
     QueryCursor? cursor,
     http.Client? client,
   }) {
-    return RequestUtils.list<AssistantObject>(
+    return RequestUtils.list<Assistant>(
       endpoint,
-      (e) => AssistantObject.fromMap(e),
+      (e) => Assistant.fromMap(e),
       limit: limit,
       order: order,
       cursor: cursor,
@@ -60,17 +108,20 @@ interface class AssistantRequest implements AssistantInterface {
   }
 
   @override
-  Future retrieve(String objectId, {http.Client? client}) {
-    return RequestUtils.retrieve<AssistantObject>(
-      endpoint,
-      (e) => AssistantObject.fromMap(e),
-      objectId,
+  Future<Assistant?> retrieve(String assistantId, {http.Client? client}) {
+    String formattedEndpoint = "$endpoint/$assistantId";
+
+    return RequestUtils.retrieve<Assistant>(
+      formattedEndpoint,
+      (e) => Assistant.fromMap(e),
       client: client,
     );
   }
 
   @override
   Future<bool> delete(String assistantId, {http.Client? client}) async {
-    return await RequestUtils.delete(endpoint, assistantId, client: client);
+    String formattedEndpoint = "$endpoint/$assistantId";
+
+    return await RequestUtils.delete(formattedEndpoint, client: client);
   }
 }

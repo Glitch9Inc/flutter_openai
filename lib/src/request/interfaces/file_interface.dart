@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter_openai/flutter_openai.dart';
 import 'package:http/http.dart' as http;
 
 import 'shared_interfaces.dart';

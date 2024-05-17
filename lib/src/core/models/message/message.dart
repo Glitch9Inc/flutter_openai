@@ -1,16 +1,50 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import '../enum.dart';
-import '../models/chat/etc/message_adapter.dart';
-import '../models/chat/sub_models/message_content.dart';
-import 'tool_call.dart';
+import 'package:flutter_openai/src/core/models/message/incomplete_details.dart';
+import 'package:flutter_openai/src/core/utils/convert_utils.dart';
 
-export '../models/chat/sub_models/message_content.dart';
-export 'tool_call.dart';
+import '../../enum.dart';
+import '../chat/sub_models/message_content.dart';
+import '../tool/tool_call.dart';
+
+export '../chat/sub_models/message_content.dart';
+export '../tool/tool_call.dart';
 
 /// {@template openai_chat_completion_choice_message_model}
 /// This represents the message of the [OpenAIChatCompletionChoiceModel] model of the OpenAI API, which is used and get returned while using the [OpenAIChat] methods.
 /// {@endtemplate}
 final class Message {
+  /// The identifier, which can be referenced in API endpoints.
+  final String? id;
+
+  final String? object;
+
+  /// The Unix timestamp (in seconds) for when the message was created.
+  final DateTime? createdAt;
+
+  /// The Unix timestamp (in seconds) for when the message was completed.
+  final DateTime? completedAt;
+
+  /// The Unix timestamp (in seconds) for when the message was marked as incomplete.
+  final DateTime? incompleteAt;
+
+  /// If applicable, the ID of the [assistant] that authored this message.
+  final String? assistantId;
+
+  /// The ID of the [run] associated with the creation of this message.
+  /// Value is null when messages are created manually using the create message or create thread endpoints.
+  final String? runId;
+
+  /// Set of 16 key-value pairs that can be attached to an object.
+  /// This can be useful for storing additional information about the object in a structured format.
+  /// Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+  final Map<String, String>? metadata;
+
+  /// The status of the message, which can be either in_progress, incomplete, or completed.
+  final MessageStatus? status;
+
+  /// On an incomplete message, details about why the message is incomplete.
+  final IncompleteDetails? incompleteDetails;
+
   /// The [role] of the message.
   final ChatRole role;
 
@@ -36,10 +70,20 @@ final class Message {
 
   /// {@macro openai_chat_completion_choice_message_model}
   const Message({
+    this.id,
+    this.object,
+    this.createdAt,
     required this.role,
     required this.content,
     this.toolCalls,
     this.name,
+    this.metadata,
+    this.status,
+    this.incompleteDetails,
+    this.assistantId,
+    this.runId,
+    this.completedAt,
+    this.incompleteAt,
   });
 
   /// This is used  to convert a [Map<String, dynamic>] object to a [Message] object.
@@ -47,16 +91,13 @@ final class Message {
     Map<String, dynamic> json,
   ) {
     return Message(
+      id: json['id'],
+      object: json['object'],
+      createdAt: ConvertUtils.fromUnix(json['created_at']),
       name: json['name'],
       role: ChatRole.values.firstWhere((role) => role.name == json['role']),
-      content: json['content'] != null
-          ? MessageDynamicContentAdapter.dynamicContentFromField(
-              json['content'],
-            )
-          : null,
-      toolCalls: json['tool_calls'] != null
-          ? (json['tool_calls'] as List).map((toolCall) => ToolCall.fromMap(toolCall)).toList()
-          : null,
+      content: ConvertUtils.fromDynamic(json['content']),
+      toolCalls: ConvertUtils.fromList<ToolCall>(json['tool_calls'], (p0) => ToolCall.fromMap(p0)),
     );
   }
 

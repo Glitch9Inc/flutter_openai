@@ -1,16 +1,36 @@
-import 'package:flutter_openai/flutter_openai.dart';
+import 'package:flutter_openai/src/core/client/gpt_model.dart';
 import 'package:http/http.dart' as http;
 
 import 'shared_interfaces.dart';
 
 abstract class AssistantInterface
     implements EndpointInterface, ListInterface, RetrieveInterface, DeleteInterface {
-  Future<AssistantObject> create(
-    String name,
-    List<ToolCall> toolCalls, {
+  Future<Assistant> create(
+    GPTModel model, {
+    String? name,
     String? description,
     String? instruction,
-    List<String>? fileIds,
+    List<ToolResources>? tools,
+    ToolResources? toolResources,
+    Map<String, String>? metadata,
+    double? temperature,
+    double? topP,
+    String? responseFormat,
+    http.Client? client,
+  });
+
+  Future<Assistant> modify(
+    String assistantId, {
+    GPTModel? model,
+    String? name,
+    String? description,
+    String? instruction,
+    List? tools,
+    ToolResources? toolResources,
+    Map<String, String>? metadata,
+    double? temperature,
+    double? topP,
+    String? responseFormat,
     http.Client? client,
   });
 }

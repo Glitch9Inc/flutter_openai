@@ -63,10 +63,11 @@ interface class FileRequest implements FileInterface {
     String fileId, {
     http.Client? client,
   }) async {
+    String formattedEndpoint = "$endpoint/$fileId";
+
     return await RequestUtils.retrieve<FileObject>(
-      endpoint,
+      formattedEndpoint,
       (e) => FileObject.fromMap(e),
-      fileId,
       client: client,
     );
   }
@@ -139,6 +140,8 @@ interface class FileRequest implements FileInterface {
     String fileId, {
     http.Client? client,
   }) async {
-    return await RequestUtils.delete(endpoint, fileId, client: client);
+    String formattedEndpoint = "$endpoint/$fileId";
+
+    return await RequestUtils.delete(formattedEndpoint, client: client);
   }
 }

@@ -1,11 +1,10 @@
-import 'package:flutter_openai/flutter_openai.dart';
 import 'package:flutter_openai/src/request/interfaces/shared_interfaces.dart';
 
 abstract class ChatCompletionInterface implements EndpointInterface {
   Future<ChatCompletion> create({
     required String model,
     required List<Message> messages,
-    List<OpenAIToolModel>? tools,
+    List<FunctionToolCall>? tools,
     toolChoice,
     double? temperature,
     double? topP,
@@ -23,7 +22,7 @@ abstract class ChatCompletionInterface implements EndpointInterface {
   Stream<ChatCompletionChunk> createStream({
     required String model,
     required List<Message> messages,
-    List<OpenAIToolModel>? tools,
+    List<FunctionToolCall>? tools,
     toolChoice,
     double? temperature,
     double? topP,
@@ -41,7 +40,7 @@ abstract class ChatCompletionInterface implements EndpointInterface {
   Stream<ChatCompletionChunk> createRemoteFunctionStream({
     required String model,
     required List<Message> messages,
-    List<OpenAIToolModel>? tools,
+    List<FunctionToolCall>? tools,
     toolChoice,
     double? temperature,
     double? topP,

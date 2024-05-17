@@ -17,7 +17,7 @@ final class ModelObject {
   /// The [permission]s of the model.
   final List<ModelPermission>? permission;
 
-  /// Weither the model have at least one permission in [permission].
+  /// Whether the model have at least one permission in [permission].
   bool get havePermission => permission != null;
 
   @override

@@ -1,7 +1,7 @@
 /// {@template openai_function_property}
 /// This class is used to represent an OpenAI function property.
 /// {@endtemplate}
-class OpenAIFunctionProperty {
+class FunctionProperty {
   /// an integer type.
   static const functionTypeInteger = 'integer';
 
@@ -35,7 +35,7 @@ class OpenAIFunctionProperty {
   }
 
   /// {@macro openai_function_property}
-  const OpenAIFunctionProperty({
+  const FunctionProperty({
     required this.name,
     required Map<String, dynamic> typeMap,
     this.isRequired = false,
@@ -44,14 +44,14 @@ class OpenAIFunctionProperty {
 
   /// {@macro openai_function_property}
   /// This a factory constructor that allows you to create a new function property with a primitive type.
-  factory OpenAIFunctionProperty.primitive({
+  factory FunctionProperty.primitive({
     required String name,
     String? description,
     bool isRequired = false,
     required String type,
     List? enumValues,
   }) {
-    return OpenAIFunctionProperty(
+    return FunctionProperty(
       name: name,
       isRequired: isRequired,
       typeMap: {
@@ -64,13 +64,13 @@ class OpenAIFunctionProperty {
 
   /// {@macro openai_function_property}
   /// This a factory constructor that allows you to create a new function property with a string type.
-  factory OpenAIFunctionProperty.string({
+  factory FunctionProperty.string({
     required String name,
     String? description,
     bool isRequired = false,
     List<String>? enumValues,
   }) {
-    return OpenAIFunctionProperty.primitive(
+    return FunctionProperty.primitive(
       name: name,
       isRequired: isRequired,
       type: functionTypeString,
@@ -81,12 +81,12 @@ class OpenAIFunctionProperty {
 
   /// {@macro openai_function_property}
   /// This a factory constructor that allows you to create a new function property with a boolean type.
-  factory OpenAIFunctionProperty.boolean({
+  factory FunctionProperty.boolean({
     required String name,
     String? description,
     bool isRequired = false,
   }) {
-    return OpenAIFunctionProperty.primitive(
+    return FunctionProperty.primitive(
       name: name,
       isRequired: isRequired,
       type: functionTypeBoolean,
@@ -96,12 +96,12 @@ class OpenAIFunctionProperty {
 
   /// {@macro openai_function_property}
   /// This a factory constructor that allows you to create a new function property with an integer type.
-  factory OpenAIFunctionProperty.integer({
+  factory FunctionProperty.integer({
     required String name,
     String? description,
     bool isRequired = false,
   }) {
-    return OpenAIFunctionProperty.primitive(
+    return FunctionProperty.primitive(
       name: name,
       isRequired: isRequired,
       type: functionTypeInteger,
@@ -111,12 +111,12 @@ class OpenAIFunctionProperty {
 
   /// {@macro openai_function_property}
   /// This a factory constructor that allows you to create a new function property with a number type.
-  factory OpenAIFunctionProperty.number({
+  factory FunctionProperty.number({
     required String name,
     String? description,
     bool isRequired = false,
   }) {
-    return OpenAIFunctionProperty.primitive(
+    return FunctionProperty.primitive(
       name: name,
       isRequired: isRequired,
       type: functionTypeNumber,
@@ -126,13 +126,13 @@ class OpenAIFunctionProperty {
 
   /// {@macro openai_function_property}
   /// This a factory constructor that allows you to create a new function property with an array (List) type.
-  factory OpenAIFunctionProperty.array({
+  factory FunctionProperty.array({
     required String name,
     String? description,
     bool isRequired = false,
-    required OpenAIFunctionProperty items,
+    required FunctionProperty items,
   }) {
-    return OpenAIFunctionProperty(
+    return FunctionProperty(
       name: name,
       typeMap: {
         'type': functionTypeArray,
@@ -145,10 +145,10 @@ class OpenAIFunctionProperty {
 
   /// {@macro openai_function_property}
   /// This a factory constructor that allows you to create a new function property with an object (Map) type.
-  factory OpenAIFunctionProperty.object({
+  factory FunctionProperty.object({
     required String name,
     String? description,
-    required Iterable<OpenAIFunctionProperty> properties,
+    required Iterable<FunctionProperty> properties,
     bool isRequired = false,
   }) {
     final requiredProperties = properties
@@ -156,7 +156,7 @@ class OpenAIFunctionProperty {
         .map((property) => property.name)
         .toList(growable: false);
 
-    return OpenAIFunctionProperty(
+    return FunctionProperty(
       name: name,
       typeMap: {
         'type': functionTypeObject,
@@ -182,7 +182,7 @@ class OpenAIFunctionProperty {
     return _typeMap;
   }
 
-  /// This method is used to convert a [OpenAIFunctionProperty] object to a [Map<String, dynamic>] object.
+  /// This method is used to convert a [FunctionProperty] object to a [Map<String, dynamic>] object.
   Map<String, dynamic> toMap() {
     return {
       'name': name,

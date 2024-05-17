@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 ///  This class is used to represent an OpenAI moderation job result scores.
 /// {@endtemplate}
 @immutable
-final class OpenAIModerationResultScoresModel {
+final class ModerationResultScores {
   /// The hate score of the moderation job.
   final double hate;
 
@@ -38,7 +38,7 @@ final class OpenAIModerationResultScoresModel {
   }
 
   /// This class is used to represent an OpenAI moderation job result scores.
-  const OpenAIModerationResultScoresModel({
+  const ModerationResultScores({
     required this.hate,
     required this.hateAndThreatening,
     required this.selfHarm,
@@ -48,11 +48,11 @@ final class OpenAIModerationResultScoresModel {
     required this.violenceAndGraphic,
   });
 
-  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIModerationResultScoresModel] object.
-  factory OpenAIModerationResultScoresModel.fromMap(
+  /// This method is used to convert a [Map<String, dynamic>] object to a [ModerationResultScores] object.
+  factory ModerationResultScores.fromMap(
     Map<String, dynamic> json,
   ) {
-    return OpenAIModerationResultScoresModel(
+    return ModerationResultScores(
       hate: json['hate'],
       hateAndThreatening: json['hate/threatening'],
       selfHarm: json['self-harm'],
@@ -69,7 +69,7 @@ final class OpenAIModerationResultScoresModel {
   }
 
   @override
-  bool operator ==(covariant OpenAIModerationResultScoresModel other) {
+  bool operator ==(covariant ModerationResultScores other) {
     if (identical(this, other)) return true;
 
     return other.hate == hate &&

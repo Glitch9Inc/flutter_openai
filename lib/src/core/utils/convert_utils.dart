@@ -1,11 +1,34 @@
-import 'package:flutter_openai/src/core/sub_models/message.dart';
+import 'package:flutter_openai/flutter_openai.dart';
+import 'package:meta/meta.dart';
 
-/// This is a mixin class that contains  helper function(s) to adapt old text-based content to the new implementation of the content that accepts a list of content types like images.
-mixin class MessageDynamicContentAdapter {
-  /// This is a helper function to adapt old text-based content to the new implementation of the content that accepts a list of content types like images..
-  static List<MessageContent> dynamicContentFromField(
+@protected
+@immutable
+@internal
+abstract class ConvertUtils {
+  static DateTime fromUnix(int unixTimestamp) {
+    return DateTime.fromMillisecondsSinceEpoch(unixTimestamp * 1000);
+  }
+
+  static RunStatus fromString(String status) {
+    return RunStatus.values.firstWhere((s) => s.name.toLowerCase() == status.toLowerCase());
+  }
+
+  static List<T>? fromList<T>(value, T Function(Map<String, dynamic>) fromMap) {
+    if (value == null) {
+      return null;
+    }
+
+    if (value is List) {
+      return value.map((item) => fromMap(item)).toList();
+    }
+
+    throw ArgumentError('Provided value is not a List');
+  }
+
+  static List<MessageContent>? fromDynamic(
     fieldData,
   ) {
+    if (fieldData == null) return null;
     if (fieldData is String) {
       return _singleItemListFrom(fieldData);
     } else if (fieldData is List) {

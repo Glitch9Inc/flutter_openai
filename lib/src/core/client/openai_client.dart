@@ -18,7 +18,6 @@ import "../utils/streaming_http_client_default.dart"
 /// Handling exceptions returned by OpenAI Stream API.
 final class _OpenAIChatStreamSink implements EventSink<String> {
   final EventSink<String> _sink;
-
   final List<String> _carries = [];
 
   _OpenAIChatStreamSink(this._sink);
@@ -95,11 +94,14 @@ abstract class OpenAIClient {
     final uri = Uri.parse(from);
     final headers = HeadersBuilder.build();
 
-    // TODO: Add body to the request
+    // Add body to the request
+    if (body != null) {
+      uri.queryParameters.addAll(body.map((key, value) => MapEntry(key, value.toString())));
+    }
 
     final response = client == null
         ? await http.get(uri, headers: headers).timeout(OpenAIConfig.requestsTimeOut)
-        : await client.get(uri, headers: headers);
+        : await client.get(uri, headers: headers).timeout(OpenAIConfig.requestsTimeOut);
 
     OpenAILogger.logResponseBody(response);
 

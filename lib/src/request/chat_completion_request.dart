@@ -1,11 +1,11 @@
 import 'package:flutter_openai/src/core/builder/base_api_url.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
-import 'package:flutter_openai/src/core/sub_models/message.dart';
+import 'package:flutter_openai/src/core/models/message/message.dart';
 import 'package:http/http.dart' as http;
 
 import '../core/constants/strings.dart';
 import '../core/models/chat/chat_completion.dart';
-import '../core/models/tool/tool.dart';
+import '../core/models/tool/function_tool_call.dart';
 import '../core/utils/logger.dart';
 import 'interfaces/chat_completion_interface.dart';
 
@@ -69,7 +69,7 @@ interface class ChatCompletionRequest implements ChatCompletionInterface {
   Future<ChatCompletion> create({
     required String model,
     required List<Message> messages,
-    List<OpenAIToolModel>? tools,
+    List<FunctionToolCall>? tools,
     toolChoice,
     double? temperature,
     double? topP,
@@ -165,7 +165,7 @@ interface class ChatCompletionRequest implements ChatCompletionInterface {
   Stream<ChatCompletionChunk> createStream({
     required String model,
     required List<Message> messages,
-    List<OpenAIToolModel>? tools,
+    List<FunctionToolCall>? tools,
     toolChoice,
     double? temperature,
     double? topP,
@@ -211,7 +211,7 @@ interface class ChatCompletionRequest implements ChatCompletionInterface {
   Stream<ChatCompletionChunk> createRemoteFunctionStream({
     required String model,
     required List<Message> messages,
-    List<OpenAIToolModel>? tools,
+    List<FunctionToolCall>? tools,
     toolChoice,
     double? temperature,
     double? topP,

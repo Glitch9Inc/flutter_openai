@@ -1,4 +1,9 @@
+import 'package:flutter_openai/src/request/assistant_request.dart';
+import 'package:flutter_openai/src/request/message_request.dart';
 import 'package:flutter_openai/src/request/moderation_request.dart';
+import 'package:flutter_openai/src/request/run_request.dart';
+import 'package:flutter_openai/src/request/run_step_request.dart';
+import 'package:flutter_openai/src/request/thread_request.dart';
 import 'package:meta/meta.dart';
 
 import 'src/core/builder/headers.dart';
@@ -70,6 +75,14 @@ final class OpenAI {
 
   /// The [AudioRequest] instance, used to access the audio endpoints.
   AudioRequest get audio => AudioRequest();
+
+  /// The [AssistantRequest] instance, used to access the assistants endpoints.
+  AssistantRequest get assistant => AssistantRequest();
+
+  ThreadRequest get thread => ThreadRequest();
+  MessageRequest get message => MessageRequest();
+  RunRequest get run => RunRequest();
+  RunStepRequest get runStep => RunStepRequest();
 
   /// The organization id, if set, it will be used in all the requests to the OpenAI API.
   static String? get organization => HeadersBuilder.organization;

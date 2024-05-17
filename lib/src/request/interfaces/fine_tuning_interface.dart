@@ -1,5 +1,3 @@
-import 'package:flutter_openai/flutter_openai.dart';
-
 import 'shared_interfaces.dart';
 
 abstract class FineTuningInterface

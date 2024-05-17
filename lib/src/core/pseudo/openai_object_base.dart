@@ -1,4 +1,4 @@
-import '../sub_models/export.dart';
+import 'package:flutter_openai/flutter_openai.dart';
 
 abstract class OpenAIObjectBase {
   final String? id;

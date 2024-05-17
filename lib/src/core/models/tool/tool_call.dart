@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import '../../../flutter_openai.dart';
+import '../../../../flutter_openai.dart';
 
 /// {@template openai_chat_completion_response_tool_call_model}
 /// This represents the tool call of the [OpenAIChatCompletionChoiceMessageModel] model of the OpenAI API, which is used and get returned while using the [OpenAIChat] methods.

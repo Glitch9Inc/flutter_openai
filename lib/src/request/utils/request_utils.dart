@@ -28,23 +28,13 @@ class RequestUtils {
     );
   }
 
-  /*  final String fileIdEndpoint = "/$fileId";
-
-    return await OpenAIClient.get(
-      from: BaseApiUrlBuilder.build(endpoint + fileIdEndpoint),
-      onSuccess: (Map<String, dynamic> response) {
-        return FileObject.fromMap(response);
-      },
-    );*/
-
   static Future<T> retrieve<T>(
     String endpoint,
-    T Function(Map<String, dynamic>) create,
-    String objectId, {
+    T Function(Map<String, dynamic>) create, {
     http.Client? client,
   }) async {
     return await OpenAIClient.get(
-      from: BaseApiUrlBuilder.build(endpoint + "/$objectId"),
+      from: BaseApiUrlBuilder.build(endpoint),
       onSuccess: (Map<String, dynamic> response) {
         return create(response);
       },
@@ -52,9 +42,9 @@ class RequestUtils {
     );
   }
 
-  static Future<bool> delete(String endpoint, String objectId, {http.Client? client}) async {
+  static Future<bool> delete(String endpoint, {http.Client? client}) async {
     return await OpenAIClient.delete(
-      from: BaseApiUrlBuilder.build(endpoint + "/$objectId"),
+      from: BaseApiUrlBuilder.build(endpoint),
       onSuccess: (Map<String, dynamic> response) {
         final bool isDeleted = response["deleted"] as bool;
 

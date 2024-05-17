@@ -1,4 +1,4 @@
-import '../../../sub_models/message.dart';
+import '../../message/message.dart';
 import 'log_probs.dart';
 
 /// {@template openai_chat_completion_choice}

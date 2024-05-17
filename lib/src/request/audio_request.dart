@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_openai/src/core/builder/base_api_url.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
-import 'package:http/http.dart' as http;
+
 import '../../flutter_openai.dart';
 import '../core/constants/strings.dart';
 import '../core/utils/logger.dart';

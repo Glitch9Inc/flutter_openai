@@ -1,4 +1,4 @@
-import '../../../sub_models/export.dart';
+import 'package:flutter_openai/flutter_openai.dart';
 
 /// {@template openai_stream_chat_completion_choice}
 /// The [ChunkChoice] class represents the chat completion choice response model of the OpenAI API, which is used and get returned while using the chat methods that leverages [Stream] functionality.

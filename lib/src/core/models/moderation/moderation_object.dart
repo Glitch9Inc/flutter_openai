@@ -2,9 +2,9 @@
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 
-import 'sub_models/result.dart';
+import 'sub_models/moderation_result.dart';
 
-export 'sub_models/result.dart';
+export 'sub_models/moderation_result.dart';
 
 /// {@template openai_moderation_model}
 ///  This class is used to represent an OpenAI moderation job.
@@ -18,7 +18,7 @@ final class ModerationObject {
   final String model;
 
   /// The [results] of the moderation job.
-  final List<OpenAIModerationResultModel> results;
+  final List<ModerationResult> results;
 
   /// Weither the moderation job have at least one result in [results].
   bool get haveResults => results.isNotEmpty;
@@ -38,9 +38,9 @@ final class ModerationObject {
     return ModerationObject(
       id: json['id'],
       model: json['model'],
-      results: List<OpenAIModerationResultModel>.from(
+      results: List<ModerationResult>.from(
         json['results'].map(
-          (x) => OpenAIModerationResultModel.fromMap(x),
+          (x) => ModerationResult.fromMap(x),
         ),
       ),
     );

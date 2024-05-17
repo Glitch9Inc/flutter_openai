@@ -15,14 +15,12 @@ class OpenAIApisEndpoints {
   final models = "/models";
   final moderation = "/moderations";
   final assistant = "/assistants";
-  final thread = "/threads";
+  final thread = "/threads/";
+  final messages = "/threads/{thread_id}/messages";
+  final runs = "/threads/{thread_id}/runs";
+  final runSteps = "/threads/{thread_id}/runs/{run_id}/steps";
 
-  /// {@macro openai_endpoints}
   static const OpenAIApisEndpoints _instance = OpenAIApisEndpoints._();
-
-  /// {@macro openai_endpoints}
   static OpenAIApisEndpoints get instance => _instance;
-
-  /// {@macro openai_endpoints}
   const OpenAIApisEndpoints._();
 }
