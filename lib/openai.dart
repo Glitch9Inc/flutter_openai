@@ -1,24 +1,25 @@
-import 'package:flutter_openai/src/core/requests/assistant_request.dart';
-import 'package:flutter_openai/src/core/requests/message_request.dart';
-import 'package:flutter_openai/src/core/requests/moderation_request.dart';
-import 'package:flutter_openai/src/core/requests/run_request.dart';
-import 'package:flutter_openai/src/core/requests/run_step_request.dart';
-import 'package:flutter_openai/src/core/requests/thread_request.dart';
+import 'package:flutter_openai/src/requests/assistant_request.dart';
+import 'package:flutter_openai/src/requests/message_request.dart';
+import 'package:flutter_openai/src/requests/moderation_request.dart';
+import 'package:flutter_openai/src/requests/run_request.dart';
+import 'package:flutter_openai/src/requests/run_step_request.dart';
+import 'package:flutter_openai/src/requests/thread_request.dart';
 import 'package:meta/meta.dart';
 
-import 'src/core/builder/headers.dart';
-import 'src/core/constants/config.dart';
-import 'src/core/constants/endpoints.dart';
-import 'src/core/constants/http.dart';
-import 'src/core/exceptions/api_key_not_set.dart';
-import 'src/core/requests/audio_request.dart';
-import 'src/core/requests/chat_completion_request.dart';
-import 'src/core/requests/embedding_request.dart';
-import 'src/core/requests/file_request.dart';
-import 'src/core/requests/fine_tuning_request.dart';
-import 'src/core/requests/image_request.dart';
-import 'src/core/requests/model_request.dart';
-import 'src/core/utils/openai_logger.dart';
+import 'src/exceptions/api_key_not_set.dart';
+import 'src/requests/audio_request.dart';
+import 'src/requests/chat_completion_request.dart';
+import 'src/requests/embedding_request.dart';
+import 'src/requests/file_request.dart';
+import 'src/requests/fine_tuning_request.dart';
+import 'src/requests/image_request.dart';
+import 'src/requests/model_request.dart';
+import 'src/settings/config.dart';
+import 'src/settings/endpoints.dart';
+import 'src/settings/headers.dart';
+import 'src/settings/http.dart';
+import 'src/settings/object_types.dart';
+import 'src/utils/openai_logger.dart';
 
 /// The main class of the package. It is a singleton class, so you can only have one instance of it.
 /// You can also access the instance by calling the [OpenAI.instance] getter.
@@ -27,6 +28,10 @@ import 'src/core/utils/openai_logger.dart';
 /// ```
 @immutable
 final class OpenAI {
+  static final endpoint = OpenAIApisEndpoints.instance;
+  static final httpMethod = OpenAIHttp.instance;
+  static final type = OpenAIObjectTypes.instance;
+
   /// The singleton instance of [OpenAI].
   static final OpenAI _instance = OpenAI._();
 
@@ -46,9 +51,6 @@ final class OpenAI {
 
     return _instance;
   }
-
-  static final endpoint = OpenAIApisEndpoints.instance;
-  static final httpMethod = OpenAIHttp.instance;
 
   /// {@macro openai_config_requests_timeOut}
   static Duration get requestsTimeOut => OpenAIConfig.requestsTimeOut;
@@ -149,6 +151,14 @@ final class OpenAI {
   /// ```
   static set showLogs(bool newValue) {
     OpenAILogger.isActive = newValue;
+  }
+
+  static set showHeadersLogs(bool showHeadersLogs) {
+    OpenAILogger.showHeadersLogs = showHeadersLogs;
+  }
+
+  static set showRequestBodyLogs(bool showRequestBodyLogs) {
+    OpenAILogger.showRequestBodyLogs = showRequestBodyLogs;
   }
 
   /// This controls whether to log responses bodies or not.

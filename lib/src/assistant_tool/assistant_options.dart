@@ -4,8 +4,8 @@ class AssistantOptions {
   final GPTModel model;
   final String name;
   final String description;
-  final String instruction;
-  final List<ToolBase>? tools;
+  final String instructions;
+  final List<ToolCall>? tools;
   final ToolResource? toolResources;
   final Map<String, String>? metadata;
   final double? temperature;
@@ -16,7 +16,7 @@ class AssistantOptions {
     required this.model,
     required this.name,
     required this.description,
-    required this.instruction,
+    required this.instructions,
     this.tools,
     this.toolResources,
     this.metadata,

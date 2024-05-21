@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/core/utils/openai_logger.dart';
+import 'package:flutter_openai/src/query/query_cursor.dart';
+import 'package:flutter_openai/src/utils/openai_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 export 'package:flutter_openai/src/assistant_tool/assistant_options.dart';
 export 'package:flutter_openai/src/assistant_tool/run_options.dart';
 
-abstract class AssistantTool<TToolResponse> {
+abstract class AssistantTool<TResult> {
   static const int INITIAL_DELAY_MILLIS = 1000;
   static const int REQUEST_DELAY_MILLIS = 2000;
 
@@ -100,12 +101,12 @@ abstract class AssistantTool<TToolResponse> {
   String removeLineBreaks(String text) => text.replaceAll(RegExp(r'\n|\r'), '');
 
   /// Parse the result of the run
-  TToolResponse createResponse(Map<String, dynamic>? runResultJson);
+  TResult createResponse(Map<String, dynamic>? runResultJson);
 
   /// Callback for when the tokens are used
   void onTokensUsed(Usage usage);
 
-  Future<List<TToolResponse>?> request(
+  Future<List<TResult>?> request(
     String promptText, {
     String? additionalInstruction,
     Function(String)? onRequestPrepared,
@@ -134,10 +135,6 @@ abstract class AssistantTool<TToolResponse> {
     _lastRequestTime = DateTime.now();
     promptText = removeLineBreaks(promptText);
 
-    if (thread == null) {
-      throw Exception("Thread is not initialized.");
-    }
-
     try {
       await OpenAI.instance.message.createWithText(
         thread!.id,
@@ -160,14 +157,11 @@ abstract class AssistantTool<TToolResponse> {
       additionalInstructions: additionalInstruction,
     );
 
-    if (currentRun == null) {
-      throw Exception("Error creating run.");
-    }
-
+    if (currentRun == null) throw Exception("Error creating run.");
     currentRun = await _waitForRunStatusChange(RunStatus.requires_action);
     if (currentRun == null) throw Exception("Error waiting for run status change.");
 
-    List<TToolResponse>? functionResult = _retrieveRunResult();
+    List<TResult>? functionResult = await _retrieveResult();
     if (functionResult == null) throw Exception("Error retrieving run result.");
 
     _completeRun(currentRun!); // Handle usage and complete the run if necessary
@@ -241,7 +235,7 @@ abstract class AssistantTool<TToolResponse> {
 
   Future<Assistant?> _createAssistant() async {
     StringBuffer sb = StringBuffer();
-    sb.write(assistantOptions.instruction);
+    sb.write(assistantOptions.instructions);
     sb.write(" Limit your response to $maxRequestLength characters.");
 
     try {
@@ -275,9 +269,14 @@ abstract class AssistantTool<TToolResponse> {
         currentRun = await OpenAI.instance.run.retrieve(thread!.id, currentRun!.id) ?? currentRun;
       }
 
-      RunStatus currentRunStatus = currentRun!.status ?? RunStatus.none;
+      RunStatus currentRunStatus = currentRun!.status ?? RunStatus.unknown;
       if (currentRun != null &&
-          (currentRunStatus == statusToWaitFor || currentRunStatus == RunStatus.completed)) {
+          (currentRunStatus == statusToWaitFor ||
+              currentRunStatus == RunStatus.completed ||
+              currentRunStatus == RunStatus.expired ||
+              currentRunStatus == RunStatus.cancelling ||
+              currentRunStatus == RunStatus.cancelled ||
+              currentRunStatus == RunStatus.failed)) {
         return currentRun;
       }
 
@@ -289,20 +288,68 @@ abstract class AssistantTool<TToolResponse> {
     return null;
   }
 
-  List<TToolResponse>? _retrieveRunResult() {
-    List<ToolCall>? resultToolCalls = currentRun?.requiredAction?.submitToolOutputs.toolCalls;
+  // Legacy Codes (Assistant v1)
+  // List<TResult>? _retrieveResult() {
+  //   List<ToolCall>? resultToolCalls = currentRun?.requiredAction?.submitToolOutputs?.toolCalls;
 
-    if (resultToolCalls == null) {
+  //   if (resultToolCalls == null) {
+  //     print("No tool calls found in the run result.");
+
+  //     return null;
+  //   }
+
+  //   List<String?> funcArgs = resultToolCalls
+  //       .where((toolCall) => toolCall.function?.arguments != null)
+  //       .map((toolCall) => toolCall.function!.arguments!)
+  //       .toList();
+
+  //   return funcArgs.map((arg) => createResponse(_parseResult(arg))).toList();
+  // }
+
+  // New Codes (Assistant v2)
+  Future<List<TResult>?> _retrieveResult() async {
+    var messageQuery =
+        await OpenAI.instance.message.list(thread!.id, limit: 1, order: QueryOrder.descending);
+
+    if (messageQuery.data == null || messageQuery.data!.isEmpty) {
+      print("No message found in the thread.");
+
       return null;
     }
 
-    List<String?> funcArgs =
-        resultToolCalls.map((toolCall) => toolCall.function.arguments).toList();
+    var resultMessage = messageQuery.data!.first;
 
-    return funcArgs.map((arg) => createResponse(_parseResult(arg))).toList();
+    if (resultMessage.role != ChatRole.assistant) {
+      print("The latest message is not from the assistant.");
+
+      return null;
+    }
+
+    var contentList = resultMessage.content;
+    if (contentList == null || contentList.isEmpty) {
+      print("No content found in the message.");
+
+      return null;
+    }
+
+    List<String> jsonList = [];
+
+    for (var content in contentList) {
+      if (content.text == null || content.text!.value == null) continue;
+
+      jsonList.add(content.text!.value!);
+    }
+
+    List<TResult> finalResult = [];
+
+    for (var json in jsonList) {
+      finalResult.add(createResponse(_decodeResultToMap(json)));
+    }
+
+    return finalResult;
   }
 
-  Map<String, dynamic>? _parseResult(String? runResultJson) {
+  Map<String, dynamic>? _decodeResultToMap(String? runResultJson) {
     if (runResultJson == null) return null;
 
     return jsonDecode(runResultJson);
@@ -311,10 +358,10 @@ abstract class AssistantTool<TToolResponse> {
   Future<void> _completeRun(Run run) async {
     // Assuming you have a method to complete the run
     try {
-      List<ToolOutput>? toolOutputs = currentRun?.requiredAction?.submitToolOutputs.toolCalls
-          .where((toolCall) => toolCall.id != null && toolCall.function.arguments != null)
+      List<ToolOutput>? toolOutputs = currentRun?.requiredAction?.submitToolOutputs?.toolCalls
+          ?.where((toolCall) => toolCall.id != null && toolCall.function?.arguments != null)
           .map((toolCall) =>
-              ToolOutput(toolCallId: toolCall.id!, output: toolCall.function.arguments!))
+              ToolOutput(toolCallId: toolCall.id!, output: toolCall.function!.arguments!))
           .toList();
 
       currentRun = await OpenAI.instance.run

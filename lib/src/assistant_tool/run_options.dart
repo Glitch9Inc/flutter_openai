@@ -1,6 +1,6 @@
 import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/core/models/run/truncation_strategy.dart';
-import 'package:flutter_openai/src/core/models/tool/tool_choice.dart';
+import 'package:flutter_openai/src/models/run/truncation_strategy.dart';
+import 'package:flutter_openai/src/models/tool/tool_choice.dart';
 
 class RunOptions {
   final int? maxPromptTokens;
