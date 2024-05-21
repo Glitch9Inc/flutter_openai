@@ -1,6 +1,6 @@
 import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
-import 'package:flutter_openai/src/request/interfaces/run_step_interface.dart';
-import 'package:flutter_openai/src/request/utils/request_utils.dart';
+import 'package:flutter_openai/src/core/requests/interfaces/run_step_interface.dart';
+import 'package:flutter_openai/src/core/requests/utils/request_utils.dart';
 import 'package:http/src/client.dart';
 
 interface class RunStepRequest implements RunStepInterface {

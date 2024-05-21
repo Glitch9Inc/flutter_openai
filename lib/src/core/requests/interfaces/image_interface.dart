@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/request/interfaces/shared_interfaces.dart';
+import 'package:flutter_openai/src/core/requests/interfaces/shared_interfaces.dart';
 
 abstract class ImageInterface implements EndpointInterface {
   Future<ImageObject> create({

@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
-import 'package:flutter_openai/src/request/utils/request_utils.dart';
+import 'package:flutter_openai/src/core/requests/utils/request_utils.dart';
 import 'package:meta/meta.dart';
 
-import '../core/utils/openai_logger.dart';
+import '../utils/openai_logger.dart';
 import 'interfaces/file_interface.dart';
 
 /// {@template openai_files}

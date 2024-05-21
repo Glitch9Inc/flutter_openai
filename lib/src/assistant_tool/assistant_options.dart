@@ -10,7 +10,7 @@ class AssistantOptions {
   final Map<String, String>? metadata;
   final double? temperature;
   final double? topP;
-  final String? responseFormat;
+  final ResponseFormat? responseFormat;
 
   const AssistantOptions({
     required this.model,

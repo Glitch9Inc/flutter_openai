@@ -2,8 +2,8 @@ import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/models/tool/tool_choice.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
-import 'package:flutter_openai/src/request/interfaces/run_interface.dart';
-import 'package:flutter_openai/src/request/utils/request_utils.dart';
+import 'package:flutter_openai/src/core/requests/interfaces/run_interface.dart';
+import 'package:flutter_openai/src/core/requests/utils/request_utils.dart';
 import 'package:http/src/client.dart';
 
 interface class RunRequest implements RunInterface {

@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter_openai/src/request/interfaces/shared_interfaces.dart';
+import 'package:flutter_openai/src/core/requests/interfaces/shared_interfaces.dart';
 
-import '../../../flutter_openai.dart';
+import '../../../../flutter_openai.dart';
 
 abstract class AudioInterface implements EndpointInterface {
   Future<File> createSpeech({

@@ -1,7 +1,7 @@
 import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
-import 'package:flutter_openai/src/request/interfaces/shared_interfaces.dart';
+import 'package:flutter_openai/src/core/requests/interfaces/shared_interfaces.dart';
 
-import '../../core/models/tool/tool_choice.dart';
+import '../../models/tool/tool_choice.dart';
 
 abstract class RunInterface implements EndpointInterface {
   Future<Run> create(

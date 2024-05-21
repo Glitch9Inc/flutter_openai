@@ -1,9 +1,9 @@
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
-import 'package:flutter_openai/src/request/utils/request_utils.dart';
+import 'package:flutter_openai/src/core/requests/utils/request_utils.dart';
 
-import '../core/utils/openai_logger.dart';
+import '../utils/openai_logger.dart';
 import 'interfaces/assistant_interface.dart';
 
 interface class AssistantRequest implements AssistantInterface {
@@ -25,7 +25,7 @@ interface class AssistantRequest implements AssistantInterface {
     Map<String, String>? metadata,
     double? temperature,
     double? topP,
-    String? responseFormat,
+    ResponseFormat? responseFormat,
   }) {
     return OpenAIClient.post<Assistant>(
       to: endpoint,
@@ -39,7 +39,7 @@ interface class AssistantRequest implements AssistantInterface {
         if (metadata != null) "metadata": metadata,
         if (temperature != null) "temperature": temperature,
         if (topP != null) "top_p": topP,
-        if (responseFormat != null) "response_format": responseFormat,
+        if (responseFormat != null) "response_format": responseFormat.toStringOrMap(),
       },
       create: (Map<String, dynamic> response) {
         return Assistant.fromMap(response);
@@ -60,7 +60,7 @@ interface class AssistantRequest implements AssistantInterface {
     Map<String, String>? metadata,
     double? temperature,
     double? topP,
-    String? responseFormat,
+    ResponseFormat? responseFormat,
   }) {
     String formattedEndpoint = "$endpoint/$assistantId";
 
@@ -76,7 +76,7 @@ interface class AssistantRequest implements AssistantInterface {
         if (metadata != null) "metadata": metadata,
         if (temperature != null) "temperature": temperature,
         if (topP != null) "top_p": topP,
-        if (responseFormat != null) "response_format": responseFormat,
+        if (responseFormat != null) "response_format": responseFormat.toStringOrMap(),
       },
       create: (Map<String, dynamic> response) {
         return Assistant.fromMap(response);

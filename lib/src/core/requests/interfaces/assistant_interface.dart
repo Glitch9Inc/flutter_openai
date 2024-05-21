@@ -14,7 +14,7 @@ abstract class AssistantInterface
     Map<String, String>? metadata,
     double? temperature,
     double? topP,
-    String? responseFormat,
+    ResponseFormat? responseFormat,
   });
 
   Future<Assistant> modify(
@@ -28,6 +28,6 @@ abstract class AssistantInterface
     Map<String, String>? metadata,
     double? temperature,
     double? topP,
-    String? responseFormat,
+    ResponseFormat? responseFormat,
   });
 }

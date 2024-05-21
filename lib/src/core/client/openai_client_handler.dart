@@ -357,13 +357,13 @@ class OpenAIClientHandler {
   }
 
   static T _createObject<T>(
-    Function(Map<String, dynamic>)? create,
+    Function(Map<String, dynamic>)? factory,
     Map<String, dynamic> decodedBody,
   ) {
     try {
-      return create != null ? create(decodedBody) : decodedBody;
+      return factory != null ? factory(decodedBody) : decodedBody;
     } catch (e) {
-      throw FormatException('Failed to create object: $e');
+      throw FormatException('Failed to create [[[$e]]]');
     }
   }
 
@@ -371,7 +371,7 @@ class OpenAIClientHandler {
     try {
       return jsonDecode(responseBody) as Map<String, dynamic>;
     } catch (e) {
-      throw FormatException('Failed to decode JSON: $e');
+      throw FormatException('Failed to decode JSON: [[[$e]]]');
     }
   }
 

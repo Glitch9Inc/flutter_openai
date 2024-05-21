@@ -1,6 +1,6 @@
 import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/models/message/attachment.dart';
-import 'package:flutter_openai/src/request/interfaces/shared_interfaces.dart';
+import 'package:flutter_openai/src/core/requests/interfaces/shared_interfaces.dart';
 
 abstract class MessageInterface implements EndpointInterface, RetrieveInterface, DeleteInterface {
   // create and modify

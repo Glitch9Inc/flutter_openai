@@ -1,4 +1,4 @@
-import 'package:flutter_openai/src/request/interfaces/shared_interfaces.dart';
+import 'package:flutter_openai/src/core/requests/interfaces/shared_interfaces.dart';
 
 abstract class ThreadInterface implements EndpointInterface, RetrieveInterface, DeleteInterface {
   // create and modify

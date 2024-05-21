@@ -3,8 +3,8 @@ import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/models/message/message.dart';
 import 'package:flutter_openai/src/core/models/thread/thread.dart';
 import 'package:flutter_openai/src/core/models/tool/tool_base.dart';
-import 'package:flutter_openai/src/request/interfaces/thread_interface.dart';
-import 'package:flutter_openai/src/request/utils/request_utils.dart';
+import 'package:flutter_openai/src/core/requests/interfaces/thread_interface.dart';
+import 'package:flutter_openai/src/core/requests/utils/request_utils.dart';
 
 interface class ThreadRequest implements ThreadInterface {
   @override

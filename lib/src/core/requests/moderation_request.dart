@@ -3,7 +3,7 @@ import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/models/moderation/moderation_object.dart';
 import 'package:meta/meta.dart';
 
-import '../core/utils/openai_logger.dart';
+import '../utils/openai_logger.dart';
 import 'interfaces/moderation_interface.dart';
 
 /// {@template openai_moderation}

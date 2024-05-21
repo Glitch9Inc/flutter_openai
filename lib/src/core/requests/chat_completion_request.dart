@@ -2,9 +2,9 @@ import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/models/message/message.dart';
 
-import '../core/models/chat/chat_completion.dart';
-import '../core/models/tool/function/function_tool_call.dart';
-import '../core/utils/openai_logger.dart';
+import '../models/chat/chat_completion.dart';
+import '../models/tool/function/function_tool_call.dart';
+import '../utils/openai_logger.dart';
 import 'interfaces/chat_completion_interface.dart';
 
 /// {@template openai_chat}

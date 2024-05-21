@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 class ResponseFormat {
   /// The model can pick between an end-user or calling a function.
   static const auto = ResponseFormat._(value: 'auto');
-  static const json = ResponseFormat._(value: 'json');
+  static const json = ResponseFormat._(value: {'type': 'json'});
 
   /// The value of the function call.
   final value;
@@ -29,6 +29,10 @@ class ResponseFormat {
   toStringOrMap() {
     if (value == 'auto') return 'auto';
 
+    return {'type': value};
+  }
+
+  Map<String, dynamic> toMap() {
     return {'type': value};
   }
 

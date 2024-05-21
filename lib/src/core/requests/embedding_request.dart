@@ -2,8 +2,8 @@ import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/models/embedding/embedding.dart';
 import 'package:meta/meta.dart';
 
-import '../core/client/openai_client.dart';
-import '../core/utils/openai_logger.dart';
+import '../client/openai_client.dart';
+import '../utils/openai_logger.dart';
 import 'interfaces/embedding_interface.dart';
 
 /// {@template openai_embedding}

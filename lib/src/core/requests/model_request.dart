@@ -1,11 +1,11 @@
 import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
+import 'package:flutter_openai/src/core/requests/interfaces/model_interface.dart';
+import 'package:flutter_openai/src/core/requests/utils/request_utils.dart';
 import 'package:flutter_openai/src/core/utils/openai_logger.dart';
-import 'package:flutter_openai/src/request/interfaces/model_interface.dart';
-import 'package:flutter_openai/src/request/utils/request_utils.dart';
 import 'package:meta/meta.dart';
 
-import '../core/client/openai_client.dart';
+import '../client/openai_client.dart';
 
 /// {@template openai_model}
 /// The class that handles all the requests related to the models in the OpenAI API.

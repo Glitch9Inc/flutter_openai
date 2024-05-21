@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/models/image/image_object.dart';
-import 'package:flutter_openai/src/request/interfaces/image_interface.dart';
+import 'package:flutter_openai/src/core/requests/interfaces/image_interface.dart';
 import 'package:meta/meta.dart';
 
-import '../core/enum.dart';
-import '../core/utils/openai_logger.dart';
+import '../enum.dart';
+import '../utils/openai_logger.dart';
 
 /// {@template openai_images}
 /// The class that handles all the requests related to the images in the OpenAI API.

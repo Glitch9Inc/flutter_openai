@@ -1,6 +1,6 @@
 name: flutter_openai
 description: Flutter SDK for OpenAI APIs. Originally forked from https://github.com/anasfik/openai
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/Glitch9Inc/flutter_openai/
 repository: https://github.com/Glitch9Inc/flutter_openai/
 documentation: https://github.com/Glitch9Inc/flutter_openai/blob/main/README.md

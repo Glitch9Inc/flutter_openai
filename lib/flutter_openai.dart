@@ -1,3 +1,5 @@
+library flutter_openai;
+
 export 'openai.dart';
 export 'src/assistant_tool/assistant_tool.dart';
 export 'src/core/client/gpt_model.dart';

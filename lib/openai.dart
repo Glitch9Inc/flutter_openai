@@ -1,24 +1,24 @@
-import 'package:flutter_openai/src/request/assistant_request.dart';
-import 'package:flutter_openai/src/request/message_request.dart';
-import 'package:flutter_openai/src/request/moderation_request.dart';
-import 'package:flutter_openai/src/request/run_request.dart';
-import 'package:flutter_openai/src/request/run_step_request.dart';
-import 'package:flutter_openai/src/request/thread_request.dart';
+import 'package:flutter_openai/src/core/requests/assistant_request.dart';
+import 'package:flutter_openai/src/core/requests/message_request.dart';
+import 'package:flutter_openai/src/core/requests/moderation_request.dart';
+import 'package:flutter_openai/src/core/requests/run_request.dart';
+import 'package:flutter_openai/src/core/requests/run_step_request.dart';
+import 'package:flutter_openai/src/core/requests/thread_request.dart';
 import 'package:meta/meta.dart';
 
 import 'src/core/builder/headers.dart';
 import 'src/core/constants/config.dart';
 import 'src/core/constants/endpoints.dart';
-import 'src/core/constants/openai_http.dart';
+import 'src/core/constants/http.dart';
 import 'src/core/exceptions/api_key_not_set.dart';
+import 'src/core/requests/audio_request.dart';
+import 'src/core/requests/chat_completion_request.dart';
+import 'src/core/requests/embedding_request.dart';
+import 'src/core/requests/file_request.dart';
+import 'src/core/requests/fine_tuning_request.dart';
+import 'src/core/requests/image_request.dart';
+import 'src/core/requests/model_request.dart';
 import 'src/core/utils/openai_logger.dart';
-import 'src/request/audio_request.dart';
-import 'src/request/chat_completion_request.dart';
-import 'src/request/embedding_request.dart';
-import 'src/request/file_request.dart';
-import 'src/request/fine_tuning_request.dart';
-import 'src/request/image_request.dart';
-import 'src/request/model_request.dart';
 
 /// The main class of the package. It is a singleton class, so you can only have one instance of it.
 /// You can also access the instance by calling the [OpenAI.instance] getter.

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 
-import '../../flutter_openai.dart';
-import '../core/utils/openai_logger.dart';
+import '../../../flutter_openai.dart';
+import '../utils/openai_logger.dart';
 import 'interfaces/audio_interface.dart';
 
 /// {@template openai_audio}
