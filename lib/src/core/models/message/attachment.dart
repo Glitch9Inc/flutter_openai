@@ -1,5 +1,5 @@
 import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/core/utils/openai_converter.dart';
+import 'package:flutter_openai/src/core/utils/map_setter.dart';
 
 class Attachment {
   final String? fileId;
@@ -8,7 +8,11 @@ class Attachment {
   factory Attachment.fromMap(Map<String, dynamic> map) {
     return Attachment(
       fileId: map["file_id"],
-      tools: OpenAIConverter.fromList(map["tools"], (p0) => ToolBase.fromMap(p0)),
+      tools: MapSetter.setList(
+        map,
+        'tools',
+        factory: (p0) => ToolBase.fromMap(p0),
+      ),
     );
   }
   Map<String, dynamic> toMap() {

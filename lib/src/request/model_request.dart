@@ -1,13 +1,11 @@
+import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/models/model/model_object.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
 import 'package:flutter_openai/src/core/utils/openai_logger.dart';
 import 'package:flutter_openai/src/request/interfaces/model_interface.dart';
-import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-import '../core/builder/base_api_url.dart';
 import '../core/client/openai_client.dart';
-import '../core/constants/strings.dart';
 
 /// {@template openai_model}
 /// The class that handles all the requests related to the models in the OpenAI API.
@@ -16,7 +14,7 @@ import '../core/constants/strings.dart';
 @protected
 interface class ModelRequest implements ModelInterface {
   @override
-  String get endpoint => OpenAIStrings.endpoints.models;
+  String get endpoint => OpenAI.endpoint.models;
 
   /// {@macro openai_model}
   ModelRequest() {
@@ -36,18 +34,14 @@ interface class ModelRequest implements ModelInterface {
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,
     QueryCursor? cursor,
-    http.Client? client,
   }) async {
     return await OpenAIClient.get<List<ModelObject>>(
-      from: BaseApiUrlBuilder.build(
-        endpoint,
-      ),
-      onSuccess: (Map<String, dynamic> response) {
+      from: endpoint,
+      create: (Map<String, dynamic> response) {
         final List data = response['data'];
 
         return data.map((model) => ModelObject.fromMap(model)).toList();
       },
-      client: client,
     );
   }
 
@@ -61,16 +55,12 @@ interface class ModelRequest implements ModelInterface {
   /// print(model.id)
   /// ```
   @override
-  Future<ModelObject> retrieve(
-    String id, {
-    http.Client? client,
-  }) async {
+  Future<ModelObject> retrieve(String id) async {
     return await OpenAIClient.get<ModelObject>(
-      from: BaseApiUrlBuilder.build(endpoint, id),
-      onSuccess: (Map<String, dynamic> response) {
+      from: endpoint + '/$id',
+      create: (Map<String, dynamic> response) {
         return ModelObject.fromMap(response);
       },
-      client: client,
     );
   }
 
@@ -83,18 +73,14 @@ interface class ModelRequest implements ModelInterface {
   /// bool deleted = await OpenAI.instance.fineTune.delete("fine-tune-id");
   /// ```
   @override
-  Future<bool> delete(
-    String fineTuneId, {
-    http.Client? client,
-  }) async {
+  Future<bool> delete(String fineTuneId) async {
     final String fineTuneModelDelete = "$endpoint/$fineTuneId";
 
     return await OpenAIClient.delete(
-      from: BaseApiUrlBuilder.build(fineTuneModelDelete),
-      onSuccess: (Map<String, dynamic> response) {
+      from: fineTuneModelDelete,
+      create: (Map<String, dynamic> response) {
         return response['deleted'];
       },
-      client: client,
     );
   }
 }

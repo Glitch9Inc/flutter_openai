@@ -3,7 +3,7 @@ import 'package:flutter_openai/flutter_openai.dart';
 import 'package:flutter_openai/src/core/models/message/incomplete_details.dart';
 import 'package:flutter_openai/src/core/models/run/truncation_strategy.dart';
 import 'package:flutter_openai/src/core/models/tool/tool_choice.dart';
-import 'package:flutter_openai/src/core/utils/openai_converter.dart';
+import 'package:flutter_openai/src/core/utils/map_setter.dart';
 
 import 'required_action.dart';
 import 'run_error.dart';
@@ -15,19 +15,19 @@ class Run {
   final String id;
 
   /// The object type, which is always thread.run.
-  final String object;
+  final String? object;
 
   /// The Unix timestamp (in seconds) for when the run was created.
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   /// The ID of the thread that was executed on as a part of this run.
-  final String threadId;
+  final String? threadId;
 
   /// The ID of the assistant used for execution of this run.
-  final String assistantId;
+  final String? assistantId;
 
   /// The status of the run, which can be either queued, in_progress, requires_action, cancelling, cancelled, failed, completed, incomplete, or expired.
-  final RunStatus status;
+  final RunStatus? status;
 
   /// Details on the action required to continue the run. Will be null if no action is required.
   final RequiredAction? requiredAction;
@@ -54,16 +54,16 @@ class Run {
   final IncompleteDetails? incompleteDetails;
 
   /// The model that the assistant used for this run.
-  final String model;
+  final GPTModel? model;
 
   /// The instructions that the assistant used for this run.
-  final String instructions;
+  final String? instructions;
 
   /// The list of tools that the assistant used for this run.
-  final List<ToolBase> tools;
+  final List<ToolBase>? tools;
 
   /// Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format.
-  final Map<String, dynamic> metadata;
+  final Map<String, String>? metadata;
 
   /// Usage statistics related to the run. This value will be null if the run is not in a terminal state (i.e. in_progress, queued, etc.).
   final Usage? usage;
@@ -88,11 +88,11 @@ class Run {
   /// - auto: the model can pick between generating a message or calling one or more tools.
   /// - required: the model must call one or more tools before responding to the user.
   /// Specifying a particular tool like {"type": "file_search"} or {"type": "function", "function": {"name": "my_function"}} forces the model to call that tool.
-  final ToolChoice toolChoice;
+  final ToolChoice? toolChoice;
 
   /// Specifies the format that the model must output. Compatible with GPT-4o, GPT-4 Turbo, and all GPT-3.5 Turbo models since gpt-3.5-turbo-1106.
   /// Setting to { "type": "json_object" } enables JSON mode, which guarantees the message the model generates is valid JSON.
-  final ResponseFormat responseFormat;
+  final ResponseFormat? responseFormat;
 
   Run({
     required this.id,
@@ -101,24 +101,24 @@ class Run {
     required this.threadId,
     required this.assistantId,
     required this.status,
-    this.requiredAction,
-    this.lastError,
-    this.expiresAt,
-    this.startedAt,
-    this.cancelledAt,
-    this.failedAt,
-    this.completedAt,
-    this.incompleteDetails,
+    required this.requiredAction,
+    required this.lastError,
+    required this.expiresAt,
+    required this.startedAt,
+    required this.cancelledAt,
+    required this.failedAt,
+    required this.completedAt,
+    required this.incompleteDetails,
     required this.model,
     required this.instructions,
     required this.tools,
     required this.metadata,
-    this.usage,
-    this.temperature,
-    this.topP,
-    this.maxPromptTokens,
-    this.maxCompletionTokens,
-    this.truncationStrategy,
+    required this.usage,
+    required this.temperature,
+    required this.topP,
+    required this.maxPromptTokens,
+    required this.maxCompletionTokens,
+    required this.truncationStrategy,
     required this.toolChoice,
     required this.responseFormat,
   });
@@ -126,33 +126,60 @@ class Run {
   /// Factory method to create a [Run] object from a [Map<String, dynamic>].
   factory Run.fromMap(Map<String, dynamic> map) {
     return Run(
-      id: map['id'],
-      object: map['object'],
-      createdAt: OpenAIConverter.fromUnix(map['created_at']),
-      threadId: map['thread_id'],
-      assistantId: map['assistant_id'],
-      status: OpenAIConverter.fromString(map['status']),
-      requiredAction: RequiredAction.fromMap(map['required_action']),
-      lastError: RunError.fromMap(map['last_error']),
-      expiresAt: OpenAIConverter.fromUnix(map['expires_at']),
-      startedAt: OpenAIConverter.fromUnix(map['started_at']),
-      cancelledAt: OpenAIConverter.fromUnix(map['cancelled_at']),
-      failedAt: OpenAIConverter.fromUnix(map['failed_at']),
-      completedAt: OpenAIConverter.fromUnix(map['completed_at']),
-      incompleteDetails: IncompleteDetails.fromMap(map['incomplete_details']),
-      model: map['model'],
-      instructions: map['instructions'],
-      tools: List<ToolBase>.from(map['tools']),
-      metadata: Map<String, dynamic>.from(map['metadata']),
-      usage: Usage.fromMap(map['usage']),
-      temperature: map['temperature'],
-      topP: map['top_p'],
-      maxPromptTokens: map['max_prompt_tokens'],
-      maxCompletionTokens: map['max_completion_tokens'],
-      truncationStrategy: TruncationStrategy.fromMap(map['truncation_strategy']),
+      id: MapSetter.set<String>(map, 'id')!,
+      object: MapSetter.set<String>(map, 'object'),
+      createdAt: MapSetter.set<DateTime>(map, 'created_at'),
+      threadId: MapSetter.set<String>(map, 'thread_id'),
+      assistantId: MapSetter.set<String>(map, 'assistant_id'),
+      status: MapSetter.setEnum<RunStatus>(
+        map,
+        'status',
+        enumValues: RunStatus.values,
+        defaultValue: RunStatus.none,
+      ),
+      requiredAction: MapSetter.set<RequiredAction>(
+        map,
+        'required_action',
+        factory: (map) => RequiredAction.fromMap(map),
+      ),
+      lastError: MapSetter.set<RunError>(
+        map,
+        'last_error',
+        factory: (map) => RunError.fromMap(map),
+      ),
+      expiresAt: MapSetter.set<DateTime>(map, 'expires_at'),
+      startedAt: MapSetter.set<DateTime>(map, 'started_at'),
+      cancelledAt: MapSetter.set<DateTime>(map, 'cancelled_at'),
+      failedAt: MapSetter.set<DateTime>(map, 'failed_at'),
+      completedAt: MapSetter.set<DateTime>(map, 'completed_at'),
+      incompleteDetails: MapSetter.set<IncompleteDetails>(
+        map,
+        'incomplete_details',
+        factory: IncompleteDetails.fromMap,
+      ),
+      model: MapSetter.set<GPTModel>(map, 'model'),
+      instructions: MapSetter.set<String>(map, 'instructions'),
+      tools: MapSetter.setList<ToolBase>(
+        map,
+        'tools',
+        factory: ToolBase.fromMap,
+      )!,
+      metadata: MapSetter.setMetadata(map)!,
+      usage: MapSetter.set<Usage>(map, 'usage', factory: (map) => Usage.fromMap(map)),
+      temperature: MapSetter.set<double>(map, 'temperature'),
+      topP: MapSetter.set<double>(map, 'top_p'),
+      maxPromptTokens: MapSetter.set<int>(map, 'max_prompt_tokens'),
+      maxCompletionTokens: MapSetter.set<int>(map, 'max_completion_tokens'),
+      truncationStrategy: MapSetter.set<TruncationStrategy>(
+        map,
+        'truncation_strategy',
+        factory: TruncationStrategy.fromMap,
+      ),
       toolChoice:
           map['tool_choice'] is String ? ToolChoice.auto : ToolChoice.fromMap(map['tool_choice']),
-      responseFormat: ResponseFormat.fromMap(map['response_format']),
+      responseFormat: map['response_format'] is String
+          ? ResponseFormat.auto
+          : ResponseFormat.fromMap(map['response_format']),
     );
   }
 
@@ -165,24 +192,24 @@ class Run {
       'thread_id': threadId,
       'assistant_id': assistantId,
       'status': status,
-      'required_action': requiredAction,
-      'last_error': lastError,
-      'expires_at': expiresAt,
-      'started_at': startedAt,
-      'cancelled_at': cancelledAt,
-      'failed_at': failedAt,
-      'completed_at': completedAt,
-      'incomplete_details': incompleteDetails,
+      'required_action': requiredAction?.toMap(),
+      'last_error': lastError?.toMap(),
+      'expires_at': expiresAt?.toIso8601String(),
+      'started_at': startedAt?.toIso8601String(),
+      'cancelled_at': cancelledAt?.toIso8601String(),
+      'failed_at': failedAt?.toIso8601String(),
+      'completed_at': completedAt?.toIso8601String(),
+      'incomplete_details': incompleteDetails?.toMap(),
       'model': model,
       'instructions': instructions,
       'tools': tools,
       'metadata': metadata,
-      'usage': usage,
+      'usage': usage?.toMap(),
       'temperature': temperature,
       'top_p': topP,
       'max_prompt_tokens': maxPromptTokens,
       'max_completion_tokens': maxCompletionTokens,
-      'truncation_strategy': truncationStrategy,
+      'truncation_strategy': truncationStrategy?.toMap(),
       'tool_choice': toolChoice,
       'response_format': responseFormat,
     };

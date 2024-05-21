@@ -1,33 +1,30 @@
-import 'package:flutter_openai/src/core/builder/base_api_url.dart';
+import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
-import 'package:flutter_openai/src/core/constants/strings.dart';
 import 'package:flutter_openai/src/core/models/message/message.dart';
 import 'package:flutter_openai/src/core/models/thread/thread.dart';
 import 'package:flutter_openai/src/core/models/tool/tool_base.dart';
 import 'package:flutter_openai/src/request/interfaces/thread_interface.dart';
 import 'package:flutter_openai/src/request/utils/request_utils.dart';
-import 'package:http/src/client.dart';
 
 interface class ThreadRequest implements ThreadInterface {
   @override
-  String get endpoint => OpenAIStrings.endpoints.thread;
+  String get endpoint => OpenAI.endpoint.thread;
 
   @override
   Future<Thread> create({
     List<Message>? messages,
     ToolBase? toolResources,
     Map<String, String>? metadata,
-    Client? client,
   }) {
     return OpenAIClient.post<Thread>(
-      to: BaseApiUrlBuilder.build(endpoint),
+      to: endpoint,
       body: {
         if (messages != null) "messages": messages.map((item) => item.toMap()).toList(),
         if (toolResources != null) "tool_resources": toolResources.toMap(),
         if (metadata != null) "metadata": metadata,
       },
-      onSuccess: (p0) => Thread.fromMap(p0),
-      client: client,
+      create: (p0) => Thread.fromMap(p0),
+      isBeta: true,
     );
   }
 
@@ -36,32 +33,31 @@ interface class ThreadRequest implements ThreadInterface {
     String threadId, {
     ToolBase? toolResources,
     Map<String, String>? metadata,
-    Client? client,
   }) {
     final formattedEndpoint = endpoint.replaceAll("{thread_id}", threadId);
 
     return OpenAIClient.post<Thread>(
-      to: BaseApiUrlBuilder.build(formattedEndpoint),
+      to: formattedEndpoint,
       body: {
         if (toolResources != null) "tool_resources": toolResources.toMap(),
         if (metadata != null) "metadata": metadata,
       },
-      onSuccess: (p0) => Thread.fromMap(p0),
-      client: client,
+      create: (p0) => Thread.fromMap(p0),
+      isBeta: true,
     );
   }
 
   @override
-  Future<Thread?> retrieve(String threadId, {Client? client}) {
+  Future<Thread?> retrieve(String threadId) {
     final formattedEndpoint = endpoint.replaceAll("{thread_id}", threadId);
 
-    return RequestUtils.retrieve(formattedEndpoint, (p0) => Thread.fromMap(p0));
+    return RequestUtils.retrieve(formattedEndpoint, (p0) => Thread.fromMap(p0), isBeta: true);
   }
 
   @override
-  Future<bool> delete(String threadId, {Client? client}) {
+  Future<bool> delete(String threadId) {
     final formattedEndpoint = endpoint.replaceAll("{thread_id}", threadId);
 
-    return RequestUtils.delete(formattedEndpoint);
+    return RequestUtils.delete(formattedEndpoint, isBeta: true);
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter_openai/src/request/interfaces/shared_interfaces.dart';
-import 'package:http/http.dart' as http;
 
 abstract class ThreadInterface implements EndpointInterface, RetrieveInterface, DeleteInterface {
   // create and modify
@@ -7,13 +6,11 @@ abstract class ThreadInterface implements EndpointInterface, RetrieveInterface, 
     List<Message>? messages,
     ToolBase? toolResources,
     Map<String, String>? metadata,
-    http.Client? client,
   });
 
   Future<Thread> modify(
     String threadId, {
     ToolBase? toolResources,
     Map<String, String>? metadata,
-    http.Client? client,
   });
 }

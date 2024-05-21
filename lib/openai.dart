@@ -8,6 +8,8 @@ import 'package:meta/meta.dart';
 
 import 'src/core/builder/headers.dart';
 import 'src/core/constants/config.dart';
+import 'src/core/constants/endpoints.dart';
+import 'src/core/constants/openai_http.dart';
 import 'src/core/exceptions/api_key_not_set.dart';
 import 'src/core/utils/openai_logger.dart';
 import 'src/request/audio_request.dart';
@@ -44,6 +46,9 @@ final class OpenAI {
 
     return _instance;
   }
+
+  static final endpoint = OpenAIApisEndpoints.instance;
+  static final httpMethod = OpenAIHttp.instance;
 
   /// {@macro openai_config_requests_timeOut}
   static Duration get requestsTimeOut => OpenAIConfig.requestsTimeOut;

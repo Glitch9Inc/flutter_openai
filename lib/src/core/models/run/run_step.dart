@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/core/utils/openai_converter.dart';
+import 'package:flutter_openai/src/core/utils/map_setter.dart';
 
 import 'run_error.dart';
 import 'step_details.dart';
@@ -49,7 +49,7 @@ class RunStep {
   final DateTime? completedAt;
 
   /// Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format.
-  final Map<String, dynamic> metadata;
+  final Map<String, String> metadata;
 
   /// Usage statistics related to the run step. This value will be null while the run step's status is in_progress.
   final Usage? usage;
@@ -97,44 +97,27 @@ class RunStep {
     return RunStep(
       id: map['id'],
       object: map['object'],
-      createdAt: OpenAIConverter.fromUnix(map['created_at']),
+      createdAt: MapSetter.setDateTime(map['created_at']),
       assistantId: map['assistant_id'],
       threadId: map['thread_id'],
       runId: map['run_id'],
       type: map['type'],
-      status: OpenAIConverter.fromString(map['status']),
+      status: MapSetter.setEnum<RunStatus>(
+        map,
+        'status',
+        enumValues: RunStatus.values,
+        defaultValue: RunStatus.none,
+      ),
       stepDetails: StepDetails.fromMap(map['step_details']),
       lastError: RunError.fromMap(map['last_error']),
-      expiredAt: OpenAIConverter.fromUnix(map['expired_at']),
-      cancelledAt: OpenAIConverter.fromUnix(map['cancelled_at']),
-      failedAt: OpenAIConverter.fromUnix(map['failed_at']),
-      completedAt: OpenAIConverter.fromUnix(map['completed_at']),
-      metadata: Map<String, dynamic>.from(map['metadata']),
-      usage: Usage.fromMap(Map<String, dynamic>.from(map['usage'])),
+      expiredAt: MapSetter.set<DateTime>(map, 'expired_at'),
+      cancelledAt: MapSetter.set<DateTime>(map, 'cancelled_at'),
+      failedAt: MapSetter.set<DateTime>(map, 'failed_at'),
+      completedAt: MapSetter.set<DateTime>(map, 'completed_at'),
+      metadata: MapSetter.setMetadata(map)!,
+      usage: Usage.fromMap(map['usage']),
     );
   }
-
-  /// Method to convert the [RunStep] object to a [Map<String, dynamic>].
-  // Map<String, dynamic> toMap() {
-  //   return {
-  //     'id': id,
-  //     'object': object,
-  //     'created_at': createdAt.millisecondsSinceEpoch ~/ 1000,
-  //     'assistant_id': assistantId,
-  //     'thread_id': threadId,
-  //     'run_id': runId,
-  //     'type': type,
-  //     'status': status,
-  //     'step_details': stepDetails,
-  //     'last_error': lastError,
-  //     'expired_at': expiredAt?.millisecondsSinceEpoch ~/ 1000,
-  //     'cancelled_at': cancelledAt?.millisecondsSinceEpoch ~/ 1000,
-  //     'failed_at': failedAt?.millisecondsSinceEpoch ~/ 1000,
-  //     'completed_at': completedAt?.millisecondsSinceEpoch ~/ 1000,
-  //     'metadata': metadata,
-  //     'usage': usage?.toMap(),
-  //   };
-  // }
 
   @override
   String toString() {

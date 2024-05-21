@@ -1,11 +1,11 @@
 import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/core/utils/openai_converter.dart';
+import 'package:flutter_openai/src/core/utils/map_setter.dart';
 
 class Thread {
   final String id;
   final String object;
   final DateTime createdAt;
-  final ToolBase? toolResources;
+  final ToolResource? toolResources;
   final Map<String, String> metadata;
 
   const Thread({
@@ -20,9 +20,13 @@ class Thread {
     return Thread(
       id: map['id'],
       object: map['object'],
-      createdAt: OpenAIConverter.fromUnix(map['created_at']),
-      toolResources: map['tool_resources'],
-      metadata: map['metadata'],
+      createdAt: MapSetter.set<DateTime>(map, 'created_at')!,
+      toolResources: MapSetter.set<ToolResource>(
+        map,
+        'tool_resources',
+        factory: ToolResource.fromMap,
+      ),
+      metadata: MapSetter.setMetadata(map)!,
     );
   }
 
@@ -31,7 +35,7 @@ class Thread {
       "id": id,
       "object": object,
       "created_at": createdAt.toIso8601String(),
-      "tool_resources": toolResources,
+      "tool_resources": toolResources?.toMap(),
       "metadata": metadata,
     };
   }

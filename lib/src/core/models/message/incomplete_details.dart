@@ -7,6 +7,12 @@ class IncompleteDetails {
   factory IncompleteDetails.fromMap(Map<String, dynamic> map) {
     return IncompleteDetails(reason: map['reason']);
   }
+  Map<String, dynamic> toMap() {
+    return {
+      'reason': reason,
+    };
+  }
+
   @override
   String toString() => 'IncompleteDetails(reason: $reason)';
 }

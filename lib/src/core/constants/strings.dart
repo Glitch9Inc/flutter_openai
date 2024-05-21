@@ -1,7 +1,5 @@
 import 'package:meta/meta.dart';
 
-import 'endpoints.dart';
-
 /// {@template openai_strings}
 /// This class is responsible for storing general [String] constants.
 /// {@endtemplate}
@@ -17,12 +15,6 @@ abstract class OpenAIStrings {
   /// This is the default base url for all the requests.
   static const defaultBaseUrl = 'https://api.openai.com';
 
-  /// The verb name for the [GET] method.
-  static const getMethod = 'GET';
-
-  /// The verb name for the [POST] method.
-  static const postMethod = 'POST';
-
   /// The identifier and initial value to exclude for stream responses (SSE).
   static const streamResponseStart = "data: ";
 
@@ -36,9 +28,6 @@ abstract class OpenAIStrings {
   static const messageFieldKey = 'message';
 
   /// {@macro openai_endpoints}
-  static final endpoints = OpenAIApisEndpoints.instance;
-
   static final betaHeader = 'OpenAI-Beta';
-
-  static final betaHeaderValue = 'Assistants=v1';
+  static final betaHeaderValue = 'assistants=v2';
 }

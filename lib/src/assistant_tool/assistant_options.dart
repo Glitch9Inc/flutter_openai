@@ -6,7 +6,7 @@ class AssistantOptions {
   final String description;
   final String instruction;
   final List<ToolBase>? tools;
-  final ToolResources? toolResources;
+  final ToolResource? toolResources;
   final Map<String, String>? metadata;
   final double? temperature;
   final double? topP;

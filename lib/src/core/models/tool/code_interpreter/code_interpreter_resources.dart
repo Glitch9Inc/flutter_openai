@@ -1,6 +1,6 @@
 import 'package:flutter_openai/flutter_openai.dart';
 
-class CodeInterpreterResources extends ToolResources {
+class CodeInterpreterResources extends ToolResource {
   final List<String>? fileIds;
   CodeInterpreterResources({this.fileIds});
   factory CodeInterpreterResources.fromMap(Map<String, dynamic> map) {

@@ -1,10 +1,8 @@
-import 'package:flutter_openai/src/core/builder/base_api_url.dart';
+import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/models/embedding/embedding.dart';
-import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import '../core/client/openai_client.dart';
-import '../core/constants/strings.dart';
 import '../core/utils/openai_logger.dart';
 import 'interfaces/embedding_interface.dart';
 
@@ -15,7 +13,7 @@ import 'interfaces/embedding_interface.dart';
 @protected
 interface class EmbeddingRequest implements EmbeddingInterface {
   @override
-  String get endpoint => OpenAIStrings.endpoints.embeddings;
+  String get endpoint => OpenAI.endpoint.embeddings;
 
   /// {@macro openai_embedding}
   EmbeddingRequest() {
@@ -47,7 +45,6 @@ interface class EmbeddingRequest implements EmbeddingInterface {
     required String model,
     required input,
     String? user,
-    http.Client? client,
   }) async {
     assert(
       input is String || input is List<String>,
@@ -55,16 +52,15 @@ interface class EmbeddingRequest implements EmbeddingInterface {
     );
 
     return await OpenAIClient.post<Embedding>(
-      onSuccess: (Map<String, dynamic> response) {
+      create: (Map<String, dynamic> response) {
         return Embedding.fromMap(response);
       },
-      to: BaseApiUrlBuilder.build(endpoint),
+      to: endpoint,
       body: {
         "model": model,
         if (input != null) "input": input,
         if (user != null) "user": user,
       },
-      client: client,
     );
   }
 }

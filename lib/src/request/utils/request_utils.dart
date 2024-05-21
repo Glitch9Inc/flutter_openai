@@ -1,7 +1,5 @@
-import 'package:flutter_openai/src/core/builder/base_api_url.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
-import 'package:http/http.dart' as http;
 
 class RequestUtils {
   static Future<List<T>> list<T>(
@@ -10,47 +8,47 @@ class RequestUtils {
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder? order,
     QueryCursor? cursor,
-    http.Client? client,
+    bool isBeta = false,
   }) async {
     return await OpenAIClient.get(
-      from: BaseApiUrlBuilder.build(endpoint),
+      from: endpoint,
       body: {
         "limit": limit,
         if (order != null) "order": order.getName(),
         if (cursor != null) ...{"after": cursor.after, "before": cursor.before},
       },
-      onSuccess: (Map<String, dynamic> response) {
+      create: (Map<String, dynamic> response) {
         final List dataList = response['data'];
 
         return dataList.map<T>((e) => create(e as Map<String, dynamic>)).toList();
       },
-      client: client,
+      isBeta: isBeta,
     );
   }
 
   static Future<T> retrieve<T>(
     String endpoint,
     T Function(Map<String, dynamic>) create, {
-    http.Client? client,
+    bool isBeta = false,
   }) async {
     return await OpenAIClient.get(
-      from: BaseApiUrlBuilder.build(endpoint),
-      onSuccess: (Map<String, dynamic> response) {
+      from: endpoint,
+      create: (Map<String, dynamic> response) {
         return create(response);
       },
-      client: client,
+      isBeta: isBeta,
     );
   }
 
-  static Future<bool> delete(String endpoint, {http.Client? client}) async {
+  static Future<bool> delete(String endpoint, {bool isBeta = false}) async {
     return await OpenAIClient.delete(
-      from: BaseApiUrlBuilder.build(endpoint),
-      onSuccess: (Map<String, dynamic> response) {
+      from: endpoint,
+      create: (Map<String, dynamic> response) {
         final bool isDeleted = response["deleted"] as bool;
 
         return isDeleted;
       },
-      client: client,
+      isBeta: isBeta,
     );
   }
 }

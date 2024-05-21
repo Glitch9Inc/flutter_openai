@@ -59,10 +59,10 @@ abstract final class OpenAILogger {
   static void logResponseBody(response) {
     if (_isActive && _showResponsesLogs) {
       if (response is Response) {
-        dev.log(response.body.toString(), name: OpenAIStrings.openai);
+        dev.log("ResponseBody: ${response.body.toString()}", name: OpenAIStrings.openai);
       } else {
         dev.log(
-          response.toString(),
+          "ResponseBody: ${response.toString()}",
           name: OpenAIStrings.openai,
         );
       }
@@ -103,12 +103,12 @@ abstract final class OpenAILogger {
     log("organization id set to $organizationId");
   }
 
-  static void logStartRequest(String from) {
-    return log("starting request to $from");
+  static void logStartRequest(String method, String from) {
+    return log("starting $method request to $from");
   }
 
-  static void requestToWithStatusCode(String url, int statusCode) {
-    return log("request to $url finished with status code ${statusCode}");
+  static void requestToWithStatusCode(Uri uri, int statusCode) {
+    return log("request to $uri finished with status code ${statusCode}");
   }
 
   static void startingDecoding() {
@@ -135,12 +135,12 @@ abstract final class OpenAILogger {
     return log("Starting to reading stream response");
   }
 
-  static void logIncludedHeaders(
+  static void logHeaders(
     Map<String, dynamic> additionalHeadersToRequests,
   ) {
     for (int index = 0; index < additionalHeadersToRequests.entries.length; index++) {
       final entry = additionalHeadersToRequests.entries.elementAt(index);
-      log("header ${entry.key}:${entry.value} will be added to all requets");
+      log("header: ${entry.key}:${entry.value}");
     }
   }
 
@@ -186,7 +186,23 @@ abstract final class OpenAILogger {
     return log("isWeb set to $isWeb");
   }
 
+  static void tryingToRetrieveObject(String objectName) {
+    return log("trying to retrieve $objectName");
+  }
+
+  static void failedToRetrieveObject(String objectName) {
+    return log("failed to retrieve $objectName");
+  }
+
+  static void creatingNewObject(String objectName) {
+    return log("creating new $objectName");
+  }
+
   static void errorCreatingObject(String objectName) {
-    return log("error creating object $objectName");
+    return log("error creating $objectName");
+  }
+
+  static void isBetaRequest() {
+    return log("this is a beta request");
   }
 }

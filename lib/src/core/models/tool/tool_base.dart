@@ -16,5 +16,10 @@ abstract class ToolBase {
     return FunctionTool.fromMap(map);
   }
 
-  Map<String, dynamic> toMap();
+  Map<String, dynamic> toMap() {
+    if (this is FileSearch) return (this as FileSearch).toMap();
+    if (this is CodeInterpreter) return (this as CodeInterpreter).toMap();
+
+    return (this as FunctionTool).toMap();
+  }
 }

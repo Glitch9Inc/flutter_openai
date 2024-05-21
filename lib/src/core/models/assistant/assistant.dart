@@ -1,5 +1,5 @@
 import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/core/utils/openai_converter.dart';
+import 'package:flutter_openai/src/core/utils/map_setter.dart';
 import 'package:meta/meta.dart';
 
 export 'response_format.dart';
@@ -38,13 +38,17 @@ class Assistant {
     return Assistant(
       id: map['id'],
       object: map['object'],
-      createdAt: OpenAIConverter.fromUnix(map['created_at']),
+      createdAt: MapSetter.setDateTime(map['created_at']),
       name: map['name'],
       description: map['description'],
       instructions: map['instructions'],
-      model: map['model'],
-      tools: map['tools'],
-      metadata: map['metadata'],
+      model: MapSetter.setGPTModel(map['model']),
+      tools: MapSetter.setList<ToolCall>(
+        map,
+        'tools',
+        factory: (m) => ToolCall.fromMap(m),
+      ),
+      metadata: MapSetter.setMetadata(map),
       temperature: map['temperature'],
       topP: map['top_p'],
       responseFormat: map['response_format'] is String

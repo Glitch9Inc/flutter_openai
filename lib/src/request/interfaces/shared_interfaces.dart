@@ -1,5 +1,4 @@
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
-import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 export 'package:flutter_openai/src/core/models/export.dart';
@@ -11,7 +10,7 @@ abstract class EndpointInterface {
 }
 
 abstract class RetrieveInterface<T> {
-  Future<T?> retrieve(String objectId, {http.Client? client});
+  Future<T?> retrieve(String objectId);
 }
 
 abstract class ListInterface<T> {
@@ -19,38 +18,37 @@ abstract class ListInterface<T> {
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,
     QueryCursor? cursor,
-    http.Client? client,
   });
 }
 
 abstract class DeleteInterface {
-  Future<bool> delete(String objectId, {http.Client? client});
+  Future<bool> delete(String objectId);
 }
 
 abstract class CancelInterface<T> {
-  Future<T> cancel(String objectId, {http.Client? client});
+  Future<T> cancel(String objectId);
 }
 
 abstract class RunRetrieveInterface<Run> {
-  Future<Run?> retrieve(String threadId, String runId, {http.Client? client});
+  Future<Run?> retrieve(String threadId, String runId);
 }
 
 abstract class MessageListInterface<Message> {
-  Future<List<Message>> list(String threadId, {http.Client? client});
+  Future<List<Message>> list(String threadId);
 }
 
 abstract class RunListInterface<Run> {
-  Future<List<Run>> list(String threadId, {http.Client? client});
+  Future<List<Run>> list(String threadId);
 }
 
 abstract class RunCancelInterface<Run> {
-  Future<Run?> cancel(String threadId, String runId, {http.Client? client});
+  Future<Run?> cancel(String threadId, String runId);
 }
 
 abstract class RunStepListInterface<RunStep> {
-  Future<List<RunStep>> list(String threadId, String runId, {http.Client? client});
+  Future<List<RunStep>> list(String threadId, String runId);
 }
 
 abstract class RunStepRetrieveInterface<RunStep> {
-  Future<RunStep?> retrieve(String threadId, String runId, String stepId, {http.Client? client});
+  Future<RunStep?> retrieve(String threadId, String runId, String stepId);
 }

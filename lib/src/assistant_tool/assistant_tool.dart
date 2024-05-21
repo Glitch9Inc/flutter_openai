@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter_openai/flutter_openai.dart';
 import 'package:flutter_openai/src/core/utils/openai_logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 export 'package:flutter_openai/src/assistant_tool/assistant_options.dart';
 export 'package:flutter_openai/src/assistant_tool/run_options.dart';
@@ -31,6 +32,7 @@ abstract class AssistantTool<TToolResponse> {
   final int assistantsFetchCount;
 
   // Properties
+  SharedPreferences? prefs;
   GPTModel model = DEFAULT_MODEL;
   Assistant? assistant;
   Thread? thread;
@@ -39,6 +41,8 @@ abstract class AssistantTool<TToolResponse> {
   String? _threadId;
   String? _assistantId;
   DateTime _lastRequestTime = DateTime.now();
+  bool _isInitializing = true;
+  bool _isInit = false;
 
   AssistantTool(
     this.assistantOptions, {
@@ -53,33 +57,41 @@ abstract class AssistantTool<TToolResponse> {
     String toolName = runtimeType.toString();
     _toolName = toolName;
     model = assistantOptions.model;
-    _threadId = "$toolName.ThreadId";
-    _assistantId = "$toolName.AssistantId";
   }
 
-  Future<void> initialize() async {
-    try {
-      thread = await _getThread();
-
-      await Future.delayed(const Duration(milliseconds: INITIAL_DELAY_MILLIS));
-
-      assistant = await _getAssistant();
-
-      if (assistant == null || thread == null) {
-        throw Exception("Initialization failed");
-      }
-
-      _assistantId = assistant!.id;
-      _threadId = thread!.id;
-
-      await onInitialize();
-    } catch (e) {
-      print("Error initializing assistant tool: $e");
+  Future<void> init() async {
+    prefs = await SharedPreferences.getInstance();
+    String threadIdKey = "$_toolName.ThreadId";
+    String assistantIdKey = "$_toolName.AssistantId";
+    if (prefs != null) {
+      _threadId = prefs!.getString(threadIdKey);
+      _assistantId = prefs!.getString(assistantIdKey);
     }
+
+    thread = await _getThread();
+    if (thread == null) {
+      _isInitializing = false;
+      throw Exception("Unable to get thread");
+    }
+
+    assistant = await _getAssistant();
+
+    if (assistant == null) {
+      _isInitializing = false;
+      throw Exception("Unable to get assistant");
+    }
+
+    _assistantId = assistant!.id;
+    _threadId = thread!.id;
+
+    await onInit();
+    _isInit = true;
+    _isInitializing = false;
+    print("Assistant tool initialized successfully.");
   }
 
   /// Callback for when the assistant tool is initialized
-  Future<void> onInitialize();
+  Future<void> onInit();
 
   /// Validate the tokens
   bool validateTokens(int minTokens);
@@ -98,10 +110,19 @@ abstract class AssistantTool<TToolResponse> {
     String? additionalInstruction,
     Function(String)? onRequestPrepared,
   }) async {
-    if (promptText.isEmpty) {
-      print("[$_toolName|Request] The input text is empty.");
+    if (!_isInit) {
+      if (!_isInitializing) {
+        await init();
+        if (!_isInit) {
+          throw Exception("The assistant tool is not initialized.");
+        }
+      } else {
+        throw Exception("The assistant tool is initializing.");
+      }
+    }
 
-      return null;
+    if (promptText.isEmpty) {
+      throw Exception("The input text is empty.");
     }
 
     print("[$_toolName|Request] Requesting with input: $promptText");
@@ -112,18 +133,14 @@ abstract class AssistantTool<TToolResponse> {
     // Check if request is too soon
     if (DateTime.now().difference(_lastRequestTime) <
         Duration(milliseconds: REQUEST_DELAY_MILLIS)) {
-      print("[$_toolName|Request] The request is too fast. Please wait for a while.");
-
-      return null;
+      throw Exception("The request is too fast. Please wait for a while.");
     }
 
     _lastRequestTime = DateTime.now();
     promptText = removeLineBreaks(promptText);
 
     if (thread == null) {
-      print("Thread is not initialized.");
-
-      return null;
+      throw Exception("Thread is not initialized.");
     }
 
     try {
@@ -133,9 +150,7 @@ abstract class AssistantTool<TToolResponse> {
         content: promptText,
       );
     } catch (e) {
-      print("Error creating assistant message: $e");
-
-      return null;
+      throw Exception("Error creating assistant message: $e");
     }
 
     onRequestPrepared?.call(promptText);
@@ -147,20 +162,18 @@ abstract class AssistantTool<TToolResponse> {
     currentRun = await OpenAI.instance.run.create(
       thread!.id,
       assistantId: assistant!.id,
-      additionalInstruction: additionalInstruction,
+      additionalInstructions: additionalInstruction,
     );
 
     if (currentRun == null) {
-      OpenAILogger.errorCreatingObject("run");
-
-      return null;
+      throw Exception("Error creating run.");
     }
 
     currentRun = await _waitForRunStatusChange(RunStatus.requires_action);
-    if (currentRun == null) return null;
+    if (currentRun == null) throw Exception("Error waiting for run status change.");
 
     List<TToolResponse>? functionResult = _retrieveRunResult();
-    if (functionResult == null) return null;
+    if (functionResult == null) throw Exception("Error retrieving run result.");
 
     _completeRun(currentRun!); // Handle usage and complete the run if necessary
 
@@ -168,22 +181,44 @@ abstract class AssistantTool<TToolResponse> {
   }
 
   Future<Thread?> _getThread() async {
-    if (_threadId != null) {
-      Thread? thread = await OpenAI.instance.thread.retrieve(_threadId!);
+    if (_threadId != null && !_threadId!.isEmpty) {
+      try {
+        OpenAILogger.tryingToRetrieveObject("thread");
+        thread = await OpenAI.instance.thread.retrieve(_threadId!);
+      } catch (e) {
+        print("Error retrieving thread: $e");
+      }
+
       if (thread != null) return thread;
+      OpenAILogger.failedToRetrieveObject("thread");
       await Future.delayed(Duration(milliseconds: INITIAL_DELAY_MILLIS));
     }
 
-    return await OpenAI.instance.thread.create();
+    OpenAILogger.creatingNewObject("thread");
+
+    try {
+      return OpenAI.instance.thread.create();
+    } catch (e) {
+      print("Error creating thread: $e");
+    }
+
+    return null;
   }
 
   Future<Assistant?> _getAssistant() async {
-    Assistant? assistant;
-    if (_assistantId != null) {
-      assistant = await OpenAI.instance.assistant.retrieve(_assistantId!);
+    if (_assistantId != null && !_assistantId!.isEmpty) {
+      try {
+        OpenAILogger.tryingToRetrieveObject("assistant");
+        assistant = await OpenAI.instance.assistant.retrieve(_assistantId!);
+      } catch (e) {
+        print("Error retrieving assistant: $e");
+      }
       if (assistant != null) return assistant;
+      OpenAILogger.failedToRetrieveObject("assistant");
       await Future.delayed(Duration(milliseconds: INITIAL_DELAY_MILLIS));
     }
+
+    OpenAILogger.creatingNewObject("assistant");
 
     return await _createAssistant();
   }
@@ -193,17 +228,23 @@ abstract class AssistantTool<TToolResponse> {
     sb.write(assistantOptions.instruction);
     sb.write(" Limit your response to $maxRequestLength characters.");
 
-    return await OpenAI.instance.assistant.create(
-      model,
-      name: assistantOptions.name,
-      description: assistantOptions.description,
-      instruction: sb.toString(),
-      tools: assistantOptions.tools,
-      toolResources: assistantOptions.toolResources,
-      temperature: assistantOptions.temperature,
-      topP: assistantOptions.topP,
-      responseFormat: assistantOptions.responseFormat,
-    );
+    try {
+      return OpenAI.instance.assistant.create(
+        model,
+        name: assistantOptions.name,
+        description: assistantOptions.description,
+        instructions: sb.toString(),
+        tools: assistantOptions.tools,
+        toolResources: assistantOptions.toolResources,
+        temperature: assistantOptions.temperature,
+        topP: assistantOptions.topP,
+        responseFormat: assistantOptions.responseFormat,
+      );
+    } catch (e) {
+      print("Error creating assistant: $e");
+    }
+
+    return null;
   }
 
   /// Wait for the run status to change
@@ -214,7 +255,9 @@ abstract class AssistantTool<TToolResponse> {
     while (DateTime.now().isBefore(endTime)) {
       // Simulating retrieving the run status
       // Assume you have a method to check the status of the run
-      currentRun = await OpenAI.instance.run.retrieve(thread!.id, currentRun!.id) ?? currentRun;
+      if (thread != null && currentRun != null) {
+        currentRun = await OpenAI.instance.run.retrieve(thread!.id, currentRun!.id) ?? currentRun;
+      }
 
       if (currentRun != null && currentRun!.status == statusToWaitFor) {
         return currentRun;

@@ -10,4 +10,10 @@ class RunError {
   factory RunError.fromMap(Map<String, dynamic> map) {
     return RunError(code: map['code'], message: map['message']);
   }
+  Map<String, dynamic> toMap() {
+    return {
+      'code': code,
+      'message': message,
+    };
+  }
 }

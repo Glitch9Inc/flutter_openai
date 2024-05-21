@@ -1,4 +1,5 @@
 enum RunStatus {
+  none,
   queued,
   in_progress,
   requires_action,

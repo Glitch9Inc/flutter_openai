@@ -1,8 +1,6 @@
-import 'package:flutter_openai/src/core/builder/base_api_url.dart';
+import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
-import 'package:flutter_openai/src/core/constants/strings.dart';
 import 'package:flutter_openai/src/core/models/moderation/moderation_object.dart';
-import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import '../core/utils/openai_logger.dart';
@@ -15,7 +13,7 @@ import 'interfaces/moderation_interface.dart';
 @protected
 interface class ModerationRequest implements ModerationInterface {
   @override
-  String get endpoint => OpenAIStrings.endpoints.moderation;
+  String get endpoint => OpenAI.endpoint.moderation;
 
   /// {@macro openai_moderation}
   ModerationRequest() {
@@ -45,18 +43,16 @@ interface class ModerationRequest implements ModerationInterface {
   Future<ModerationObject> create({
     required String input,
     String? model,
-    http.Client? client,
   }) async {
     return await OpenAIClient.post<ModerationObject>(
-      onSuccess: (Map<String, dynamic> response) {
+      create: (Map<String, dynamic> response) {
         return ModerationObject.fromMap(response);
       },
       body: {
         "input": input,
         if (model != null) "model": model,
       },
-      to: BaseApiUrlBuilder.build(endpoint),
-      client: client,
+      to: endpoint,
     );
   }
 }

@@ -1,14 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter_openai/src/core/builder/base_api_url.dart';
+import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/models/file/file_object.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
 import 'package:flutter_openai/src/request/utils/request_utils.dart';
-import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-import '../core/constants/strings.dart';
 import '../core/utils/openai_logger.dart';
 import 'interfaces/file_interface.dart';
 
@@ -19,7 +17,7 @@ import 'interfaces/file_interface.dart';
 @protected
 interface class FileRequest implements FileInterface {
   @override
-  String get endpoint => OpenAIStrings.endpoints.files;
+  String get endpoint => OpenAI.endpoint.files;
 
   /// {@macro openai_files}
   FileRequest() {
@@ -38,7 +36,6 @@ interface class FileRequest implements FileInterface {
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,
     QueryCursor? cursor,
-    http.Client? client,
   }) async {
     return await RequestUtils.list<FileObject>(
       endpoint,
@@ -46,7 +43,6 @@ interface class FileRequest implements FileInterface {
       limit: limit,
       order: order,
       cursor: cursor,
-      client: client,
     );
   }
 
@@ -60,15 +56,13 @@ interface class FileRequest implements FileInterface {
   ///```
   @override
   Future<FileObject> retrieve(
-    String fileId, {
-    http.Client? client,
-  }) async {
+    String fileId,
+  ) async {
     String formattedEndpoint = "$endpoint/$fileId";
 
     return await RequestUtils.retrieve<FileObject>(
       formattedEndpoint,
       (e) => FileObject.fromMap(e),
-      client: client,
     );
   }
 
@@ -82,15 +76,13 @@ interface class FileRequest implements FileInterface {
   /// ```
   @override
   Future retrieveContent(
-    String fileId, {
-    http.Client? client,
-  }) async {
+    String fileId,
+  ) async {
     final String fileIdEndpoint = "/$fileId/content";
 
     return await OpenAIClient.get(
-      from: BaseApiUrlBuilder.build(endpoint + fileIdEndpoint),
+      from: endpoint + fileIdEndpoint,
       returnRawResponse: true,
-      client: client,
     );
   }
 
@@ -116,12 +108,12 @@ interface class FileRequest implements FileInterface {
     required String purpose,
   }) async {
     return await OpenAIClient.fileUpload(
-      to: BaseApiUrlBuilder.build(endpoint),
+      to: endpoint,
       body: {
         "purpose": purpose,
       },
       file: file,
-      onSuccess: (Map<String, dynamic> response) {
+      create: (Map<String, dynamic> response) {
         return FileObject.fromMap(response);
       },
     );
@@ -136,12 +128,9 @@ interface class FileRequest implements FileInterface {
   /// print(isFileDeleted);
   /// ```
   @override
-  Future<bool> delete(
-    String fileId, {
-    http.Client? client,
-  }) async {
+  Future<bool> delete(String fileId) async {
     String formattedEndpoint = "$endpoint/$fileId";
 
-    return await RequestUtils.delete(formattedEndpoint, client: client);
+    return await RequestUtils.delete(formattedEndpoint);
   }
 }

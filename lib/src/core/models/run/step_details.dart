@@ -1,5 +1,5 @@
 import 'package:flutter_openai/flutter_openai.dart';
-import 'package:flutter_openai/src/core/utils/openai_converter.dart';
+import 'package:flutter_openai/src/core/utils/map_setter.dart';
 
 class StepDetails {
   final MessageCreationDetails? messageCreation;
@@ -101,9 +101,10 @@ class ToolCallDetails {
   factory ToolCallDetails.fromMap(Map<String, dynamic> map) {
     return ToolCallDetails(
       type: map['type'],
-      toolCalls: OpenAIConverter.fromList(
-        map['tool_calls'],
-        (toolCall) => ToolCall.fromMap(toolCall),
+      toolCalls: MapSetter.setList(
+        map,
+        'tool_calls',
+        factory: (toolCall) => ToolCall.fromMap(toolCall),
       )!,
     );
   }
@@ -121,6 +122,7 @@ class ToolCallDetails {
   @override
   bool operator ==(covariant ToolCallDetails other) {
     if (identical(this, other)) return true;
+
     return other.type == type && other.toolCalls == toolCalls;
   }
 }

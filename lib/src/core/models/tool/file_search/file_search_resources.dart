@@ -1,6 +1,6 @@
 import 'package:flutter_openai/flutter_openai.dart';
 
-class FileSearchResources extends ToolResources {
+class FileSearchResources extends ToolResource {
   final List<String>? vectorStoreIds;
   final List<VectorStore>? vectorStores;
   FileSearchResources({this.vectorStoreIds, this.vectorStores});

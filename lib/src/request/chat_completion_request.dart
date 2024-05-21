@@ -1,9 +1,7 @@
-import 'package:flutter_openai/src/core/builder/base_api_url.dart';
+import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/models/message/message.dart';
-import 'package:http/http.dart' as http;
 
-import '../core/constants/strings.dart';
 import '../core/models/chat/chat_completion.dart';
 import '../core/models/tool/function/function_tool_call.dart';
 import '../core/utils/openai_logger.dart';
@@ -14,7 +12,7 @@ import 'interfaces/chat_completion_interface.dart';
 /// {@endtemplate}
 interface class ChatCompletionRequest implements ChatCompletionInterface {
   @override
-  String get endpoint => OpenAIStrings.endpoints.chat;
+  String get endpoint => OpenAI.endpoint.chat;
 
   /// {@macro openai_chat}
   ChatCompletionRequest() {
@@ -84,10 +82,9 @@ interface class ChatCompletionRequest implements ChatCompletionInterface {
     int? seed,
     bool? logprobs,
     int? topLogprobs,
-    http.Client? client,
   }) async {
     return await OpenAIClient.post(
-      to: BaseApiUrlBuilder.build(endpoint),
+      to: endpoint,
       body: {
         "model": model,
         "messages": messages.map((message) => message.toMap()).toList(),
@@ -107,10 +104,9 @@ interface class ChatCompletionRequest implements ChatCompletionInterface {
         if (logprobs != null) "logprobs": logprobs,
         if (topLogprobs != null) "top_logprobs": topLogprobs,
       },
-      onSuccess: (Map<String, dynamic> response) {
+      create: (Map<String, dynamic> response) {
         return ChatCompletion.fromMap(response);
       },
-      client: client,
     );
   }
 
@@ -178,10 +174,9 @@ interface class ChatCompletionRequest implements ChatCompletionInterface {
     Map<String, String>? responseFormat,
     int? seed,
     String? user,
-    http.Client? client,
   }) {
     return OpenAIClient.postStream<ChatCompletionChunk>(
-      to: BaseApiUrlBuilder.build(endpoint),
+      to: endpoint,
       body: {
         "model": model,
         "stream": true,
@@ -200,10 +195,9 @@ interface class ChatCompletionRequest implements ChatCompletionInterface {
         if (seed != null) "seed": seed,
         if (responseFormat != null) "response_format": responseFormat,
       },
-      onSuccess: (Map<String, dynamic> response) {
+      create: (Map<String, dynamic> response) {
         return ChatCompletionChunk.fromMap(response);
       },
-      client: client,
     );
   }
 
@@ -222,12 +216,11 @@ interface class ChatCompletionRequest implements ChatCompletionInterface {
     double? frequencyPenalty,
     Map<String, dynamic>? logitBias,
     String? user,
-    http.Client? client,
     Map<String, String>? responseFormat,
     int? seed,
   }) {
     return OpenAIClient.postStream<ChatCompletionChunk>(
-      to: BaseApiUrlBuilder.build(endpoint),
+      to: endpoint,
       body: {
         "model": model,
         "stream": true,
@@ -246,10 +239,9 @@ interface class ChatCompletionRequest implements ChatCompletionInterface {
         if (seed != null) "seed": seed,
         if (responseFormat != null) "response_format": responseFormat,
       },
-      onSuccess: (Map<String, dynamic> response) {
+      create: (Map<String, dynamic> response) {
         return ChatCompletionChunk.fromMap(response);
       },
-      client: client,
     );
   }
 }

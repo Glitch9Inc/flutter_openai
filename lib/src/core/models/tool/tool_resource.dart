@@ -5,9 +5,9 @@ import 'package:flutter_openai/src/core/models/tool/file_search/file_search_reso
 ///The resources are specific to the type of tool.
 ///For example, the code_interpreter tool requires a list of file IDs,
 ///while the file_search tool requires a list of vector store IDs.
-abstract class ToolResources {
-  const ToolResources();
-  factory ToolResources.fromMap(Map<String, dynamic> map) {
+abstract class ToolResource {
+  const ToolResource();
+  factory ToolResource.fromMap(Map<String, dynamic> map) {
     if (map['type'] == 'file_search') return FileSearchResources.fromMap(map);
     if (map['type'] == 'code_interpreter') return CodeInterpreterResources.fromMap(map);
     throw Exception('Invalid tool type');

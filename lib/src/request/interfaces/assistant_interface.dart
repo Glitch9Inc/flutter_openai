@@ -1,5 +1,4 @@
 import 'package:flutter_openai/src/core/client/gpt_model.dart';
-import 'package:http/http.dart' as http;
 
 import 'shared_interfaces.dart';
 
@@ -9,14 +8,13 @@ abstract class AssistantInterface
     GPTModel model, {
     String? name,
     String? description,
-    String? instruction,
+    String? instructions,
     List<ToolBase>? tools,
-    ToolResources? toolResources,
+    ToolResource? toolResources,
     Map<String, String>? metadata,
     double? temperature,
     double? topP,
     String? responseFormat,
-    http.Client? client,
   });
 
   Future<Assistant> modify(
@@ -26,11 +24,10 @@ abstract class AssistantInterface
     String? description,
     String? instruction,
     List? tools,
-    ToolResources? toolResources,
+    ToolResource? toolResources,
     Map<String, String>? metadata,
     double? temperature,
     double? topP,
     String? responseFormat,
-    http.Client? client,
   });
 }

@@ -31,19 +31,19 @@ class ToolChoice {
     );
   }
 
+  /// Specifying a particular function forces the model to call that function.
+  factory ToolChoice.fromFunctionName(String functionName) {
+    return ToolChoice._(
+      type: 'function',
+      function: {'name': functionName},
+    );
+  }
+
   toMap() {
     if (type == 'none') return 'none';
     if (type == 'auto') return 'auto';
 
     return {'type': type, 'function': function};
-  }
-
-  /// Specifying a particular function forces the model to call that function.
-  factory ToolChoice.function(String functionName) {
-    return ToolChoice._(
-      type: 'function',
-      function: {'name': functionName},
-    );
   }
 
   @override

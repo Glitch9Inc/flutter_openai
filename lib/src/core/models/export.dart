@@ -17,5 +17,5 @@ export 'tool/function/function_tool_call.dart';
 export 'tool/tool_base.dart';
 export 'tool/tool_call.dart';
 export 'tool/tool_output.dart';
-export 'tool/tool_resources.dart';
+export 'tool/tool_resource.dart';
 export 'usage/usage.dart';

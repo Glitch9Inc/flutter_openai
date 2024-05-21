@@ -5,7 +5,7 @@ import '../constants/config.dart';
 /// This class is responsible for  building the API url for all the requests endpoints
 @immutable
 @internal
-abstract class BaseApiUrlBuilder {
+abstract class OpenAIUri {
   /// This is used to build the API url for all the requests, it will return a [String].
   ///
   ///
@@ -13,7 +13,7 @@ abstract class BaseApiUrlBuilder {
   /// if an [id] is pr =ovided, it will be added to the url as well.
   /// if a [query] is provided, it will be added to the url as well.
   @internal
-  static String build(String endpoint, [String? id, String? query]) {
+  static Uri parse(String endpoint) {
     final baseUrl = OpenAIConfig.baseUrl;
     final version = OpenAIConfig.version;
     final usedEndpoint = _handleEndpointsStarting(endpoint);
@@ -22,13 +22,12 @@ abstract class BaseApiUrlBuilder {
     apiLink += "/$version";
     apiLink += "$usedEndpoint";
 
-    if (id != null) {
-      apiLink += "/$id";
-    } else if (query != null) {
-      apiLink += "?$query";
+    // if shit doesnt end with /, add it
+    if (!apiLink.endsWith("/")) {
+      apiLink += "/";
     }
 
-    return apiLink;
+    return Uri.parse(apiLink);
   }
 
   // This is used to handle the endpoints that don't start with a slash.

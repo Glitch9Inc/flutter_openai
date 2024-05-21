@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter_openai/src/core/models/message/incomplete_details.dart';
-import 'package:flutter_openai/src/core/utils/openai_converter.dart';
+import 'package:flutter_openai/src/core/utils/map_setter.dart';
 
 import '../../enum.dart';
 import '../chat/sub_models/message_content.dart';
@@ -88,17 +88,39 @@ final class Message {
 
   /// This is used  to convert a [Map<String, dynamic>] object to a [Message] object.
   factory Message.fromMap(
-    Map<String, dynamic> json,
+    Map<String, dynamic> map,
   ) {
     return Message(
-      id: json['id'],
-      object: json['object'],
-      createdAt: OpenAIConverter.fromUnix(json['created_at']),
-      name: json['name'],
-      role: ChatRole.values.firstWhere((role) => role.name == json['role']),
-      content: OpenAIConverter.fromDynamic(json['content']),
-      toolCalls:
-          OpenAIConverter.fromList<ToolCall>(json['tool_calls'], (p0) => ToolCall.fromMap(p0)),
+      id: MapSetter.set<String>(map, 'id'),
+      object: MapSetter.set<String>(map, 'object'),
+      createdAt: MapSetter.set<DateTime>(map, 'created_at'),
+      name: MapSetter.set<String>(map, 'name'),
+      runId: MapSetter.set<String>(map, 'run_id'),
+      assistantId: MapSetter.set<String>(map, 'assistant_id'),
+      status: MapSetter.setEnum<MessageStatus>(
+        map,
+        'status',
+        enumValues: MessageStatus.values,
+        defaultValue: MessageStatus.none,
+      ),
+      incompleteDetails: MapSetter.set<IncompleteDetails>(
+        map,
+        'incomplete_details',
+        factory: (p0) => IncompleteDetails.fromMap(p0),
+      ),
+      role: MapSetter.setEnum<ChatRole>(
+        map,
+        'role',
+        enumValues: ChatRole.values,
+        defaultValue: ChatRole.none,
+      ),
+      content: MapSetter.setContent(map),
+      toolCalls: MapSetter.setList<ToolCall>(
+        map,
+        'tool_calls',
+        factory: (p0) => ToolCall.fromMap(p0),
+      ),
+      metadata: MapSetter.setMetadata(map),
     );
   }
 

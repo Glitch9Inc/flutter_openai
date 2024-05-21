@@ -1,13 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter_openai/src/core/builder/base_api_url.dart';
+import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 import 'package:flutter_openai/src/core/models/image/image_object.dart';
 import 'package:flutter_openai/src/request/interfaces/image_interface.dart';
-import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-import '../core/constants/strings.dart';
 import '../core/enum.dart';
 import '../core/utils/openai_logger.dart';
 
@@ -18,7 +16,7 @@ import '../core/utils/openai_logger.dart';
 @protected
 interface class ImageRequest implements ImageInterface {
   @override
-  String get endpoint => OpenAIStrings.endpoints.images;
+  String get endpoint => OpenAI.endpoint.images;
 
   /// {@macro openai_images}
   ImageRequest() {
@@ -80,13 +78,12 @@ interface class ImageRequest implements ImageInterface {
     ImageQuality? quality,
     ImageResponseFormat? responseFormat,
     String? user,
-    http.Client? client,
   }) async {
     final String generations = "/generations";
 
     return await OpenAIClient.post(
-      to: BaseApiUrlBuilder.build(endpoint + generations),
-      onSuccess: (json) => ImageObject.fromMap(json),
+      to: endpoint + generations,
+      create: (json) => ImageObject.fromMap(json),
       body: {
         if (model != null) "model": model,
         "prompt": prompt,
@@ -97,7 +94,6 @@ interface class ImageRequest implements ImageInterface {
         if (responseFormat != null) "response_format": responseFormat.value,
         if (user != null) "user": user,
       },
-      client: client,
     );
   }
 
@@ -156,7 +152,7 @@ interface class ImageRequest implements ImageInterface {
   }) async {
     final String edit = "/edits";
 
-    return await OpenAIClient.imageEditForm<ImageObject>(
+    return await OpenAIClient.postImage<ImageObject>(
       image: image,
       mask: mask,
       body: {
@@ -167,10 +163,10 @@ interface class ImageRequest implements ImageInterface {
         if (responseFormat != null) "response_format": responseFormat.value,
         if (user != null) "user": user,
       },
-      onSuccess: (Map<String, dynamic> response) {
+      create: (Map<String, dynamic> response) {
         return ImageObject.fromMap(response);
       },
-      to: BaseApiUrlBuilder.build(endpoint + edit),
+      to: endpoint + edit,
     );
   }
 
@@ -220,7 +216,7 @@ interface class ImageRequest implements ImageInterface {
   }) async {
     final String variations = "/variations";
 
-    return await OpenAIClient.imageVariationForm<ImageObject>(
+    return await OpenAIClient.postImage<ImageObject>(
       image: image,
       body: {
         if (model != null) "model": model,
@@ -229,10 +225,10 @@ interface class ImageRequest implements ImageInterface {
         if (responseFormat != null) "response_format": responseFormat.value,
         if (user != null) "user": user,
       },
-      onSuccess: (Map<String, dynamic> response) {
+      create: (Map<String, dynamic> response) {
         return ImageObject.fromMap(response);
       },
-      to: BaseApiUrlBuilder.build(endpoint + variations),
+      to: endpoint + variations,
     );
   }
 }

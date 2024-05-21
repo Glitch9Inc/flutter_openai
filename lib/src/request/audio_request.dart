@@ -1,10 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter_openai/src/core/builder/base_api_url.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
 
 import '../../flutter_openai.dart';
-import '../core/constants/strings.dart';
 import '../core/utils/openai_logger.dart';
 import 'interfaces/audio_interface.dart';
 
@@ -13,7 +11,7 @@ import 'interfaces/audio_interface.dart';
 /// {@endtemplate}
 interface class AudioRequest implements AudioInterface {
   @override
-  String get endpoint => OpenAIStrings.endpoints.audio;
+  String get endpoint => OpenAI.endpoint.audio;
 
   /// {@macro openai_audio}
   AudioRequest() {
@@ -58,7 +56,7 @@ interface class AudioRequest implements AudioInterface {
   }) async {
     return await OpenAIClient.fileUpload(
       file: file,
-      to: BaseApiUrlBuilder.build(endpoint + "/transcriptions"),
+      to: endpoint + "/transcriptions",
       body: {
         "model": model,
         if (prompt != null) "prompt": prompt,
@@ -68,7 +66,7 @@ interface class AudioRequest implements AudioInterface {
         if (timestamp_granularities != null)
           "timestamp_granularities[]": timestamp_granularities.map((e) => e.name).join(","),
       },
-      onSuccess: (Map<String, dynamic> response) {
+      create: (Map<String, dynamic> response) {
         return AudioObject.fromMap(response);
       },
       responseMapAdapter: (res) {
@@ -108,14 +106,14 @@ interface class AudioRequest implements AudioInterface {
   }) async {
     return await OpenAIClient.fileUpload(
       file: file,
-      to: BaseApiUrlBuilder.build(endpoint + "/translations"),
+      to: endpoint + "/translations",
       body: {
         "model": model,
         if (prompt != null) "prompt": prompt,
         if (responseFormat != null) "response_format": responseFormat.name,
         if (temperature != null) "temperature": temperature.toString(),
       },
-      onSuccess: (Map<String, dynamic> response) {
+      create: (Map<String, dynamic> response) {
         return AudioObject.fromMap(response);
       },
       responseMapAdapter: (res) {
@@ -135,7 +133,7 @@ interface class AudioRequest implements AudioInterface {
     Directory? outputDirectory,
   }) async {
     return await OpenAIClient.postAndExpectFileResponse(
-      to: BaseApiUrlBuilder.build(endpoint + "/speech"),
+      to: endpoint + "/speech",
       body: {
         "model": model,
         "input": input,

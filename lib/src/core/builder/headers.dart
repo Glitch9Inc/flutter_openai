@@ -70,6 +70,8 @@ abstract class HeadersBuilder {
       if (isBeta) OpenAIStrings.betaHeader: OpenAIStrings.betaHeaderValue,
     };
 
+    OpenAILogger.logHeaders(headers);
+
     return headers;
   }
 
@@ -81,6 +83,6 @@ abstract class HeadersBuilder {
       ...headers,
     };
 
-    OpenAILogger.logIncludedHeaders(_additionalHeadersToRequests);
+    OpenAILogger.logHeaders(_additionalHeadersToRequests);
   }
 }

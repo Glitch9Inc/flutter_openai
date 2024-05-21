@@ -15,6 +15,12 @@ class RequiredAction {
       submitToolOutputs: SubmitToolOutputs.fromMap(map['submit_tool_outputs']),
     );
   }
+  Map<String, dynamic> toMap() {
+    return {
+      'type': type,
+      'submit_tool_outputs': submitToolOutputs.toMap(),
+    };
+  }
 }
 
 class SubmitToolOutputs {
@@ -23,5 +29,10 @@ class SubmitToolOutputs {
   const SubmitToolOutputs({required this.toolCalls});
   factory SubmitToolOutputs.fromMap(Map<String, dynamic> map) {
     return SubmitToolOutputs(toolCalls: map['tool_calls']);
+  }
+  Map<String, dynamic> toMap() {
+    return {
+      'tool_calls': toolCalls,
+    };
   }
 }

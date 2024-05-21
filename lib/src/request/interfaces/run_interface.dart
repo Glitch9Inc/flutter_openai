@@ -1,6 +1,5 @@
 import 'package:flutter_openai/flutter_openai.dart';
 import 'package:flutter_openai/src/request/interfaces/shared_interfaces.dart';
-import 'package:http/http.dart' as http;
 
 import '../../core/models/tool/tool_choice.dart';
 
@@ -10,8 +9,8 @@ abstract class RunInterface
     String threadId, {
     required String assistantId,
     GPTModel? model,
-    String? instruction,
-    String? additionalInstruction,
+    String? instructions,
+    String? additionalInstructions,
     List<Message>? additionalMessages,
     List<ToolBase>? tools,
     Map<String, String>? metadata,
@@ -22,7 +21,6 @@ abstract class RunInterface
     double? topP,
     ToolChoice? toolChoice,
     ResponseFormat? responseFormat,
-    http.Client? client,
   });
 
   Future<Run> createThreadAndRun({
@@ -31,7 +29,7 @@ abstract class RunInterface
     GPTModel? model,
     String? instruction,
     List<ToolBase>? tools,
-    ToolResources? toolResources,
+    ToolResource? toolResources,
     Map<String, String>? metadata,
     bool? stream,
     double? temperature,
@@ -40,14 +38,12 @@ abstract class RunInterface
     double? topP,
     ToolChoice? toolChoice,
     ResponseFormat? responseFormat,
-    http.Client? client,
   });
 
   Future<Run> modify(
     String threadId,
     String runId, {
     Map<String, String>? metadata,
-    http.Client? client,
   });
 
   Future<Run> submitToolOutputsToRun(
@@ -55,6 +51,5 @@ abstract class RunInterface
     String runId, {
     List<ToolOutput>? toolOutputs,
     bool? stream,
-    http.Client? client,
   });
 }

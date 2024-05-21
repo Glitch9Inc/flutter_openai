@@ -1,5 +1,5 @@
+import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
-import 'package:flutter_openai/src/core/constants/strings.dart';
 import 'package:flutter_openai/src/core/enum.dart';
 import 'package:flutter_openai/src/core/models/message/attachment.dart';
 import 'package:flutter_openai/src/core/models/message/message.dart';
@@ -11,29 +11,28 @@ import 'package:http/src/client.dart';
 
 interface class MessageRequest extends MessageInterface {
   @override
-  String get endpoint => OpenAIStrings.endpoints.messages;
+  String get endpoint => OpenAI.endpoint.messages;
 
   @override
   Future<Message> create(
     String threadId, {
     required ChatRole role,
-    required MessageContent content,
+    required List<MessageContent> content,
     List<Attachment>? attachments,
     Map<String, String>? metadata,
-    Client? client,
   }) {
     final formattedEndpoint = endpoint.replaceAll("{thread_id}", threadId);
 
     return OpenAIClient.post<Message>(
       to: formattedEndpoint,
       body: {
-        "role": role,
-        "content": content.toMap(),
+        "role": role.name,
+        "content": content.map((p0) => p0.toMap()).toList(),
         if (attachments != null) "attachments": attachments.map((p0) => p0.toMap()).toList(),
         if (metadata != null) "metadata": metadata,
       },
-      onSuccess: (p0) => Message.fromMap(p0),
-      client: client,
+      create: (p0) => Message.fromMap(p0),
+      isBeta: true,
     );
   }
 
@@ -44,20 +43,19 @@ interface class MessageRequest extends MessageInterface {
     required String content,
     List<Attachment>? attachments,
     Map<String, String>? metadata,
-    Client? client,
   }) {
     final formattedEndpoint = endpoint.replaceAll("{thread_id}", threadId);
 
     return OpenAIClient.post<Message>(
       to: formattedEndpoint,
       body: {
-        "role": role,
-        "content": MessageContent.text(content).toMap(),
+        "role": role.name,
+        "content": content,
         if (attachments != null) "attachments": attachments.map((p0) => p0.toMap()).toList(),
         if (metadata != null) "metadata": metadata,
       },
-      onSuccess: (p0) => Message.fromMap(p0),
-      client: client,
+      create: (p0) => Message.fromMap(p0),
+      isBeta: true,
     );
   }
 
@@ -65,7 +63,7 @@ interface class MessageRequest extends MessageInterface {
   Future<Message> retrieve(String threadId, {Client? client}) {
     final formattedEndpoint = endpoint.replaceAll("{message_id}", threadId);
 
-    return RequestUtils.retrieve(formattedEndpoint, (p0) => Message.fromMap(p0));
+    return RequestUtils.retrieve(formattedEndpoint, (p0) => Message.fromMap(p0), isBeta: true);
   }
 
   @override
@@ -74,11 +72,10 @@ interface class MessageRequest extends MessageInterface {
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,
     QueryCursor? cursor,
-    Client? client,
   }) {
     final formattedEndpoint = endpoint.replaceAll("{thread_id}", threadId);
 
-    return RequestUtils.list(formattedEndpoint, (p0) => Message.fromMap(p0));
+    return RequestUtils.list(formattedEndpoint, (p0) => Message.fromMap(p0), isBeta: true);
   }
 
   @override
@@ -86,7 +83,6 @@ interface class MessageRequest extends MessageInterface {
     String threadId, {
     ToolBase? toolResources,
     Map<String, String>? metadata,
-    Client? client,
   }) {
     final formattedEndpoint = endpoint.replaceAll("{message_id}", threadId);
 
@@ -96,8 +92,8 @@ interface class MessageRequest extends MessageInterface {
         if (toolResources != null) "tool_resources": toolResources.toMap(),
         if (metadata != null) "metadata": metadata,
       },
-      onSuccess: (p0) => Message.fromMap(p0),
-      client: client,
+      create: (p0) => Message.fromMap(p0),
+      isBeta: true,
     );
   }
 
@@ -105,6 +101,6 @@ interface class MessageRequest extends MessageInterface {
   Future<bool> delete(String threadId, {Client? client}) {
     final formattedEndpoint = endpoint.replaceAll("{message_id}", threadId);
 
-    return RequestUtils.delete(formattedEndpoint);
+    return RequestUtils.delete(formattedEndpoint, isBeta: true);
   }
 }
