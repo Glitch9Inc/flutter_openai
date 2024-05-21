@@ -1,7 +1,8 @@
-import 'package:flutter_openai/flutter_openai.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
+import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
 import 'package:flutter_openai/src/request/model_request.dart';
+import 'package:flutter_openai/src/request/utils/request_utils.dart';
 import 'package:meta/meta.dart';
 
 import '../core/utils/openai_logger.dart';
@@ -113,18 +114,14 @@ interface class FineTuningRequest implements FineTuningInterface {
   /// print(fineTunes.first.id);
   /// ```
   @override
-  Future<List<OpenAIFineTuneModel>> list({
+  Future<Query<OpenAIFineTuneModel>> list({
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,
     QueryCursor? cursor,
   }) async {
-    return await OpenAIClient.get<List<OpenAIFineTuneModel>>(
-      from: endpoint,
-      create: (Map<String, dynamic> response) {
-        final dataList = response['data'] as List;
-
-        return dataList.map((e) => OpenAIFineTuneModel.fromMap(e)).toList();
-      },
+    return await RequestUtils.list<OpenAIFineTuneModel>(
+      endpoint,
+      OpenAIFineTuneModel.fromMap,
     );
   }
 
@@ -178,8 +175,8 @@ interface class FineTuningRequest implements FineTuningInterface {
     final String fineTuneEvents = "$endpoint/$fineTuneId/events";
 
     return await OpenAIClient.get(
-      from: fineTuneEvents,
-      create: (Map<String, dynamic> response) {
+      endpoint: fineTuneEvents,
+      factory: (Map<String, dynamic> response) {
         final List events = response['data'] as List;
 
         return events.map((e) => FineTuningEvent.fromMap(e)).toList();
@@ -232,8 +229,8 @@ interface class FineTuningRequest implements FineTuningInterface {
     final String fineTuneRetrieve = "$endpoint/$fineTuneId";
 
     return await OpenAIClient.get<OpenAIFineTuneModel>(
-      from: fineTuneRetrieve,
-      create: (Map<String, dynamic> response) {
+      endpoint: fineTuneRetrieve,
+      factory: (Map<String, dynamic> response) {
         return OpenAIFineTuneModel.fromMap(response);
       },
     );

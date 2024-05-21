@@ -10,28 +10,28 @@ class RunStep {
   final String id;
 
   /// The object type, which is always thread.run.step.
-  final String object;
+  final String? object;
 
   /// The Unix timestamp (in seconds) for when the run step was created.
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   /// The ID of the assistant associated with the run step.
-  final String assistantId;
+  final String? assistantId;
 
   /// The ID of the thread that was run.
-  final String threadId;
+  final String? threadId;
 
   /// The ID of the run that this run step is a part of.
-  final String runId;
+  final String? runId;
 
   /// The type of run step, which can be either message_creation or tool_calls.
-  final String type;
+  final String? type;
 
   /// The status of the run step, which can be either in_progress, cancelled, failed, completed, or expired.
-  final RunStatus status;
+  final RunStatus? status;
 
   /// The details of the run step.
-  final StepDetails stepDetails;
+  final StepDetails? stepDetails;
 
   /// The last error associated with this run step. Will be null if there are no errors.
   final RunError? lastError;
@@ -49,7 +49,7 @@ class RunStep {
   final DateTime? completedAt;
 
   /// Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format.
-  final Map<String, String> metadata;
+  final Map<String, String>? metadata;
 
   /// Usage statistics related to the run step. This value will be null while the run step's status is in_progress.
   final Usage? usage;
@@ -96,26 +96,34 @@ class RunStep {
   factory RunStep.fromMap(Map<String, dynamic> map) {
     return RunStep(
       id: map['id'],
-      object: map['object'],
-      createdAt: MapSetter.setDateTime(map['created_at']),
-      assistantId: map['assistant_id'],
-      threadId: map['thread_id'],
-      runId: map['run_id'],
-      type: map['type'],
+      object: MapSetter.set<String>(map, 'object'),
+      createdAt: MapSetter.set<DateTime>(map, 'created_at'),
+      assistantId: MapSetter.set<String>(map, 'assistant_id'),
+      threadId: MapSetter.set<String>(map, 'thread_id'),
+      runId: MapSetter.set<String>(map, 'run_id'),
+      type: MapSetter.set<String>(map, 'type'),
       status: MapSetter.setEnum<RunStatus>(
         map,
         'status',
         enumValues: RunStatus.values,
         defaultValue: RunStatus.none,
       ),
-      stepDetails: StepDetails.fromMap(map['step_details']),
-      lastError: RunError.fromMap(map['last_error']),
+      stepDetails: MapSetter.set<StepDetails>(
+        map,
+        'step_details',
+        factory: StepDetails.fromMap,
+      ),
+      lastError: MapSetter.set<RunError>(
+        map,
+        'last_error',
+        factory: RunError.fromMap,
+      ),
       expiredAt: MapSetter.set<DateTime>(map, 'expired_at'),
       cancelledAt: MapSetter.set<DateTime>(map, 'cancelled_at'),
       failedAt: MapSetter.set<DateTime>(map, 'failed_at'),
       completedAt: MapSetter.set<DateTime>(map, 'completed_at'),
-      metadata: MapSetter.setMetadata(map)!,
-      usage: Usage.fromMap(map['usage']),
+      metadata: MapSetter.setMap<String>(map, 'metadata'),
+      usage: MapSetter.set<Usage>(map, 'usage', factory: Usage.fromMap),
     );
   }
 

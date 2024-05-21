@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_openai/flutter_openai.dart';
+import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/models/message/incomplete_details.dart';
 import 'package:flutter_openai/src/core/models/run/truncation_strategy.dart';
 import 'package:flutter_openai/src/core/models/tool/tool_choice.dart';
-import 'package:flutter_openai/src/core/utils/map_setter.dart';
 
 import 'required_action.dart';
 import 'run_error.dart';
@@ -140,12 +140,12 @@ class Run {
       requiredAction: MapSetter.set<RequiredAction>(
         map,
         'required_action',
-        factory: (map) => RequiredAction.fromMap(map),
+        factory: RequiredAction.fromMap,
       ),
       lastError: MapSetter.set<RunError>(
         map,
         'last_error',
-        factory: (map) => RunError.fromMap(map),
+        factory: RunError.fromMap,
       ),
       expiresAt: MapSetter.set<DateTime>(map, 'expires_at'),
       startedAt: MapSetter.set<DateTime>(map, 'started_at'),
@@ -159,13 +159,9 @@ class Run {
       ),
       model: MapSetter.set<GPTModel>(map, 'model'),
       instructions: MapSetter.set<String>(map, 'instructions'),
-      tools: MapSetter.setList<ToolBase>(
-        map,
-        'tools',
-        factory: ToolBase.fromMap,
-      )!,
-      metadata: MapSetter.setMetadata(map)!,
-      usage: MapSetter.set<Usage>(map, 'usage', factory: (map) => Usage.fromMap(map)),
+      tools: MapSetter.setList<ToolBase>(map, 'tools', factory: ToolBase.fromMap),
+      metadata: MapSetter.setMap<String>(map, 'metadata'),
+      usage: MapSetter.set<Usage>(map, 'usage', factory: Usage.fromMap),
       temperature: MapSetter.set<double>(map, 'temperature'),
       topP: MapSetter.set<double>(map, 'top_p'),
       maxPromptTokens: MapSetter.set<int>(map, 'max_prompt_tokens'),
@@ -175,11 +171,18 @@ class Run {
         'truncation_strategy',
         factory: TruncationStrategy.fromMap,
       ),
-      toolChoice:
-          map['tool_choice'] is String ? ToolChoice.auto : ToolChoice.fromMap(map['tool_choice']),
-      responseFormat: map['response_format'] is String
-          ? ResponseFormat.auto
-          : ResponseFormat.fromMap(map['response_format']),
+      toolChoice: MapSetter.setStringOr<ToolChoice>(
+        map,
+        'tool_choice',
+        stringFactory: ToolChoice.fromString,
+        mapFactory: ToolChoice.fromMap,
+      ),
+      responseFormat: MapSetter.setStringOr<ResponseFormat>(
+        map,
+        'response_format',
+        stringFactory: ResponseFormat.fromString,
+        mapFactory: ResponseFormat.fromMap,
+      ),
     );
   }
 
@@ -210,8 +213,8 @@ class Run {
       'max_prompt_tokens': maxPromptTokens,
       'max_completion_tokens': maxCompletionTokens,
       'truncation_strategy': truncationStrategy?.toMap(),
-      'tool_choice': toolChoice,
-      'response_format': responseFormat,
+      'tool_choice': toolChoice?.toStringOrMap(),
+      'response_format': responseFormat?.toStringOrMap(),
     };
   }
 

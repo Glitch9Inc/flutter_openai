@@ -53,10 +53,16 @@ abstract class MapSetter {
     return null;
   }
 
-  static setStringOrObject(Map<String, dynamic> map, String fieldName,
-      {required T Function(Map<String, dynamic>) factory}) {
+  static setStringOr<T>(
+    Map<String, dynamic> map,
+    String fieldName, {
+    required T Function(String) stringFactory,
+    required T Function(Map<String, dynamic>) mapFactory,
+  }) {
     if (map.containsKey(fieldName)) {
       if (map[fieldName] == null) return null;
+      if (map[fieldName] is String) return stringFactory(map[fieldName]);
+      if (map[fieldName] is Map<String, dynamic>) return mapFactory(map[fieldName]);
     }
 
     return null;
@@ -109,25 +115,6 @@ abstract class MapSetter {
     return null;
   }
 
-  static Map<String, String>? setMetadata(Map<String, dynamic> map) {
-    const metadataKey = 'metadata';
-
-    if (map.containsKey(metadataKey)) {
-      if (map[metadataKey] == null) return null;
-      var metadata = map[metadataKey];
-
-      try {
-        if (metadata.isEmpty) return {};
-
-        return metadata.map((key, value) => MapEntry(key, value.toString()));
-      } catch (e) {
-        throw FormatException('Error while parsing metadata: $e');
-      }
-    }
-
-    return null;
-  }
-
   static List<T>? setList<T>(
     Map<String, dynamic> map,
     String fieldName, {
@@ -150,6 +137,33 @@ abstract class MapSetter {
     }
 
     return null;
+  }
+
+  static Map<String, T>? setMap<T>(
+    Map<String, dynamic> map,
+    String fieldName, {
+    T Function(Map<String, dynamic>)? factory,
+  }) {
+    if (_isNull(map, fieldName)) return null;
+    var value = map[fieldName];
+
+    try {
+      if (value.isEmpty) return {};
+
+      if (T == String) {
+        return value.map((key, value) => MapEntry(key, value.toString()));
+      }
+
+      if (value is Map<String, dynamic>) {
+        if (factory != null) {
+          return value.map((key, value) => MapEntry(key, factory(value)));
+        }
+      }
+
+      return value.map((key, value) => MapEntry(key, value));
+    } catch (e) {
+      throw FormatException('Error while parsing metadata: $e');
+    }
   }
 
   static List<MessageContent>? setContent(Map<String, dynamic> map) {
@@ -190,5 +204,9 @@ abstract class MapSetter {
         }
       },
     ).toList();
+  }
+
+  static bool _isNull(Map<String, dynamic> map, String fieldName) {
+    return map.containsKey(fieldName) && map[fieldName] == null;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter_openai/src/core/pseudo/query.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
 import 'package:meta/meta.dart';
 
@@ -14,7 +15,7 @@ abstract class RetrieveInterface<T> {
 }
 
 abstract class ListInterface<T> {
-  Future<List<T>> list({
+  Future<Query<T>> list({
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,
     QueryCursor? cursor,
@@ -27,28 +28,4 @@ abstract class DeleteInterface {
 
 abstract class CancelInterface<T> {
   Future<T> cancel(String objectId);
-}
-
-abstract class RunRetrieveInterface<Run> {
-  Future<Run?> retrieve(String threadId, String runId);
-}
-
-abstract class MessageListInterface<Message> {
-  Future<List<Message>> list(String threadId);
-}
-
-abstract class RunListInterface<Run> {
-  Future<List<Run>> list(String threadId);
-}
-
-abstract class RunCancelInterface<Run> {
-  Future<Run?> cancel(String threadId, String runId);
-}
-
-abstract class RunStepListInterface<RunStep> {
-  Future<List<RunStep>> list(String threadId, String runId);
-}
-
-abstract class RunStepRetrieveInterface<RunStep> {
-  Future<RunStep?> retrieve(String threadId, String runId, String stepId);
 }

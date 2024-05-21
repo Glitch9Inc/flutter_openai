@@ -6,7 +6,7 @@ class Thread {
   final String object;
   final DateTime createdAt;
   final ToolResource? toolResources;
-  final Map<String, String> metadata;
+  final Map<String, String>? metadata;
 
   const Thread({
     required this.id,
@@ -26,7 +26,7 @@ class Thread {
         'tool_resources',
         factory: ToolResource.fromMap,
       ),
-      metadata: MapSetter.setMetadata(map)!,
+      metadata: MapSetter.setMap<String>(map, 'metadata'),
     );
   }
 

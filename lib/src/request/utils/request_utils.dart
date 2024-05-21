@@ -1,26 +1,28 @@
 import 'package:flutter_openai/src/core/client/openai_client.dart';
+import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
 
 class RequestUtils {
-  static Future<List<T>> list<T>(
+  static Future<Query<T>> list<T>(
     String endpoint,
-    T Function(Map<String, dynamic>) create, {
+    T Function(Map<String, dynamic>) factory, {
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder? order,
     QueryCursor? cursor,
     bool isBeta = false,
   }) async {
     return await OpenAIClient.get(
-      from: endpoint,
+      endpoint: endpoint,
       body: {
         "limit": limit,
         if (order != null) "order": order.getName(),
         if (cursor != null) ...{"after": cursor.after, "before": cursor.before},
       },
-      create: (Map<String, dynamic> response) {
-        final List dataList = response['data'];
+      factory: (Map<String, dynamic> response) {
+        // final List dataList = response['data'];
 
-        return dataList.map<T>((e) => create(e as Map<String, dynamic>)).toList();
+        // return dataList.map<T>((e) => create(e as Map<String, dynamic>)).toList();
+        return Query.fromMap(response, factory: factory);
       },
       isBeta: isBeta,
     );
@@ -28,13 +30,13 @@ class RequestUtils {
 
   static Future<T> retrieve<T>(
     String endpoint,
-    T Function(Map<String, dynamic>) create, {
+    T Function(Map<String, dynamic>) factory, {
     bool isBeta = false,
   }) async {
     return await OpenAIClient.get(
-      from: endpoint,
-      create: (Map<String, dynamic> response) {
-        return create(response);
+      endpoint: endpoint,
+      factory: (Map<String, dynamic> response) {
+        return factory(response);
       },
       isBeta: isBeta,
     );
@@ -42,8 +44,8 @@ class RequestUtils {
 
   static Future<bool> delete(String endpoint, {bool isBeta = false}) async {
     return await OpenAIClient.delete(
-      from: endpoint,
-      create: (Map<String, dynamic> response) {
+      endpoint: endpoint,
+      factory: (Map<String, dynamic> response) {
         final bool isDeleted = response["deleted"] as bool;
 
         return isDeleted;

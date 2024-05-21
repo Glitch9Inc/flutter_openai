@@ -106,7 +106,7 @@ final class Message {
       incompleteDetails: MapSetter.set<IncompleteDetails>(
         map,
         'incomplete_details',
-        factory: (p0) => IncompleteDetails.fromMap(p0),
+        factory: IncompleteDetails.fromMap,
       ),
       role: MapSetter.setEnum<ChatRole>(
         map,
@@ -118,9 +118,9 @@ final class Message {
       toolCalls: MapSetter.setList<ToolCall>(
         map,
         'tool_calls',
-        factory: (p0) => ToolCall.fromMap(p0),
+        factory: ToolCall.fromMap,
       ),
-      metadata: MapSetter.setMetadata(map),
+      metadata: MapSetter.setMap<String>(map, 'metadata'),
     );
   }
 

@@ -16,7 +16,7 @@ abstract class AssistantTool<TToolResponse> {
   static const GPTModel DEFAULT_MODEL = GPTModel.GPT4o;
   static const int DEFAULT_MAX_REQUEST_LENGTH = 1000;
   static const int DEFAULT_MIN_TOKEN_REQUIREMENT = 500;
-  static const int DEFAULT_INITIAL_DELAY_FOR_STATE_CHECK_SEC = 5;
+  static const int DEFAULT_INITIAL_DELAY_FOR_STATE_CHECK_SEC = 4;
   static const int DEFAULT_RECURRING_STATE_CHECK_INTERVAL_SEC = 2;
   static const int DEFAULT_OPERATION_TIMEOUT_SEC = 60;
   static const int DEFAULT_ASSISTANTS_FETCH_COUNT = 20;
@@ -110,15 +110,10 @@ abstract class AssistantTool<TToolResponse> {
     String? additionalInstruction,
     Function(String)? onRequestPrepared,
   }) async {
-    if (!_isInit) {
-      if (!_isInitializing) {
-        await init();
-        if (!_isInit) {
-          throw Exception("The assistant tool is not initialized.");
-        }
-      } else {
-        throw Exception("The assistant tool is initializing.");
-      }
+    try {
+      await _validateTool();
+    } catch (e) {
+      throw Exception(e);
     }
 
     if (promptText.isEmpty) {
@@ -205,6 +200,27 @@ abstract class AssistantTool<TToolResponse> {
     return null;
   }
 
+  Future<void> _validateTool() async {
+    if (!_isInit) {
+      if (!_isInitializing) {
+        await init();
+        if (!_isInit) {
+          throw Exception("The assistant tool is not initialized.");
+        }
+      } else {
+        throw Exception("The assistant tool is initializing.");
+      }
+    }
+
+    if (thread == null) {
+      throw Exception("Thread is not initialized.");
+    }
+
+    if (assistant == null) {
+      throw Exception("Assistant is not initialized.");
+    }
+  }
+
   Future<Assistant?> _getAssistant() async {
     if (_assistantId != null && !_assistantId!.isEmpty) {
       try {
@@ -259,7 +275,9 @@ abstract class AssistantTool<TToolResponse> {
         currentRun = await OpenAI.instance.run.retrieve(thread!.id, currentRun!.id) ?? currentRun;
       }
 
-      if (currentRun != null && currentRun!.status == statusToWaitFor) {
+      RunStatus currentRunStatus = currentRun!.status ?? RunStatus.none;
+      if (currentRun != null &&
+          (currentRunStatus == statusToWaitFor || currentRunStatus == RunStatus.completed)) {
         return currentRun;
       }
 

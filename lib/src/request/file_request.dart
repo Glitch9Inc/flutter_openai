@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
-import 'package:flutter_openai/src/core/models/file/file_object.dart';
+import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
 import 'package:flutter_openai/src/request/utils/request_utils.dart';
 import 'package:meta/meta.dart';
@@ -32,7 +31,7 @@ interface class FileRequest implements FileInterface {
   /// print(files.first.id);
   ///```
   @override
-  Future<List<FileObject>> list({
+  Future<Query<FileObject>> list({
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,
     QueryCursor? cursor,
@@ -81,7 +80,7 @@ interface class FileRequest implements FileInterface {
     final String fileIdEndpoint = "/$fileId/content";
 
     return await OpenAIClient.get(
-      from: endpoint + fileIdEndpoint,
+      endpoint: endpoint + fileIdEndpoint,
       returnRawResponse: true,
     );
   }

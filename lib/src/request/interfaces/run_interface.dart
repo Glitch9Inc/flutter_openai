@@ -1,10 +1,9 @@
-import 'package:flutter_openai/flutter_openai.dart';
+import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/request/interfaces/shared_interfaces.dart';
 
 import '../../core/models/tool/tool_choice.dart';
 
-abstract class RunInterface
-    implements EndpointInterface, RunListInterface, RunRetrieveInterface, RunCancelInterface {
+abstract class RunInterface implements EndpointInterface {
   Future<Run> create(
     String threadId, {
     required String assistantId,
@@ -52,4 +51,8 @@ abstract class RunInterface
     List<ToolOutput>? toolOutputs,
     bool? stream,
   });
+
+  Future<Query<Run>> list(String threadId);
+  Future<Run?> retrieve(String threadId, String runId);
+  Future<bool> cancel(String threadId, String runId);
 }

@@ -1,8 +1,7 @@
-import 'package:flutter_openai/flutter_openai.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
+import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/models/tool/tool_choice.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
-import 'package:flutter_openai/src/core/utils/map_setter.dart';
 import 'package:flutter_openai/src/request/interfaces/run_interface.dart';
 import 'package:flutter_openai/src/request/utils/request_utils.dart';
 import 'package:http/src/client.dart';
@@ -47,8 +46,8 @@ interface class RunRequest implements RunInterface {
         if (maxPromptTokens != null) "max_prompt_tokens": maxPromptTokens,
         if (maxCompletionTokens != null) "max_completion_tokens": maxCompletionTokens,
         if (topP != null) "top_p": topP,
-        if (toolChoice != null) "tool_choice": toolChoice.toMap(),
-        if (responseFormat != null) "response_format": responseFormat.toMap(),
+        if (toolChoice != null) "tool_choice": toolChoice.toStringOrMap(),
+        if (responseFormat != null) "response_format": responseFormat.toStringOrMap(),
       },
       create: (p0) => Run.fromMap(p0),
       isBeta: true,
@@ -89,8 +88,8 @@ interface class RunRequest implements RunInterface {
         if (maxPromptTokens != null) "max_prompt_tokens": maxPromptTokens,
         if (maxCompletionTokens != null) "max_completion_tokens": maxCompletionTokens,
         if (topP != null) "top_p": topP,
-        if (toolChoice != null) "tool_choice": toolChoice.toMap(),
-        if (responseFormat != null) "response_format": responseFormat.toMap(),
+        if (toolChoice != null) "tool_choice": toolChoice.toStringOrMap(),
+        if (responseFormat != null) "response_format": responseFormat.toStringOrMap(),
       },
       create: (p0) => Run.fromMap(p0),
       isBeta: true,
@@ -98,7 +97,7 @@ interface class RunRequest implements RunInterface {
   }
 
   @override
-  Future<List<Run>> list(
+  Future<Query<Run>> list(
     String threadId, {
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,
@@ -131,8 +130,8 @@ interface class RunRequest implements RunInterface {
 
   @override
   Future<Run?> retrieve(String threadId, String runId, {Client? client}) {
-    final formattedEndpoint =
-        endpoint.replaceAll("{thread_id}", threadId).replaceAll("{run_id}", runId);
+    String ep = '/threads/{thread_id}/runs/{run_id}';
+    final formattedEndpoint = ep.replaceAll("{thread_id}", threadId).replaceAll("{run_id}", runId);
 
     return RequestUtils.retrieve(formattedEndpoint, (p0) => Run.fromMap(p0), isBeta: true);
   }
@@ -159,7 +158,7 @@ interface class RunRequest implements RunInterface {
   }
 
   @override
-  Future cancel(String threadId, String runId) {
+  Future<bool> cancel(String threadId, String runId) {
     final formattedEndpoint =
         endpoint.replaceAll("{thread_id}", threadId).replaceAll("{run_id}", runId);
 

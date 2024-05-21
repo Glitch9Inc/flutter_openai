@@ -28,15 +28,15 @@ abstract class OpenAIClient {
   }
 
   static Future<T> get<T>({
-    required String from,
-    T Function(Map<String, dynamic>)? create,
+    required String endpoint,
+    T Function(Map<String, dynamic>)? factory,
     Map<String, dynamic>? body,
     bool returnRawResponse = false,
     bool isBeta = false,
   }) async {
     return await defaultInstance.performRequest<T>(
-      endpoint: from,
-      create: create,
+      endpoint: endpoint,
+      create: factory,
       method: OpenAI.httpMethod.get,
       body: body,
       returnRawResponse: returnRawResponse,
@@ -45,14 +45,14 @@ abstract class OpenAIClient {
   }
 
   static Future<T> delete<T>({
-    required String from,
-    T Function(Map<String, dynamic>)? create,
+    required String endpoint,
+    T Function(Map<String, dynamic>)? factory,
     bool isBeta = false,
   }) async {
     return await defaultInstance.performRequest<T>(
-      endpoint: from,
+      endpoint: endpoint,
       method: OpenAI.httpMethod.delete,
-      create: create,
+      create: factory,
       isBeta: isBeta,
     );
   }

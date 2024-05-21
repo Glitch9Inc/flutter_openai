@@ -1,8 +1,8 @@
-import 'package:flutter_openai/openai.dart';
-import 'package:flutter_openai/src/core/models/model/model_object.dart';
+import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
 import 'package:flutter_openai/src/core/utils/openai_logger.dart';
 import 'package:flutter_openai/src/request/interfaces/model_interface.dart';
+import 'package:flutter_openai/src/request/utils/request_utils.dart';
 import 'package:meta/meta.dart';
 
 import '../core/client/openai_client.dart';
@@ -30,18 +30,17 @@ interface class ModelRequest implements ModelInterface {
   ///  print(models.first.id);
   /// ```
   @override
-  Future<List<ModelObject>> list({
+  Future<Query<ModelObject>> list({
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,
     QueryCursor? cursor,
   }) async {
-    return await OpenAIClient.get<List<ModelObject>>(
-      from: endpoint,
-      create: (Map<String, dynamic> response) {
-        final List data = response['data'];
-
-        return data.map((model) => ModelObject.fromMap(model)).toList();
-      },
+    return await RequestUtils.list<ModelObject>(
+      endpoint,
+      ModelObject.fromMap,
+      limit: limit,
+      order: order,
+      cursor: cursor,
     );
   }
 
@@ -57,8 +56,8 @@ interface class ModelRequest implements ModelInterface {
   @override
   Future<ModelObject> retrieve(String id) async {
     return await OpenAIClient.get<ModelObject>(
-      from: endpoint + '/$id',
-      create: (Map<String, dynamic> response) {
+      endpoint: endpoint + '/$id',
+      factory: (Map<String, dynamic> response) {
         return ModelObject.fromMap(response);
       },
     );
@@ -77,8 +76,8 @@ interface class ModelRequest implements ModelInterface {
     final String fineTuneModelDelete = "$endpoint/$fineTuneId";
 
     return await OpenAIClient.delete(
-      from: fineTuneModelDelete,
-      create: (Map<String, dynamic> response) {
+      endpoint: fineTuneModelDelete,
+      factory: (Map<String, dynamic> response) {
         return response['deleted'];
       },
     );

@@ -8,8 +8,8 @@ export 'response_format.dart';
 class Assistant {
   final String id;
   final String object;
-  final GPTModel model;
-  final DateTime createdAt;
+  final GPTModel? model;
+  final DateTime? createdAt;
   final String? name;
   final String? description;
   final String? instructions;
@@ -38,22 +38,25 @@ class Assistant {
     return Assistant(
       id: map['id'],
       object: map['object'],
-      createdAt: MapSetter.setDateTime(map['created_at']),
-      name: map['name'],
-      description: map['description'],
-      instructions: map['instructions'],
-      model: MapSetter.setGPTModel(map['model']),
+      createdAt: MapSetter.set<DateTime>(map, 'created_at'),
+      name: MapSetter.set<String>(map, 'name'),
+      description: MapSetter.set<String>(map, 'description'),
+      instructions: MapSetter.set<String>(map, 'instructions'),
+      model: MapSetter.set<GPTModel>(map, 'model'),
       tools: MapSetter.setList<ToolCall>(
         map,
         'tools',
-        factory: (m) => ToolCall.fromMap(m),
+        factory: ToolCall.fromMap,
       ),
-      metadata: MapSetter.setMetadata(map),
-      temperature: map['temperature'],
-      topP: map['top_p'],
-      responseFormat: map['response_format'] is String
-          ? ResponseFormat.auto
-          : ResponseFormat.fromMap(map['response_format']),
+      metadata: MapSetter.setMap<String>(map, 'metadata'),
+      temperature: MapSetter.set<double>(map, 'temperature'),
+      topP: MapSetter.set<double>(map, 'top_p'),
+      responseFormat: MapSetter.setStringOr<ResponseFormat>(
+        map,
+        'response_format',
+        stringFactory: ResponseFormat.fromString,
+        mapFactory: ResponseFormat.fromMap,
+      ),
     );
   }
 
@@ -70,7 +73,7 @@ class Assistant {
       'metadata': metadata,
       'temperature': temperature,
       'top_p': topP,
-      'response_format': responseFormat?.toMap(),
+      'response_format': responseFormat?.toStringOrMap(),
     };
   }
 }

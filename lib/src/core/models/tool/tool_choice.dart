@@ -23,6 +23,10 @@ class ToolChoice {
     this.function,
   });
 
+  factory ToolChoice.fromString(String value) {
+    return ToolChoice._(type: value);
+  }
+
   /// Factory method to create a ToolChoice object from a Map<String, dynamic>.
   factory ToolChoice.fromMap(Map<String, dynamic> map) {
     return ToolChoice._(
@@ -39,7 +43,7 @@ class ToolChoice {
     );
   }
 
-  toMap() {
+  toStringOrMap() {
     if (type == 'none') return 'none';
     if (type == 'auto') return 'auto';
 

@@ -1,9 +1,6 @@
-import 'package:flutter_openai/openai.dart';
 import 'package:flutter_openai/src/core/client/openai_client.dart';
-import 'package:flutter_openai/src/core/enum.dart';
+import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/models/message/attachment.dart';
-import 'package:flutter_openai/src/core/models/message/message.dart';
-import 'package:flutter_openai/src/core/models/tool/tool_base.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
 import 'package:flutter_openai/src/request/interfaces/message_interface.dart';
 import 'package:flutter_openai/src/request/utils/request_utils.dart';
@@ -67,7 +64,7 @@ interface class MessageRequest extends MessageInterface {
   }
 
   @override
-  Future<List<Message>> list(
+  Future<Query<Message>> list(
     String threadId, {
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,

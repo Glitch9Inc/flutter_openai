@@ -1,9 +1,8 @@
 import 'package:flutter_openai/src/core/client/openai_client.dart';
+import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/query/query_cursor.dart';
-import 'package:flutter_openai/src/core/utils/map_setter.dart';
 import 'package:flutter_openai/src/request/utils/request_utils.dart';
 
-import '../../flutter_openai.dart';
 import '../core/utils/openai_logger.dart';
 import 'interfaces/assistant_interface.dart';
 
@@ -87,7 +86,7 @@ interface class AssistantRequest implements AssistantInterface {
   }
 
   @override
-  Future<List<Assistant>> list({
+  Future<Query<Assistant>> list({
     int limit = DEFAULT_QUERY_LIMIT,
     QueryOrder order = QueryOrder.descending,
     QueryCursor? cursor,

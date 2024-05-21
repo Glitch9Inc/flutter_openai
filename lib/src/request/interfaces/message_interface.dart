@@ -1,9 +1,8 @@
-import 'package:flutter_openai/flutter_openai.dart';
+import 'package:flutter_openai/src/core/flutter_openai_internal.dart';
 import 'package:flutter_openai/src/core/models/message/attachment.dart';
 import 'package:flutter_openai/src/request/interfaces/shared_interfaces.dart';
 
-abstract class MessageInterface
-    implements EndpointInterface, MessageListInterface, RetrieveInterface, DeleteInterface {
+abstract class MessageInterface implements EndpointInterface, RetrieveInterface, DeleteInterface {
   // create and modify
   Future<Message> create(
     String threadId, {
@@ -26,4 +25,6 @@ abstract class MessageInterface
     ToolBase? toolResources,
     Map<String, String>? metadata,
   });
+
+  Future<Query<Message>> list(String threadId);
 }
