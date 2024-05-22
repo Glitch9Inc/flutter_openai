@@ -42,7 +42,7 @@ class Assistant {
       name: MapSetter.set<String>(map, 'name'),
       description: MapSetter.set<String>(map, 'description'),
       instructions: MapSetter.set<String>(map, 'instructions'),
-      model: MapSetter.set<GPTModel>(map, 'model'),
+      model: MapSetter.set<GPTModel>(map, 'model', stringFactory: GPTModelExtension.parse),
       tools: MapSetter.setList<ToolCall>(
         map,
         'tools',

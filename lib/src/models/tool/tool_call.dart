@@ -18,6 +18,16 @@ const toolTypeMap = {
 
 extension ToolTypeExtension on ToolType {
   String? get name => toolTypeMap[this];
+
+  static ToolType parse(String enumName) {
+    for (var key in toolTypeMap.keys) {
+      if (toolTypeMap[key] == enumName) {
+        return key;
+      }
+    }
+
+    return ToolType.function;
+  }
 }
 
 /// {@template openai_chat_completion_response_tool_call_model}
@@ -53,7 +63,7 @@ class ToolCall {
   factory ToolCall.fromMap(Map<String, dynamic> map) {
     return ToolCall(
       id: MapSetter.set<String>(map, 'id'),
-      type: MapSetter.set<ToolType>(map, 'type'),
+      type: MapSetter.set<ToolType>(map, 'type', stringFactory: ToolTypeExtension.parse),
       function: MapSetter.set<FunctionObject>(map, 'function', factory: FunctionObject.fromMap),
     );
   }

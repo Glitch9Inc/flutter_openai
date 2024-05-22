@@ -6,3 +6,4 @@ export 'src/client/gpt_model.dart';
 export 'src/enum.dart';
 export 'src/exceptions/export.dart';
 export 'src/models/export.dart';
+export 'src/utils/map_setter.dart';

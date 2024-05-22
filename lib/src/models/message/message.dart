@@ -114,7 +114,12 @@ final class Message {
         enumValues: ChatRole.values,
         defaultValue: ChatRole.none,
       ),
-      content: MapSetter.setContent(map),
+      content: MapSetter.setStringOr<MessageContent>(
+        map,
+        'content',
+        stringFactory: MessageContent.text,
+        mapFactory: MessageContent.fromMap,
+      ),
       toolCalls: MapSetter.setList<ToolCall>(
         map,
         'tool_calls',

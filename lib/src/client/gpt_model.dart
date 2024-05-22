@@ -75,4 +75,14 @@ const gptModelMap = {
 
 extension GPTModelExtension on GPTModel {
   String? get name => gptModelMap[this];
+
+  static GPTModel parse(String enumName) {
+    for (var key in gptModelMap.keys) {
+      if (gptModelMap[key] == enumName) {
+        return key;
+      }
+    }
+
+    return GPTModel.GPT4o;
+  }
 }

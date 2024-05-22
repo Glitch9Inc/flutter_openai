@@ -156,7 +156,7 @@ class Run {
         'incomplete_details',
         factory: IncompleteDetails.fromMap,
       ),
-      model: MapSetter.set<GPTModel>(map, 'model'),
+      model: MapSetter.set<GPTModel>(map, 'model', stringFactory: GPTModelExtension.parse),
       instructions: MapSetter.set<String>(map, 'instructions'),
       tools: MapSetter.setList<ToolCall>(map, 'tools', factory: ToolCall.fromMap),
       metadata: MapSetter.setMap<String>(map, 'metadata'),
