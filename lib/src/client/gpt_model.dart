@@ -73,8 +73,8 @@ const gptModelMap = {
   GPTModel.GPT4o20240513: "gpt-4o-2024-05-13",
 };
 
-extension GPTModelExtension on GPTModel {
-  String? get name => gptModelMap[this];
+extension GPTModelX on GPTModel {
+  String get value => gptModelMap[this] ?? "gpt-4o";
 
   static GPTModel parse(String enumName) {
     for (var key in gptModelMap.keys) {

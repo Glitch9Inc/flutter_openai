@@ -5,6 +5,7 @@ homepage: https://github.com/Glitch9Inc/flutter_openai/
 repository: https://github.com/Glitch9Inc/flutter_openai/
 documentation: https://github.com/Glitch9Inc/flutter_openai/blob/main/README.md
 issue_tracker: hhttps://github.com/Glitch9Inc/flutter_openai/issues
+publish_to: "none"
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -15,9 +16,12 @@ dependencies:
   collection: ^1.17.2
   fetch_client: ^1.0.2
   shared_preferences: ^2.0.8
+  flutter_corelib:
+    git:
+      url: https://github.com/Glitch9Inc/flutter_corelib.git
+      ref: master
 
 dev_dependencies:
   build_runner: ^2.4.9
-  dart_code_metrics: ^4.19.2
   lints: ^4.0.0
   test: ^1.24.3

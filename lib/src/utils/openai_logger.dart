@@ -1,73 +1,45 @@
-import 'dart:developer' as dev;
-
+import 'package:flutter_corelib/flutter_corelib.dart';
 import 'package:flutter_openai/flutter_openai.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
-import '../settings/strings.dart';
+import '../configs/openai_strings.dart';
 
 @protected
 @immutable
 @internal
 abstract final class OpenAILogger {
+  static Logger logger = new Logger(OpenAIStrings.openai);
+
   /// The valid min length of an api key.
   static const int _kValidApiKeyLength = 10;
 
-  /// {@template openai_logger_is_active}
-  /// Wether the to show operations flow logger is active or not.
-  /// {@endtemplate}
   static bool _isActive = true;
-
-  static bool _showHeadersLogs = false;
+  static bool _showRequestHeaderLogs = false;
   static bool _showRequestBodyLogs = false;
-
-  /// {@template openai_logger_show_responses_logs}
-  /// Wether to show operations response bodies in logs or not.
-  /// {@endtemplate}
-  static bool _showResponsesLogs = false;
-
+  static bool _showResponseBodyLogs = false;
   static bool _showRunStatusLogs = true;
 
-  /// {@macro openai_logger_is_active}
   static bool get isActive => _isActive;
-
-  /// {@macro openai_logger_show_headers_logs}
-  static bool get showHeadersLogs => _showHeadersLogs;
-
-  /// {@macro openai_logger_show_request_body_logs}
+  static bool get showHeadersLogs => _showRequestHeaderLogs;
   static bool get showRequestBodyLogs => _showRequestBodyLogs;
-
-  /// {@macro openai_logger_show_responses_logs}
-  static bool get showResponsesLogs => _showResponsesLogs;
-
+  static bool get showResponseBodyLogs => _showResponseBodyLogs;
   static bool get showRunStatusLogs => _showRunStatusLogs;
 
-  /// Changes the logger active state.
-  ///
-  /// if true, the logger will log messages.
-  /// If false, the logger will not log messages.
-  ///
-  /// The default value is [true].
   static set isActive(bool newValue) {
     _isActive = newValue;
   }
 
   static set showHeadersLogs(bool newValue) {
-    _showHeadersLogs = newValue;
+    _showRequestHeaderLogs = newValue;
   }
 
   static set showRequestBodyLogs(bool newValue) {
     _showRequestBodyLogs = newValue;
   }
 
-  /// Changes the logger show responses logs state.
-  ///
-  /// if true, the logger will log responses bodies.
-  /// If false, the logger will not log responses bodies.
-  ///
-  /// The default value is [false].
-  static set showResponsesLogs(bool newValue) {
-    _showResponsesLogs = newValue;
+  static set showResponseBodyLogs(bool newValue) {
+    _showResponseBodyLogs = newValue;
   }
 
   static set showRunStatusLogs(bool newValue) {
@@ -77,7 +49,13 @@ abstract final class OpenAILogger {
   /// Logs a message, if the logger is active.
   static void log(String message, [Object? error]) {
     if (_isActive) {
-      dev.log(message, name: OpenAIStrings.openai, error: error);
+      logger.info(message);
+    }
+  }
+
+  static void error(String errorMessage) {
+    if (_isActive) {
+      logger.info(errorMessage);
     }
   }
 
@@ -89,13 +67,12 @@ abstract final class OpenAILogger {
 
   /// Logs the response of a request, if the logger is active.
   static void logResponseBody(response) {
-    if (_isActive && _showResponsesLogs) {
+    if (_isActive && _showResponseBodyLogs) {
       if (response is Response) {
-        dev.log("ResponseBody: ${response.body.toString()}", name: OpenAIStrings.openai);
+        logger.info("ResponseBody: ${response.body.toString()}");
       } else {
-        dev.log(
+        logger.info(
           "ResponseBody: ${response.toString()}",
-          name: OpenAIStrings.openai,
         );
       }
     }
@@ -170,7 +147,7 @@ abstract final class OpenAILogger {
   static void logHeaders(
     Map<String, dynamic> additionalHeadersToRequests,
   ) {
-    if (_isActive && _showHeadersLogs) {
+    if (_isActive && _showRequestHeaderLogs) {
       for (int index = 0; index < additionalHeadersToRequests.entries.length; index++) {
         final entry = additionalHeadersToRequests.entries.elementAt(index);
         log("header: ${entry.key}:${entry.value}");

@@ -1,0 +1,64 @@
+import 'package:meta/meta.dart';
+
+/// {@template openai_file_model}
+/// This class is used to represent an OpenAI file.
+/// {@endtemplate}
+@immutable
+final class OpenAIFile {
+  /// The [id]entifier of the file. This is used to reference the file in other API calls.
+  final String id;
+
+  /// The size of the file in [bytes].
+  final int bytes;
+
+  /// The date the file was [created].
+  final DateTime createdAt;
+
+  /// The name of the file.
+  final String fileName;
+
+  /// The [purpose] of the file.
+  final String purpose;
+
+  @override
+  int get hashCode {
+    return id.hashCode ^ bytes.hashCode ^ createdAt.hashCode ^ fileName.hashCode ^ purpose.hashCode;
+  }
+
+  /// {@macro openai_file_model}
+  const OpenAIFile({
+    required this.id,
+    required this.bytes,
+    required this.createdAt,
+    required this.fileName,
+    required this.purpose,
+  });
+
+  /// {@macro openai_file_model}
+  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIFile] object.
+  factory OpenAIFile.fromMap(Map<String, dynamic> map) {
+    return OpenAIFile(
+      id: map['id'] as String,
+      bytes: map['bytes'] as int,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+      fileName: map['filename'] as String,
+      purpose: map['purpose'] as String,
+    );
+  }
+
+  @override
+  bool operator ==(covariant OpenAIFile other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.bytes == bytes &&
+        other.createdAt == createdAt &&
+        other.fileName == fileName &&
+        other.purpose == purpose;
+  }
+
+  @override
+  String toString() {
+    return 'OpenAIFileModel(id: $id, bytes: $bytes, createdAt: $createdAt, fileName: $fileName, purpose: $purpose)';
+  }
+}

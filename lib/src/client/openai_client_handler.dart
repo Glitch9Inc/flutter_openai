@@ -2,14 +2,13 @@ import "dart:async";
 import "dart:convert";
 import "dart:io";
 
-import "package:flutter_openai/src/settings/headers.dart";
-import "package:flutter_openai/src/settings/openai_uri.dart";
-import "package:flutter_openai/src/utils/openai_logger.dart";
+import "package:flutter_openai/src/configs/headers.dart";
+import "package:flutter_openai/src/configs/openai_uri.dart";
 import "package:http/http.dart" as http;
 
+import "../configs/openai_config.dart";
+import "../configs/openai_strings.dart";
 import "../flutter_openai_internal.dart";
-import "../settings/config.dart";
-import "../settings/strings.dart";
 import "redirection_handling_client.dart";
 
 const openAIChatStreamLineSplitter = const LineSplitter();
