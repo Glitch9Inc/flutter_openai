@@ -1,9 +1,8 @@
 import "dart:async";
 import "dart:io";
-
-import 'package:flutter_openai/flutter_openai.dart';
+import 'package:dio/dio.dart';
+import "package:flutter_openai/flutter_openai.dart";
 import "package:flutter_openai/src/client/openai_client_handler.dart";
-import "package:http/http.dart" as http;
 import "package:meta/meta.dart";
 
 @protected
@@ -65,8 +64,8 @@ abstract class OpenAIClient {
     File? mask,
   }) async {
     final files = [
-      await http.MultipartFile.fromPath("image", image.path),
-      if (mask != null) await http.MultipartFile.fromPath("mask", mask.path),
+      await MultipartFile.fromFile(image.path),
+      if (mask != null) await MultipartFile.fromFile(mask.path),
     ];
 
     return defaultInstance.performMultipartRequest<T>(
@@ -108,11 +107,10 @@ abstract class OpenAIClient {
     required T Function(Map<String, dynamic>) create,
     required File file,
     required Map<String, String> body,
-    Map<String, dynamic> Function(String rawResponse)? responseMapAdapter,
     bool isBeta = false,
   }) async {
     final files = [
-      await http.MultipartFile.fromPath("file", file.path),
+      await MultipartFile.fromFile(file.path),
     ];
 
     return defaultInstance.performMultipartRequest<T>(
@@ -120,7 +118,6 @@ abstract class OpenAIClient {
       create: create,
       files: files,
       body: body,
-      responseMapAdapter: responseMapAdapter,
       isBeta: isBeta,
     );
   }

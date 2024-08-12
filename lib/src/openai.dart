@@ -1,11 +1,13 @@
+import 'package:flutter_corelib/network/client/client_settings.dart';
+import 'package:flutter_openai/src/client/openai_log_settings.dart';
 import 'package:flutter_openai/src/flutter_openai_internal.dart';
 import 'package:meta/meta.dart';
 
-import 'configs/headers.dart';
-import 'configs/object_types.dart';
-import 'configs/openai_config.dart';
-import 'configs/openai_endpoints.dart';
-import 'configs/openai_http.dart';
+import 'config/openai_header.dart';
+import 'config/object_types.dart';
+import 'config/openai_config.dart';
+import 'config/openai_endpoints.dart';
+import 'config/openai_http.dart';
 
 typedef TokenValidator = void Function(int);
 typedef UsageHandler = void Function(Usage);
@@ -18,6 +20,8 @@ typedef ExceptionHandler = void Function(Exception);
 /// ```
 @immutable
 final class OpenAI {
+  static final OpenAILogSettings logger = OpenAILogSettings();
+  static final ClientSettings clientSettings = ClientSettings();
   static final endpoint = OpenAIEndpoints.instance;
   static final httpMethod = OpenAIHttp.instance;
   static final type = OpenAIObjectTypes.instance;
@@ -89,17 +93,11 @@ final class OpenAI {
   RunStepService get runStep => RunStepService();
 
   /// The organization id, if set, it will be used in all the requests to the OpenAI API.
-  static String? get organization => HeadersBuilder.organization;
+  static String? get organization => OpenAIHeader.organization;
 
   /// The base API url, by default it is set to the OpenAI API url.
   /// You can change it by calling the [OpenAI.baseUrl] setter.
   static String get baseUrl => OpenAIConfig.baseUrl;
-
-  /// {@macro openai_config_requests_timeOut}
-  static set requestsTimeOut(Duration requestsTimeOut) {
-    OpenAIConfig.requestsTimeOut = requestsTimeOut;
-    OpenAILogger.requestsTimeoutChanged(requestsTimeOut);
-  }
 
   /// This is used to initialize the [OpenAI] instance, by providing the API key.
   /// All the requests will be authenticated using this API key.
@@ -107,7 +105,7 @@ final class OpenAI {
   /// OpenAI.apiKey = "YOUR_API_KEY";
   /// ```
   static set apiKey(String apiKey) {
-    HeadersBuilder.apiKey = apiKey;
+    OpenAIHeader.apiKey = apiKey;
     _internalApiKey = apiKey;
   }
 
@@ -125,73 +123,7 @@ final class OpenAI {
   /// OpenAI.organization = "YOUR_ORGANIZATION_ID";
   /// ```
   static set organization(String? organizationId) {
-    HeadersBuilder.organization = organizationId;
-  }
-
-  /// This controls whether to log steps inside the process of making a request, this helps debugging and pointing where something went wrong.
-  /// This uses  [dart:developer] internally, so it will show anyway only while debugging code.
-  ///
-  /// By default it is set to [true].
-  ///
-  /// Example:
-  /// ```dart
-  /// OpenAI.instance.showLogs = false;
-  /// ```
-  static set showLogs(bool newValue) {
-    OpenAILogger.isActive = newValue;
-  }
-
-  /// This controls whether to log request headers or not.
-  /// This uses  [dart:developer] internally, so it will show anyway only while debugging code.
-  ///
-  /// By default it is set to [false].
-  ///
-  /// Example:
-  /// ```dart
-  /// OpenAI.showHeadersLogs = true;
-  /// ```
-  static set showRequestHeaderLogs(bool showHeadersLogs) {
-    OpenAILogger.showHeadersLogs = showHeadersLogs;
-  }
-
-  /// This controls whether to log request bodies or not.
-  /// This uses  [dart:developer] internally, so it will show anyway only while debugging code.
-  ///
-  /// By default it is set to [false].
-  ///
-  /// Example:
-  /// ```dart
-  /// OpenAI.showRequestBodyLogs = true;
-  /// ```
-  static set showRequestBodyLogs(bool showRequestBodyLogs) {
-    OpenAILogger.showRequestBodyLogs = showRequestBodyLogs;
-  }
-
-  /// This controls whether to log responses bodies or not.
-  /// This uses  [dart:developer] internally, so it will show anyway only while debugging code.
-  ///
-  /// By default it is set to [false].
-  ///
-  /// Example:
-  /// ```dart
-  /// OpenAI.showResponsesLogs = true;
-  /// ```
-  static set showResponseBodyLogs(bool showResponseBodyLogs) {
-    OpenAILogger.showResponseBodyLogs = showResponseBodyLogs;
-  }
-
-  /// This controls whether to log run status changes or not.
-  /// This uses  [dart:developer] internally, so it will show anyway only while debugging code.
-  ///
-  /// By default it is set to [true].
-  ///
-  /// Example:
-  ///
-  /// ```dart
-  /// OpenAI.showRunStatusLogs = false;
-  /// ```
-  static set showRunStatusLogs(bool showRunStatusLogs) {
-    OpenAILogger.showRunStatusLogs = showRunStatusLogs;
+    OpenAIHeader.organization = organizationId;
   }
 
   /// The constructor of [OpenAI]. It is private, so you can only access the instance by calling the [OpenAI.instance] getter.

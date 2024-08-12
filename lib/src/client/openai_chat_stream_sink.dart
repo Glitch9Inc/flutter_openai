@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
-import '../configs/openai_strings.dart';
+import '../config/openai_strings.dart';
 
-class OpenAIChatStreamLineSplitter extends StreamTransformerBase<String, String> {
+class OpenAIChatStreamLineSplitter
+    extends StreamTransformerBase<String, String> {
   const OpenAIChatStreamLineSplitter();
 
   Stream<String> bind(Stream<String> stream) {
