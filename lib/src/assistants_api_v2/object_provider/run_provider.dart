@@ -42,7 +42,7 @@ class RunProvider extends AssistantsAPIProvider<Run> {
     if (api.threadId.isEmpty) throw ArgumentError("threadId must be provided to retrieve a run.");
 
     var result = await OpenAI.instance.run.retrieve(api.threadId, id);
-    if (result == null) return Result.fail("Failed to retrieve $id.");
+    if (result == null) return Result.error("Failed to retrieve $id.");
 
     return Result<Run>.success(result);
   }
@@ -57,7 +57,7 @@ class RunProvider extends AssistantsAPIProvider<Run> {
     if (api.threadId.isEmpty) throw ArgumentError("threadId must be provided to create a message.");
 
     var result = await OpenAI.instance.run.list(api.threadId, limit: count);
-    if (result.data == null) return Result.fail("Failed to list assistants.");
+    if (result.data == null) return Result.error("Failed to list assistants.");
     return Result<List<Run>>.success(result.data!);
   }
 }

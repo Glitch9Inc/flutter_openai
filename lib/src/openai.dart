@@ -3,11 +3,11 @@ import 'package:flutter_openai/src/client/openai_log_settings.dart';
 import 'package:flutter_openai/src/flutter_openai_internal.dart';
 import 'package:meta/meta.dart';
 
+import 'client/openai_client.dart';
 import 'config/openai_header.dart';
 import 'config/object_types.dart';
 import 'config/openai_config.dart';
 import 'config/openai_endpoints.dart';
-import 'config/openai_http.dart';
 
 typedef TokenValidator = void Function(int);
 typedef UsageHandler = void Function(Usage);
@@ -20,28 +20,24 @@ typedef ExceptionHandler = void Function(Exception);
 /// ```
 @immutable
 final class OpenAI {
-  static final OpenAILogSettings logger = OpenAILogSettings();
-  static final ClientSettings clientSettings = ClientSettings();
+  static OpenAILogSettings logger = OpenAILogSettings();
+  static ClientSettings clientSettings = ClientSettings();
   static final endpoint = OpenAIEndpoints.instance;
-  static final httpMethod = OpenAIHttp.instance;
   static final type = OpenAIObjectTypes.instance;
 
   /// The singleton instance of [OpenAI].
   static final OpenAI _instance = OpenAI._();
 
-  /// The API key used to authenticate the requests.
-  static String? _internalApiKey;
-
   /// The singleton instance of [OpenAI], make sure to set your OpenAI API key via the [OpenAI.apiKey] setter before accessing the [OpenAI.instance], otherwise it will throw an [Exception].
   /// A [MissingApiKeyException] will be thrown, if the API key is not set.
   static OpenAI get instance {
-    if (_internalApiKey == null) {
-      throw MissingApiKeyException("""
-      You must set the api key before accessing the instance of this class.
-      Example:
-      OpenAI.apiKey = "Your API Key";
-      """);
-    }
+    // if (_internalApiKey == null) {
+    //   throw MissingApiKeyException("""
+    //   You must set the api key before accessing the instance of this class.
+    //   Example:
+    //   OpenAI.apiKey = "Your API Key";
+    //   """);
+    // }
 
     return _instance;
   }
@@ -106,7 +102,6 @@ final class OpenAI {
   /// ```
   static set apiKey(String apiKey) {
     OpenAIHeader.apiKey = apiKey;
-    _internalApiKey = apiKey;
   }
 
   /// This is used to set the base url of the OpenAI API, by default it is set to [OpenAIConfig.baseUrl].
@@ -128,4 +123,18 @@ final class OpenAI {
 
   /// The constructor of [OpenAI]. It is private, so you can only access the instance by calling the [OpenAI.instance] getter.
   OpenAI._();
+
+  void init(
+    String apiKey,
+    String? organization, {
+    OpenAILogSettings? logSettings,
+    ClientSettings? clientSettings,
+  }) {
+    OpenAI.apiKey = apiKey;
+    OpenAI.organization = organization;
+    if (logSettings != null) OpenAI.logger = logSettings;
+    if (clientSettings != null) OpenAI.clientSettings = clientSettings;
+  }
+
+  void cancelAllRequests() => OpenAIClient.cancelAllRequests();
 }

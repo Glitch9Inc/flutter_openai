@@ -41,7 +41,7 @@ class AssistantResult extends Result {
     Usage? usage,
   }) {
     if (message.content == null) {
-      return AssistantResult.fail('Message content is null');
+      return AssistantResult.error('Message content is null');
     }
 
     List<String> content = [];
@@ -60,7 +60,7 @@ class AssistantResult extends Result {
     );
   }
 
-  factory AssistantResult.fail(
+  factory AssistantResult.error(
     String? failReason, {
     Usage? usage,
   }) {

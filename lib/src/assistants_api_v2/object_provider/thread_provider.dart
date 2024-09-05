@@ -15,7 +15,7 @@ class ThreadProvider extends AssistantsAPIProvider<Thread> {
   @override
   Future<Result> retrieveInternal(String id) async {
     var result = await OpenAI.instance.thread.retrieve(id);
-    if (result == null) return Result.fail("Failed to retrieve $id.");
+    if (result == null) return Result.error("Failed to retrieve $id.");
 
     return Result<Thread>.success(result);
   }
@@ -25,7 +25,7 @@ class ThreadProvider extends AssistantsAPIProvider<Thread> {
     bool deleted = await OpenAI.instance.thread.delete(id);
     if (deleted) return Result.success("$id deleted successfully.");
 
-    return Result.fail("Failed to delete $id.");
+    return Result.error("Failed to delete $id.");
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io' as io;
 
-import 'package:flutter_corelib/flutter_corelib.dart';
+import 'package:flutter_corelib/flutter_corelib.dart' hide ExceptionHandler;
 import 'package:flutter_openai/flutter_openai.dart';
 import 'package:flutter_openai/src/assistants_api_v2/model/assistant_event_handler.dart';
 import 'package:flutter_openai/src/assistants_api_v2/client/assistants_api_v2_util.dart';
@@ -272,15 +272,15 @@ class AssistantsAPIv2 {
     String? additionalInstructions,
   }) async {
     var statusValidationResult = AssistantsAPIv2Util.validateAPIStatus(this);
-    if (statusValidationResult.fail) return statusValidationResult;
+    if (statusValidationResult.isError) return statusValidationResult;
 
-    if (threadId.isNullOrEmpty) return AssistantResult.fail("The thread id is empty.");
+    if (threadId.isNullOrEmpty) return AssistantResult.error("The thread id is empty.");
 
     var promptValidationResult = _validateTextPrompt(textPrompt);
-    if (promptValidationResult.fail) return promptValidationResult;
+    if (promptValidationResult.isError) return promptValidationResult;
 
     var reqValidationResult = _validateRequest();
-    if (reqValidationResult.fail) return reqValidationResult;
+    if (reqValidationResult.isError) return reqValidationResult;
 
     if (customRunRequest == null && additionalInstructions != null) {
       customRunRequest = lastRunRequest ?? defaultRunRequest;
@@ -299,13 +299,13 @@ class AssistantsAPIv2 {
     List<io.File> imageFiles,
   ) async {
     var statusValidationResult = AssistantsAPIv2Util.validateAPIStatus(this);
-    if (statusValidationResult.fail) return statusValidationResult;
+    if (statusValidationResult.isError) return statusValidationResult;
 
     var promptValidationResult = _validateTextPrompt(textPrompt);
-    if (promptValidationResult.fail) return promptValidationResult;
+    if (promptValidationResult.isError) return promptValidationResult;
 
     var reqValidationResult = _validateRequest();
-    if (reqValidationResult.fail) return reqValidationResult;
+    if (reqValidationResult.isError) return reqValidationResult;
 
     return await _handleRequestAsync(
       MessageRequest.withImageFiles(textPrompt, imageFiles),
@@ -319,13 +319,13 @@ class AssistantsAPIv2 {
     List<String> imageUrls,
   ) async {
     var statusValidationResult = AssistantsAPIv2Util.validateAPIStatus(this);
-    if (statusValidationResult.fail) return statusValidationResult;
+    if (statusValidationResult.isError) return statusValidationResult;
 
     var promptValidationResult = _validateTextPrompt(textPrompt);
-    if (promptValidationResult.fail) return promptValidationResult;
+    if (promptValidationResult.isError) return promptValidationResult;
 
     var reqValidationResult = _validateRequest();
-    if (reqValidationResult.fail) return reqValidationResult;
+    if (reqValidationResult.isError) return reqValidationResult;
 
     return await _handleRequestAsync(
       MessageRequest.withImageUrls(textPrompt, imageUrls),
@@ -338,10 +338,10 @@ class AssistantsAPIv2 {
     RunRequest? customRunRequest,
   }) async {
     var statusValidationResult = AssistantsAPIv2Util.validateAPIStatus(this);
-    if (statusValidationResult.fail) return statusValidationResult;
+    if (statusValidationResult.isError) return statusValidationResult;
 
     var promptValidationResult = _validateObjectPrompt(audioPrompt);
-    if (promptValidationResult.fail) return promptValidationResult;
+    if (promptValidationResult.isError) return promptValidationResult;
 
     var transcriptionRequest = TranscriptionRequest(file: audioPrompt!);
 
@@ -356,7 +356,7 @@ class AssistantsAPIv2 {
     RunRequest? customRunRequest,
   }) async {
     var statusValidationResult = AssistantsAPIv2Util.validateAPIStatus(this);
-    if (statusValidationResult.fail) return statusValidationResult;
+    if (statusValidationResult.isError) return statusValidationResult;
 
     return await _handleTranscriptionRequestAsync(
       transcriptionRequest,
@@ -369,7 +369,7 @@ class AssistantsAPIv2 {
     RunRequest? customRunRequest,
   }) async {
     var statusValidationResult = AssistantsAPIv2Util.validateAPIStatus(this);
-    if (statusValidationResult.fail) return statusValidationResult;
+    if (statusValidationResult.isError) return statusValidationResult;
 
     return await _handleRequestAsync(
       messageRequest,
@@ -394,7 +394,7 @@ class AssistantsAPIv2 {
     _requiredActions.remove(toolCallId);
     var waitResult = await _waitUntilRequiredActionCompletions();
 
-    if (waitResult.fail) {
+    if (waitResult.isError) {
       throw Exception(waitResult.message);
     }
   }
@@ -404,7 +404,7 @@ class AssistantsAPIv2 {
 
     var requiredAction = run!.requiredAction;
     if (requiredAction?.submitToolOutputs?.toolCalls == null || requiredAction!.submitToolOutputs!.toolCalls!.isEmpty) {
-      return AssistantResult.fail("The run requires action, but no action is specified.");
+      return AssistantResult.error("The run requires action, but no action is specified.");
     }
 
     var unhandledRequiredActions = <String, RequiredActionStack>{};
@@ -436,8 +436,8 @@ class AssistantsAPIv2 {
     if (unhandledRequiredActions.isEmpty) {
       AssistantsAPIv2Util.updateAPIStatus(this, AssistantStatus.HandlingResponse);
       var waitResult = await _waitUntilRequiredActionCompletions();
-      if (waitResult.fail) {
-        return AssistantResult.fail(waitResult.message);
+      if (waitResult.isError) {
+        return AssistantResult.error(waitResult.message);
       }
 
       return await _getResult();
@@ -566,7 +566,7 @@ class AssistantsAPIv2 {
   }
 
   AssistantResult _validateTextPrompt(String? textPrompt) {
-    if (textPrompt.isNullOrEmpty) return AssistantResult.fail("The input text is empty.");
+    if (textPrompt.isNullOrEmpty) return AssistantResult.error("The input text is empty.");
     logger.info("Requesting with input: ${textPrompt}");
 
     return AssistantResult.success();
@@ -574,7 +574,7 @@ class AssistantsAPIv2 {
 
   AssistantResult _validateObjectPrompt<T>(T? objectPrompt) {
     String objectName = objectPrompt?.runtimeType.toString() ?? "Unknown Object";
-    if (objectPrompt == null) return AssistantResult.fail("The input ${objectName} is null.");
+    if (objectPrompt == null) return AssistantResult.error("The input ${objectName} is null.");
     logger.info("Requesting with ${objectName} input.");
 
     return AssistantResult.success();
@@ -585,11 +585,11 @@ class AssistantsAPIv2 {
       //tokenValidator?(minTokenRequirementPerRequest);
       tokenValidator?.call(minTokenRequirementPerRequest);
     } catch (e) {
-      return AssistantResult.fail(e.toString());
+      return AssistantResult.error(e.toString());
     }
 
     if (DateTime.now().difference(_lastRequestTime) < Duration(milliseconds: MIN_INTERVAL_REQUEST_MILLIS))
-      return AssistantResult.fail("The request is too fast. Please wait for a while.");
+      return AssistantResult.error("The request is too fast. Please wait for a while.");
 
     return AssistantResult.success();
   }
@@ -599,7 +599,7 @@ class AssistantsAPIv2 {
     RunRequest? customRunRequest,
   ) async {
     if (lastMessageRequest != null && lastMessageRequest == messageRequest) {
-      return AssistantResult.fail("The request is the same as the previous request.");
+      return AssistantResult.error("The request is the same as the previous request.");
     }
 
     logger.shout("Handling the AssistantsApi-v2 request...");
@@ -608,12 +608,12 @@ class AssistantsAPIv2 {
     _lastRequestTime = DateTime.now();
 
     Message? userMessage = await messageProvider.create();
-    if (userMessage == null) return AssistantResult.fail("Failed to create a user message.");
+    if (userMessage == null) return AssistantResult.error("Failed to create a user message.");
 
     lastRunRequest = customRunRequest ?? defaultRunRequest;
 
     run = await runProvider.create();
-    if (run == null) return AssistantResult.fail("Failed to create a run.");
+    if (run == null) return AssistantResult.error("Failed to create a run.");
 
     bool stream = customRunRequest?.stream ?? this.stream;
 
@@ -625,7 +625,7 @@ class AssistantsAPIv2 {
         await runManager.createNonStreamResponse();
       }
     } catch (e) {
-      return AssistantResult.fail(e.toString());
+      return AssistantResult.error(e.toString());
     }
 
     return await _getResult();
@@ -646,7 +646,7 @@ class AssistantsAPIv2 {
     );
 
     if (transcription.text.isNullOrEmpty) {
-      return AssistantResult.fail("Failed to transcribe the audio file.");
+      return AssistantResult.error("Failed to transcribe the audio file.");
     }
 
     return await request(transcription.text, customRunRequest: customRunRequest);
@@ -658,7 +658,7 @@ class AssistantsAPIv2 {
     FunctionDelegate functionDelegate,
   ) async {
     var result = await functionDelegate.executeInternal(arguments);
-    if (result.fail || result is! Result<String>) {
+    if (result.isError || result is! Result<String>) {
       await cancelRun();
       logger.severe(
         "Failed to execute the function delegate for the tool call id:$toolCallId with error: ${result.message}. Cancelling the current run...",
@@ -685,8 +685,8 @@ class AssistantsAPIv2 {
   }
 
   AssistantResult _buildFinalResult() {
-    if (!_newAssistantMessageCreated) return AssistantResult.fail("No new assistant message created.");
-    if (lastAssistantMessage == null) return AssistantResult.fail("Failed to retrieve the result from the run.");
+    if (!_newAssistantMessageCreated) return AssistantResult.error("No new assistant message created.");
+    if (lastAssistantMessage == null) return AssistantResult.error("Failed to retrieve the result from the run.");
     var usage = run!.usage;
     if (usage != null) usageHandler?.call(usage);
 
@@ -694,7 +694,7 @@ class AssistantsAPIv2 {
   }
 
   Future<Result> _waitUntilRequiredActionCompletions() async {
-    if (_waitingForRequiredActionCompletions) return Result.fail("Already waiting for required action completions.");
+    if (_waitingForRequiredActionCompletions) return Result.error("Already waiting for required action completions.");
     _waitingForRequiredActionCompletions = true;
 
     var runExpirationTime = DateTime.now().add(Duration(minutes: 30));
@@ -708,7 +708,7 @@ class AssistantsAPIv2 {
     _waitingForRequiredActionCompletions = false;
 
     if (DateTime.now().isAfter(runExpirationTime)) {
-      return Result.fail("The run has expired. Cancelling the current run...");
+      return Result.error("The run has expired. Cancelling the current run...");
     }
 
     return Result.success("All required actions have been handled.");

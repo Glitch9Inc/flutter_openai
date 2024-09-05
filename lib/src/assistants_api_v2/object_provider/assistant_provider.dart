@@ -29,7 +29,7 @@ class AssistantProvider extends AssistantsAPIProvider<Assistant> {
   @override
   Future<Result> retrieveInternal(String id) async {
     var result = await OpenAI.instance.assistant.retrieve(id);
-    if (result == null) return Result.fail("Failed to retrieve $id.");
+    if (result == null) return Result.error("Failed to retrieve $id.");
 
     return Result<Assistant>.success(result);
   }
@@ -39,13 +39,13 @@ class AssistantProvider extends AssistantsAPIProvider<Assistant> {
     bool deleted = await OpenAI.instance.assistant.delete(id);
     if (deleted) return Result.success("$id deleted successfully.");
 
-    return Result.fail("Failed to delete $id.");
+    return Result.error("Failed to delete $id.");
   }
 
   @override
   Future<Result> listInternal(int count) async {
     var result = await OpenAI.instance.assistant.list(limit: count);
-    if (result.data == null) return Result.fail("Failed to list assistants.");
+    if (result.data == null) return Result.error("Failed to list assistants.");
     return Result<List<Assistant>>.success(result.data!);
   }
 }

@@ -20,7 +20,7 @@ interface class AssistantService implements EndpointInterface {
     return OpenAIClient.post<Assistant>(
       to: endpoint,
       body: {
-        "model": model.value,
+        "model": model.apiName,
         if (name != null) "name": name,
         if (description != null) "description": description,
         if (instructions != null) "instructions": instructions,
@@ -56,7 +56,7 @@ interface class AssistantService implements EndpointInterface {
     return OpenAIClient.post<Assistant>(
       to: formattedEndpoint,
       body: {
-        if (model != null) "model": model.value,
+        if (model != null) "model": model.apiName,
         if (name != null) "name": name,
         if (description != null) "description": description,
         if (instruction != null) "instruction": instruction,

@@ -77,7 +77,7 @@ class MessageProvider extends AssistantsAPIProvider<Message> {
     if (api.threadId.isEmpty) throw ArgumentError("threadId must be provided to create a message.");
 
     var result = await OpenAI.instance.message.list(api.threadId, limit: count);
-    if (result.data == null) return Result.fail("Failed to list assistants.");
+    if (result.data == null) return Result.error("Failed to list assistants.");
     return Result<List<Message>>.success(result.data!);
   }
 }

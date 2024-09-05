@@ -68,7 +68,7 @@ interface class FileService implements EndpointInterface {
 
     return await OpenAIClient.get(
       endpoint: endpoint + fileIdEndpoint,
-      returnRawResponse: true,
+      returnRawData: true,
     );
   }
 

@@ -74,7 +74,7 @@ const gptModelMap = {
 };
 
 extension GPTModelX on GPTModel {
-  String get value => gptModelMap[this] ?? "gpt-4o";
+  String get apiName => gptModelMap[this] ?? "gpt-4o";
 
   static GPTModel parse(String enumName) {
     for (var key in gptModelMap.keys) {

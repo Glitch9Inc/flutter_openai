@@ -29,7 +29,7 @@ interface class RunService implements EndpointInterface {
       to: formattedEndpoint,
       body: {
         "assistant_id": assistantId,
-        if (model != null) "model": model.value,
+        if (model != null) "model": model.apiName,
         if (instructions != null) "instructions": instructions,
         if (additionalInstructions != null) "additional_instructions": additionalInstructions,
         if (additionalMessages != null) "additional_messages": additionalMessages.map((p0) => p0.toMap()).toList(),
@@ -71,7 +71,7 @@ interface class RunService implements EndpointInterface {
       body: {
         "assistant_id": assistantId,
         if (thread != null) "thread": thread.toMap(),
-        if (model != null) "model": model.value,
+        if (model != null) "model": model.apiName,
         if (instruction != null) "instruction": instruction,
         if (tools != null) "tools": tools.map((p0) => p0.toMap()).toList(),
         if (toolResources != null) "tool_resources": toolResources.toMap(),

@@ -198,7 +198,7 @@ class Run {
       'failed_at': failedAt?.toIso8601String(),
       'completed_at': completedAt?.toIso8601String(),
       'incomplete_details': incompleteDetails?.toMap(),
-      'model': model?.value,
+      'model': model?.apiName,
       'instructions': instructions,
       'tools': tools?.map((tool) => tool.toMap()).toList(),
       'metadata': metadata,

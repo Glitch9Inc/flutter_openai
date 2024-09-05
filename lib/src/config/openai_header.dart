@@ -1,4 +1,3 @@
-import 'package:flutter_openai/src/assistants_api_v2/controller/run_logger.dart';
 import 'package:flutter_openai/src/flutter_openai_internal.dart';
 import 'package:meta/meta.dart';
 
@@ -53,7 +52,7 @@ abstract class OpenAIHeader {
   /// if the [organization] is set, it will be added to the headers as well.
   /// If in anyhow the API key is not set, it will throw an [AssertionError] while debugging.
   @internal
-  static Map<String, String> build({bool isBeta = false}) {
+  static Map<String, String> build({bool betaApi = false}) {
     Map<String, String> headers = <String, String>{
       'Content-Type': 'application/json',
     };
@@ -68,7 +67,7 @@ abstract class OpenAIHeader {
       ..._additionalHeadersToRequests,
       if (isOrganizationSet) 'OpenAI-Organization': organization!,
       "Authorization": "Bearer $apiKey",
-      if (isBeta) OpenAIStrings.betaHeader: OpenAIStrings.betaHeaderValue,
+      if (betaApi) OpenAIStrings.betaHeader: OpenAIStrings.betaHeaderValue,
     };
 
     return headers;

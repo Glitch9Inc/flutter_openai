@@ -10,7 +10,7 @@ abstract class FunctionDelegate<TArgument, TResult> {
 
   Future<Result> executeInternal(String argument) async {
     if (argument.isEmpty) {
-      return Result.fail("Argument is null or empty.");
+      return Result.error("Argument is null or empty.");
     }
 
     try {
@@ -24,7 +24,7 @@ abstract class FunctionDelegate<TArgument, TResult> {
       return Result<String>.success(jsonEncode(result));
     } catch (e) {
       // Handle any exceptions and return a failure result with the default result serialized
-      return Result<String>.fail("Failed to handle argument: $e");
+      return Result<String>.error("Failed to handle argument: $e");
     }
   }
 

@@ -4,7 +4,16 @@ import 'package:flutter_openai/src/config/openai_strings.dart';
 class OpenAILogSettings extends LogSettings {
   static const int _kValidApiKeyLength = 10;
   final Logger _mainLogger = new Logger(OpenAIStrings.openai);
-  bool showRunStatus = true;
+  bool showRunStatus;
+
+  OpenAILogSettings(
+      {super.enabled = true,
+      super.showRequestHeaders = false,
+      super.showRequestBody = false,
+      super.showResponseBody = false,
+      super.hideEmptyBody = true,
+      super.showRedirections = false,
+      this.showRunStatus = false});
 
   void info(String message, [Object? error]) {
     _mainLogger.info(message);

@@ -7,7 +7,7 @@ class OpenAILoggingInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    if (OpenAI.logger.enabled) _logger.info('Request [${options.method.yellow}] => PATH: ${options.path.yellow}');
+    if (OpenAI.logger.enabled) _logger.info('Request [${options.method}] => PATH: ${options.path.yellow}');
     if (OpenAI.logger.showRequestHeaders) _logger.info('Headers: ${options.headers}');
     if (OpenAI.logger.showRequestBody) {
       bool nullOrEmpty = options.data == null || options.data.toString().isEmpty || options.data.toString() == '{}';
@@ -20,8 +20,7 @@ class OpenAILoggingInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (OpenAI.logger.enabled)
-      _logger
-          .info('Response [${response.statusCode.toString().yellow}] => PATH: ${response.requestOptions.path.yellow}');
+      _logger.info('Response [${response.statusCode}] => PATH: ${response.requestOptions.path.yellow}');
     if (OpenAI.logger.showResponseBody) {
       bool nullOrEmpty = response.data == null || response.data.toString().isEmpty || response.data.toString() == '{}';
       if (nullOrEmpty && !OpenAI.logger.hideEmptyBody) _logger.info('Response Body is null or empty');
@@ -33,8 +32,7 @@ class OpenAILoggingInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode != 403) {
-      _logger
-          .severe('Error [${err.response?.statusCode.toString().yellow}] => PATH: ${err.requestOptions.path.yellow}');
+      _logger.severe('Error [${err.response?.statusCode}] => PATH: ${err.requestOptions.path.yellow}');
       _logger.severe('Error Message: ${err.message}');
       _handleStatusCode(err.response?.statusCode);
     }

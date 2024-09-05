@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_corelib/flutter_corelib.dart';
 import 'package:flutter_openai/src/client/openai_client_handler.dart';
 
+import '../flutter_openai_internal.dart';
+
 class OpenAIRedirectInterceptor extends Interceptor {
   final Logger _logger = Logger('DioRedirect');
 
@@ -25,15 +27,17 @@ class OpenAIRedirectInterceptor extends Interceptor {
   }
 
   Future<Response?> _handleRedirection(Response response, String fromMethod) async {
-    _logger.info('Handling redirection from $fromMethod');
+    if (OpenAI.logger.showRedirections) _logger.info('Handling redirection from $fromMethod');
 
     if (response.statusCode == 307) {
       // 리디렉션할 URL을 Location 헤더에서 추출
       final location = response.headers['location']?.first;
       if (location != null) {
         int redirectCount = response.redirects.length;
-        _logger.info(
-            'Redirecting from ${response.realUri.toString().yellow} to ${location.toString().yellow}. Redirect count: $redirectCount');
+        if (OpenAI.logger.showRedirections) {
+          _logger.info(
+              'Redirecting from ${response.realUri.toString().yellow} to ${location.toString().yellow}. Redirect count: $redirectCount');
+        }
 
         // 새로운 요청을 실행하여 리디렉션을 수동으로 처리
         final newRequestOptions = response.requestOptions.copyWith(path: location);

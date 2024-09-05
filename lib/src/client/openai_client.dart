@@ -1,9 +1,8 @@
 import "dart:async";
 import "dart:io";
 import 'package:dio/dio.dart';
-import "package:flutter_openai/flutter_openai.dart";
+import "package:flutter_corelib/flutter_corelib.dart" hide File;
 import "package:flutter_openai/src/client/openai_client_handler.dart";
-import "package:meta/meta.dart";
 
 @protected
 abstract class OpenAIClient {
@@ -13,16 +12,15 @@ abstract class OpenAIClient {
     required String to,
     required T Function(Map<String, dynamic>) create,
     Map<String, dynamic>? body,
-    bool returnRawResponse = false,
+    bool returnRawData = false,
     bool isBeta = false,
   }) async {
     return await defaultInstance.performRequest<T>(
       endpoint: to,
       create: create,
-      method: OpenAI.httpMethod.post,
+      method: HttpMethod.post,
       body: body,
-      returnRawResponse: returnRawResponse,
-      isBeta: isBeta,
+      betaApi: isBeta,
     );
   }
 
@@ -30,16 +28,15 @@ abstract class OpenAIClient {
     required String endpoint,
     T Function(Map<String, dynamic>)? factory,
     Map<String, dynamic>? body,
-    bool returnRawResponse = false,
+    bool returnRawData = false,
     bool isBeta = false,
   }) async {
     return await defaultInstance.performRequest<T>(
       endpoint: endpoint,
       create: factory,
-      method: OpenAI.httpMethod.get,
+      method: HttpMethod.get,
       body: body,
-      returnRawResponse: returnRawResponse,
-      isBeta: isBeta,
+      betaApi: isBeta,
     );
   }
 
@@ -50,9 +47,9 @@ abstract class OpenAIClient {
   }) async {
     return await defaultInstance.performRequest<T>(
       endpoint: endpoint,
-      method: OpenAI.httpMethod.delete,
+      method: HttpMethod.delete,
       create: factory,
-      isBeta: isBeta,
+      betaApi: isBeta,
     );
   }
 
@@ -86,7 +83,7 @@ abstract class OpenAIClient {
       endpoint: to,
       create: create,
       body: body,
-      isBeta: isBeta,
+      betaApi: isBeta,
     );
   }
 
@@ -98,7 +95,7 @@ abstract class OpenAIClient {
     return defaultInstance.getStream<T>(
       endpoint: from,
       create: create,
-      isBeta: isBeta,
+      betaApi: isBeta,
     );
   }
 
@@ -118,7 +115,7 @@ abstract class OpenAIClient {
       create: create,
       files: files,
       body: body,
-      isBeta: isBeta,
+      betaApi: isBeta,
     );
   }
 
@@ -136,7 +133,11 @@ abstract class OpenAIClient {
       outputFileName: outputFileName,
       outputDirectory: outputDirectory,
       body: body,
-      isBeta: isBeta,
+      betaApi: isBeta,
     );
+  }
+
+  static void cancelAllRequests() {
+    defaultInstance.cancelAllRequests();
   }
 }

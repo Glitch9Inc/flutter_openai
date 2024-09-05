@@ -3,15 +3,15 @@ import 'package:flutter_openai/flutter_openai.dart';
 abstract class AssistantsAPIv2Util {
   static AssistantResult validateAPIStatus(AssistantsAPIv2 api) {
     if (api.status == AssistantStatus.InitializationFailed) {
-      return AssistantResult.fail(
+      return AssistantResult.error(
           "The Assistants API failed to initialize: ${api.initializationFailedReason ?? "unknown reason"}.");
     }
     if (api.requiresAction)
-      return AssistantResult.fail(
+      return AssistantResult.error(
         "You can only SubmitToolOutputs() if AssistantsAPI requires action to be taken.",
       );
     if (api.status != AssistantStatus.WaitingForInput)
-      return AssistantResult.fail(
+      return AssistantResult.error(
         "The Assistants API is not ready. Current status: ${api.status}.",
       );
 

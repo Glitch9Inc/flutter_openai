@@ -16,7 +16,7 @@ class RunStepProvider extends AssistantsAPIProvider<RunStep> {
     if (api.runId.isEmpty) throw ArgumentError("runId must be provided to retrieve a run step.");
 
     var result = await OpenAI.instance.runStep.retrieve(api.threadId, api.runId, id);
-    if (result == null) return Result.fail("Failed to retrieve $id.");
+    if (result == null) return Result.error("Failed to retrieve $id.");
 
     return Result<RunStep>.success(result);
   }
@@ -32,7 +32,7 @@ class RunStepProvider extends AssistantsAPIProvider<RunStep> {
     if (api.runId.isEmpty) throw ArgumentError("runId must be provided to create a message.");
 
     var result = await OpenAI.instance.runStep.list(api.threadId, api.runId, limit: count);
-    if (result.data == null) return Result.fail("Failed to list assistants.");
+    if (result.data == null) return Result.error("Failed to list assistants.");
     return Result<List<RunStep>>.success(result.data!);
   }
 }
